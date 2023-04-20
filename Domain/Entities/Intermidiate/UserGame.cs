@@ -8,7 +8,7 @@ public sealed class UserGame
     public GameId GameId { get; private set; } = null!;
 
     public Game Game { get; private set; } = null!;
-    
+
     public int Rating { get; private set; }
 
     public bool IsFavorite { get; private set; } = false;

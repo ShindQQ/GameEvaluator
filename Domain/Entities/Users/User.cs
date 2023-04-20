@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Companies;
 using Domain.Entities.Intermidiate;
-using Domain.Entities.Roles;
 
 namespace Domain.Entities.Users;
 

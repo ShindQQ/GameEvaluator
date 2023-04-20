@@ -1,7 +1,5 @@
 ﻿using Domain.Entities.Companies;
 using Domain.Entities.Intermidiate;
-using Domain.Entities.Jenres;
-using Domain.Entities.Platforms;
 
 namespace Domain.Entities.Games;
 

@@ -24,8 +24,10 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(user => user.Password)
             .HasMaxLength(60);
 
-        builder.HasMany(user => user.Roles)
-            .WithMany(role => role.Users);
+        builder.OwnsMany(user => user.Roles, roleBuilder =>
+        {
+            roleBuilder.Property(role => role.Name).HasMaxLength(15);
+        });
 
         builder.HasOne(user => user.Company)
             .WithMany(company => company.Workers)
