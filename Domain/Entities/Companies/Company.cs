@@ -32,10 +32,32 @@ public sealed class Company
         Games.Add(game);
     }
 
-    public void RemoveGame(Game game)
+    public bool RemoveGame(GameId id)
     {
+        var game = Games.FirstOrDefault(game => game.Id == id);
+
+        if (game == null)
+            return false;
+
         Games.Remove(game);
+
+        return true;
     }
 
+    public void AddWorker(User worker)
+    {
+        Workers.Add(worker);
+    }
 
+    public bool RemoveWorker(UserId id)
+    {
+        var worker = Workers.FirstOrDefault(worker => worker.Id == id);
+
+        if (worker == null)
+            return false;
+
+        Workers.Remove(worker);
+
+        return true;
+    }
 }

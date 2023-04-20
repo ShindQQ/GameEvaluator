@@ -23,9 +23,9 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.HasMany(game => game.Companies)
             .WithMany(company => company.Games);
 
-        builder.OwnsMany(game => game.Jenres, jenreBuilder =>
+        builder.OwnsMany(game => game.Genres, jenreBuilder =>
         {
-            jenreBuilder.Property(jenre => jenre.Name).HasMaxLength(15);
+            jenreBuilder.Property(jenre => jenre.Name).HasMaxLength(30);
         });
 
         builder.OwnsMany(game => game.Platforms, platformBuilder =>

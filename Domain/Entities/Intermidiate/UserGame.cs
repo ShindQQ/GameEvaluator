@@ -16,4 +16,25 @@ public sealed class UserGame
     public UserId UserId { get; private set; } = null!;
 
     public User User { get; private set; } = null!;
+
+    public static UserGame? Create(User user, Game game)
+    {
+        return new UserGame
+        {
+            UserId = user.Id,
+            User = user,
+            GameId = game.Id,
+            Game = game
+        };
+    }
+
+    public void SetFavorite()
+    {
+        IsFavorite = true;
+    }
+
+    public void SetRating(int rating)
+    {
+        Rating = rating;
+    }
 }

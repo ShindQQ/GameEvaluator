@@ -22,7 +22,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(30);
 
         builder.Property(user => user.Password)
-            .HasMaxLength(60);
+            .HasMaxLength(200);
 
         builder.OwnsMany(user => user.Roles, roleBuilder =>
         {

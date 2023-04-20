@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Games;
+﻿using Domain.Enums;
+
+namespace Domain.ValueObjects;
 
 public record Platform
 {
@@ -10,13 +12,4 @@ public record Platform
     {
         return new Platform(platformType.ToString());
     }
-}
-
-public enum PlatformType
-{
-    Pc,
-    Xbox,
-    PlayStation,
-    Nintendo,
-    Other
 }

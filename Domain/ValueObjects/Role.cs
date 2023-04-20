@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Users;
+﻿using Domain.Enums;
+
+namespace Domain.ValueObjects;
 
 public record Role
 {
@@ -10,11 +12,4 @@ public record Role
     {
         return new Role(roleType.ToString());
     }
-}
-
-public enum RoleType
-{
-    User,
-    Admin,
-    Company
 }
