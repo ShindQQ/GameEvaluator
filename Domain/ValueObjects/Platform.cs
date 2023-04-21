@@ -4,12 +4,7 @@ namespace Domain.ValueObjects;
 
 public record Platform
 {
-    private Platform(string name) => Name = name;
+    public Platform(PlatformType platformType) => Name = platformType.ToString();
 
     public string Name { get; init; }
-
-    public static Platform? Create(PlatformType platformType)
-    {
-        return new Platform(platformType.ToString());
-    }
 }

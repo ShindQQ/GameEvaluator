@@ -4,12 +4,7 @@ namespace Domain.ValueObjects;
 
 public record Role
 {
-    private Role(string name) => Name = name;
+    public Role(RoleType roleType) => Name = roleType.ToString();
 
     public string Name { get; init; }
-
-    public static Role? Create(RoleType roleType)
-    {
-        return new Role(roleType.ToString());
-    }
 }

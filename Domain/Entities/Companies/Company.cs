@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Games;
 using Domain.Entities.Users;
+using Domain.Enums;
 
 namespace Domain.Entities.Companies;
 
@@ -15,22 +16,20 @@ public sealed class Company
 
     public HashSet<User> Workers { get; private set; } = new();
 
-    public static Company Create(string name, string description)
+    public Company(string name, string description)
     {
-        var company = new Company
-        {
-            Id = new CompanyId(Guid.NewGuid()),
-            Name = name,
-            Description = description
-        };
-
-        return company;
+        Id = new CompanyId(Guid.NewGuid());
+        Name = name;
+        Description = description;
     }
 
-    public void AddGame(Game game)
+    public void Update(string name, string description)
     {
-        Games.Add(game);
+        Name = name;
+        Description = description;
     }
+    public bool AddGame(Game game)
+        => Games.Add(game);
 
     public bool RemoveGame(GameId id)
     {
@@ -44,9 +43,11 @@ public sealed class Company
         return true;
     }
 
-    public void AddWorker(User worker)
+    public bool AddWorker(User worker)
     {
-        Workers.Add(worker);
+        worker.AddRole(RoleType.Company);
+
+        return Workers.Add(worker);
     }
 
     public bool RemoveWorker(UserId id)
@@ -57,6 +58,7 @@ public sealed class Company
             return false;
 
         Workers.Remove(worker);
+        worker.RemoveRole(RoleType.Company);
 
         return true;
     }

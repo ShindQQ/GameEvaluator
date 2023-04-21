@@ -2,11 +2,14 @@
 
 namespace Domain.Helpers;
 
-internal static class PasswordHasher
+public static class PasswordHasher
 {
     private const int _saltSize = 16;
+
     private const int _keySize = 32;
+
     private const int _iterations = 100000;
+
     private static readonly HashAlgorithmName _algorithm = HashAlgorithmName.SHA256;
 
     private const char segmentDelimiter = ':';

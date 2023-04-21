@@ -4,21 +4,11 @@ using Domain.Entities.Intermidiate;
 using Domain.Enums;
 using Domain.Helpers;
 using Domain.ValueObjects;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Users;
 
 public sealed class User
 {
-    [NotMapped]
-    private const int NameLength = 20;
-
-    [NotMapped]
-    private const int EmailLength = 30;
-
-    [NotMapped]
-    private const int PasswordLength = 15;
-
     public UserId Id { get; private set; } = null!;
 
     public string Name { get; private set; } = string.Empty;
@@ -35,50 +25,36 @@ public sealed class User
 
     public Company? Company { get; private set; }
 
-    public static User? Create(string name, string email,
-        string password, List<RoleType> roleTypes)
+    public User(string name,
+        string email,
+        string password)
     {
-        if (string.IsNullOrEmpty(name) ||
-            string.IsNullOrEmpty(email) ||
-            string.IsNullOrEmpty(password))
-            return null;
-
-        if (name.Length > NameLength ||
-            email.Length > EmailLength ||
-            password.Length > PasswordLength)
-            return null;
-
         var passwordHash = PasswordHasher.Hash(password);
 
-        var user = new User
-        {
-            Name = name,
-            Email = email,
-            Password = passwordHash
-        };
+        Id = new UserId(Guid.NewGuid());
+        Name = name;
+        Email = email;
+        Password = passwordHash;
+        AddRole(RoleType.User);
+    }
 
-        foreach (var role in roleTypes)
-        {
-            user.Roles.Add(Role.Create(role));
-        }
-
-        return new User();
+    public void Update(string name, string email)
+    {
+        Name = name;
+        Email = email;
     }
 
     public static bool VerifyPassword(string password, string passwordHash)
-    {
-        return PasswordHasher.Verify(password, passwordHash);
-    }
+        => PasswordHasher.Verify(password, passwordHash);
 
-    public void AddRole(RoleType roleType)
-    {
-        Roles.Add(Role.Create(roleType));
-    }
+    public bool AddRole(RoleType roleType)
+        => Roles.Add(new Role(roleType));
 
-    public void AddGame(Game game)
-    {
-        Games.Add(UserGame.Create(this, game));
-    }
+    public bool RemoveRole(RoleType roleType)
+        => Roles.Remove(new Role(roleType));
+
+    public bool AddGame(Game game)
+        => Games.Add(new UserGame(this, game));
 
     public bool SetGameAsFavorite(GameId gameId)
     {
@@ -88,6 +64,18 @@ public sealed class User
             return false;
 
         userGame.SetFavorite();
+
+        return true;
+    }
+
+    public bool ResetFavoriteGame(GameId gameId)
+    {
+        var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
+
+        if (userGame == null)
+            return false;
+
+        userGame.RemoveFavorite();
 
         return true;
     }
