@@ -26,10 +26,10 @@ public sealed class Company
 
     public void Update(string? name, string? description)
     {
-        if (name != null)
+        if (name is not null)
             Name = name;
 
-        if (description != null)
+        if (description is not null)
             Description = description;
     }
 
@@ -40,8 +40,8 @@ public sealed class Company
     {
         var game = Games.FirstOrDefault(game => game.Id == id);
 
-        if (game == null)
-            return false;
+        if (game is null)
+            throw new NullReferenceException(nameof(game));
 
         Games.Remove(game);
 
@@ -59,7 +59,7 @@ public sealed class Company
     {
         var worker = Workers.FirstOrDefault(worker => worker.Id == id);
 
-        if (worker == null)
+        if (worker is null)
             return false;
 
         Workers.Remove(worker);

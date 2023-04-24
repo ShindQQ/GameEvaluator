@@ -6,5 +6,5 @@ public record Genre
 {
     public static Genre Create(GenreType genreType) => new() { Name = genreType.ToString() };
 
-    public string Name { get; init; }
+    public string Name { get; init; } = string.Empty;
 }

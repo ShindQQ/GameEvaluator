@@ -18,6 +18,8 @@ public sealed class GameProfile : Profile
             .ForMember(dest => dest.Genres,
             conf => conf.MapFrom(src => src.Genres.Select(genre => genre.Name)))
             .ForMember(dest => dest.Platforms,
-            conf => conf.MapFrom(src => src.Platforms.Select(platform => platform.Name)));
+            conf => conf.MapFrom(src => src.Platforms.Select(platform => platform.Name)))
+            .ForMember(dest => dest.CompaniesNames,
+            conf => conf.MapFrom(src => src.Companies.Select(company => company.Name)));
     }
 }

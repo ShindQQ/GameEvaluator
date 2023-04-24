@@ -46,10 +46,10 @@ public sealed class User
 
     public void Update(string? name, string? email)
     {
-        if (name != null)
+        if (name is not null)
             Name = name;
 
-        if (email != null)
+        if (email is not null)
             Email = email;
     }
 
@@ -69,7 +69,7 @@ public sealed class User
     {
         var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
 
-        if (userGame == null)
+        if (userGame is null)
             return false;
 
         userGame.ChangeFavoriteState();
@@ -81,7 +81,7 @@ public sealed class User
     {
         var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
 
-        if (userGame == null)
+        if (userGame is null)
             return false;
 
         userGame.SetRating(rating);

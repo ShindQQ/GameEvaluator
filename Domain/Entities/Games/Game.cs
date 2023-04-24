@@ -31,10 +31,10 @@ public sealed class Game
 
     public void Update(string? name, string? description)
     {
-        if (name != null)
+        if (name is not null)
             Name = name;
 
-        if (description != null)
+        if (description is not null)
             Description = description;
     }
 
@@ -45,7 +45,7 @@ public sealed class Game
     {
         var platform = Platforms.FirstOrDefault(platform => platform.Name.Equals(platformType.ToString()));
 
-        if (platform == null)
+        if (platform is null)
             return false;
 
         Platforms.Remove(platform);
@@ -60,7 +60,7 @@ public sealed class Game
     {
         var genre = Genres.FirstOrDefault(genre => genre.Name.Equals(genreType.ToString()));
 
-        if (genre == null)
+        if (genre is null)
             return false;
 
         Genres.Remove(genre);

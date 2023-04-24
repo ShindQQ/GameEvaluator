@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Apllication.Common.Models;
+﻿namespace Apllication.Common.Models;
 
 public sealed class GameDto
 {
@@ -14,9 +12,9 @@ public sealed class GameDto
 
     public int? UsersAmmount { get; init; }
 
-    public List<GenreType> Genres { get; init; } = new();
+    public List<string> Genres { get; init; } = new();
 
-    public List<CompanyDto> Companies { get; init; } = new();
+    public List<string> CompaniesNames { get; init; } = new();
 
-    public List<PlatformType> Platforms { get; init; } = new();
+    public List<string> Platforms { get; init; } = new();
 }

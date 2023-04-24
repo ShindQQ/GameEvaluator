@@ -16,8 +16,6 @@ public sealed class CompanyRepository
 
     public override Task<IQueryable<Company>> GetAsync()
         => Task.FromResult(Context.Company
-            .Include(company => company.Games)
-            .Include(company => company.Workers)
             .AsQueryable());
 
     public override async Task<Company?> GetByIdAsync(CompanyId id, CancellationToken cancellationToken)

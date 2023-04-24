@@ -1,8 +1,11 @@
 ﻿using Apllication.Companies.Commands.CreateCommand;
 using Apllication.Companies.Commands.DeleteCommand;
+using Apllication.Companies.Commands.Games.AddGame;
+using Apllication.Companies.Commands.Games.RemoveGame;
 using Apllication.Companies.Commands.UpdateCommand;
+using Apllication.Companies.Commands.Workers.AddWorker;
+using Apllication.Companies.Commands.Workers.RemoveWorker;
 using Apllication.Companies.Queries;
-using Apllication.Games.Commands.CreateCommand;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,12 +31,36 @@ public sealed class CompanyController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("CreateGame")]
-    public async Task<IActionResult> CreateGameAsync([FromBody] CreateGameCommand request)
+    [HttpPost("AddGame")]
+    public async Task<IActionResult> AddGameAsync([FromBody] AddGameToCompanyCommand request)
     {
-        var result = await _mediator.Send(request);
+        await _mediator.Send(request);
 
-        return Ok(result);
+        return NoContent();
+    }
+
+    [HttpPost("RemoveGame")]
+    public async Task<IActionResult> RemoveGameAsync([FromBody] RemoveGameFromCompanyCommand request)
+    {
+        await _mediator.Send(request);
+
+        return NoContent();
+    }
+
+    [HttpPost("AddWorker")]
+    public async Task<IActionResult> AddWorkerAsync([FromBody] AddWorkerCommand request)
+    {
+        await _mediator.Send(request);
+
+        return NoContent();
+    }
+
+    [HttpPost("RemoveWorker")]
+    public async Task<IActionResult> RemoveWorkerФsync([FromBody] RemoveWorkerCommand request)
+    {
+        await _mediator.Send(request);
+
+        return NoContent();
     }
 
     [HttpPost("GetCompanies")]

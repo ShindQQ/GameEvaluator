@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Apllication.Common.Models;
+﻿namespace Apllication.Common.Models;
 
 public sealed class UserDto
 {
@@ -14,7 +12,7 @@ public sealed class UserDto
 
     public List<GameDto> Games { get; init; } = new();
 
-    public List<RoleType> Roles { get; init; } = new();
+    public List<string> Roles { get; init; } = new();
 
     public Guid? CompanyId { get; init; }
 

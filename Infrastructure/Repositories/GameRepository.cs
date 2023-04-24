@@ -16,15 +16,9 @@ public sealed class GameRepository
 
     public override Task<IQueryable<Game>> GetAsync()
         => Task.FromResult(Context.Game
-            .Include(game => game.Companies)
-            .Include(game => game.Genres)
-            .Include(game => game.Platforms)
             .AsQueryable());
 
     public override async Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken)
         => await Context.Game
-            .Include(game => game.Companies)
-            .Include(game => game.Genres)
-            .Include(game => game.Platforms)
             .FirstOrDefaultAsync(game => game.Id == id, cancellationToken);
 }

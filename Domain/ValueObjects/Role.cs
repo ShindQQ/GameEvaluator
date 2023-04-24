@@ -6,5 +6,5 @@ public record Role
 {
     public static Role Create(RoleType roleType) => new() { Name = roleType.ToString() };
 
-    public string Name { get; init; }
+    public string Name { get; init; } = string.Empty;
 }
