@@ -15,7 +15,7 @@ namespace Apllication.Users.Commands.CreateCommand
 
         public async Task<UserId> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var game = new User(request.Name!, request.Email!, request.Password!);
+            var game = User.Create(request.Name!, request.Email!, request.Password!);
 
             await _repository.AddAsync(game, cancellationToken);
 

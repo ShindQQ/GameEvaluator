@@ -1,9 +1,6 @@
-﻿using Apllication.Common.Mappings;
-using Domain.Entities.Companies;
+﻿namespace Apllication.Common.Models;
 
-namespace Apllication.Common.Models;
-
-public sealed class CompanyDto : IMapFrom<Company>
+public sealed class CompanyDto
 {
     public Guid Id { get; init; }
 
@@ -11,7 +8,7 @@ public sealed class CompanyDto : IMapFrom<Company>
 
     public string Description { get; init; } = string.Empty;
 
-    public List<GameDto> Games { get; init; } = new();
+    public List<GameDto> Games { get; init; } = new(); // how it can be nullable????
 
     public List<UserDto> Workers { get; init; } = new();
 }

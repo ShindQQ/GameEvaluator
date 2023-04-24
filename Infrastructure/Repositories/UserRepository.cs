@@ -15,14 +15,14 @@ public sealed class UserRepository
     }
 
     public override Task<IQueryable<User>> GetAsync()
-        => Task.FromResult(Context.Users
+        => Task.FromResult(Context.User
             .Include(user => user.Games)
             .Include(user => user.Company)
             .Include(user => user.Roles)
             .AsQueryable());
 
     public override async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
-        => await Context.Users
+        => await Context.User
             .Include(user => user.Games)
             .Include(user => user.Company)
             .Include(user => user.Roles)

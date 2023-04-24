@@ -33,5 +33,5 @@ public sealed class UpdateCompanyCommandValidator : AbstractValidator<CreateComp
     public async Task<bool> BeUniqueName(
         string name,
         CancellationToken cancellationToken)
-        => await _context.Companies.AllAsync(company => !company.Name.Equals(name), cancellationToken);
+        => await _context.Company.AllAsync(company => !company.Name.Equals(name), cancellationToken);
 }

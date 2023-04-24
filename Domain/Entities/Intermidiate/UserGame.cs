@@ -17,19 +17,17 @@ public sealed class UserGame
 
     public User User { get; private set; } = null!;
 
-    public UserGame(User user, Game game)
-    {
-        UserId = user.Id;
-        User = user;
-        GameId = game.Id;
-        Game = game;
-    }
+    public static UserGame Create(User user, Game game)
+        => new()
+        {
+            UserId = user.Id,
+            User = user,
+            Game = game,
+            GameId = game.Id,
+        };
 
-    public void SetFavorite()
-        => IsFavorite = true;
-
-    public void RemoveFavorite()
-        => IsFavorite = false;
+    public void ChangeFavoriteState()
+        => IsFavorite = !IsFavorite;
 
     public void SetRating(int rating)
         => Rating = rating;

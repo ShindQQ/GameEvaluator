@@ -16,18 +16,23 @@ public sealed class Company
 
     public HashSet<User> Workers { get; private set; } = new();
 
-    public Company(string name, string description)
+    public static Company Create(string name, string description)
+        => new()
+        {
+            Id = new CompanyId(Guid.NewGuid()),
+            Name = name,
+            Description = description,
+        };
+
+    public void Update(string? name, string? description)
     {
-        Id = new CompanyId(Guid.NewGuid());
-        Name = name;
-        Description = description;
+        if (name != null)
+            Name = name;
+
+        if (description != null)
+            Description = description;
     }
 
-    public void Update(string name, string description)
-    {
-        Name = name;
-        Description = description;
-    }
     public bool AddGame(Game game)
         => Games.Add(game);
 

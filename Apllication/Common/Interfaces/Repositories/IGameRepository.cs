@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Games;
+﻿using Apllication.Common.Interfaces.Repositories.Base;
+using Domain.Entities.Games;
 
 namespace Apllication.Common.Interfaces.Repositories;
 

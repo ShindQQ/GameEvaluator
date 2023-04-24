@@ -1,11 +1,11 @@
-﻿using Apllication.Common.Mappings;
-using Domain.Entities.Users;
-using Domain.Enums;
+﻿using Domain.Enums;
 
 namespace Apllication.Common.Models;
 
-public sealed class UserDto : IMapFrom<User>
+public sealed class UserDto
 {
+    public Guid Id { get; init; }
+
     public string Name { get; init; } = string.Empty;
 
     public string Email { get; init; } = string.Empty;

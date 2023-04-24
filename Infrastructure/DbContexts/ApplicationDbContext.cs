@@ -19,11 +19,11 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
-    public DbSet<Company> Companies => Set<Company>();
+    public DbSet<Company> Company => Set<Company>();
 
-    public DbSet<Game> Games => base.Set<Game>();
+    public DbSet<Game> Game => base.Set<Game>();
 
-    public DbSet<UserGame> UserGames => Set<UserGame>();
+    public DbSet<UserGame> UserGame => Set<UserGame>();
 
-    public DbSet<User> Users => base.Set<User>();
+    public DbSet<User> User => base.Set<User>();
 }

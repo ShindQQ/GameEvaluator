@@ -1,4 +1,4 @@
-﻿using Apllication.Common.Interfaces.Repositories;
+﻿using Apllication.Common.Interfaces.Repositories.Base;
 using Infrastructure.DbContexts;
 
 namespace Apllication.Infrastructure;

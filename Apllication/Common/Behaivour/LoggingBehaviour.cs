@@ -9,7 +9,7 @@ public sealed class LoggingBehaviour<TRequest>
     : IRequestPreProcessor<TRequest>
     where TRequest : notnull
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<TRequest> _logger;
 
     private readonly IUserService _userService;
 
@@ -17,7 +17,7 @@ public sealed class LoggingBehaviour<TRequest>
 
     public LoggingBehaviour(
         IUserService userService,
-        ILogger logger,
+        ILogger<TRequest> logger,
         IUserRepository repository)
     {
         _userService = userService;

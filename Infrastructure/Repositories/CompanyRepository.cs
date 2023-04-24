@@ -15,14 +15,12 @@ public sealed class CompanyRepository
     }
 
     public override Task<IQueryable<Company>> GetAsync()
-        => Task.FromResult(Context.Companies
+        => Task.FromResult(Context.Company
             .Include(company => company.Games)
             .Include(company => company.Workers)
             .AsQueryable());
 
     public override async Task<Company?> GetByIdAsync(CompanyId id, CancellationToken cancellationToken)
-        => await Context.Companies
-            .Include(company => company.Games)
-            .Include(company => company.Workers)
+        => await Context.Company
             .FirstOrDefaultAsync(company => company.Id == id, cancellationToken);
 }

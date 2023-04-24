@@ -33,6 +33,6 @@ public sealed class CreateGameCommandValidator : AbstractValidator<CreateGameCom
     public async Task<bool> BeUniqueName(
         string name,
         CancellationToken cancellationToken)
-        => await _context.Games
+        => await _context.Game
         .AllAsync(game => !game.Name.Equals(name), cancellationToken);
 }

@@ -13,8 +13,6 @@ public sealed class Game
 
     public string Description { get; private set; } = string.Empty;
 
-    public double AverageRating => GameUsers.Average(u => u.Rating);
-
     public HashSet<Genre> Genres { get; private set; } = new();
 
     public HashSet<Company> Companies { get; private set; } = new();
@@ -23,21 +21,25 @@ public sealed class Game
 
     public HashSet<Platform> Platforms { get; private set; } = new();
 
-    public Game(string name, string description)
-    {
-        Id = new GameId(Guid.NewGuid());
-        Name = name;
-        Description = description;
-    }
+    public static Game Create(string name, string description)
+        => new()
+        {
+            Id = new GameId(Guid.NewGuid()),
+            Name = name,
+            Description = description,
+        };
 
-    public void Update(string name, string description)
+    public void Update(string? name, string? description)
     {
-        Name = name;
-        Description = description;
+        if (name != null)
+            Name = name;
+
+        if (description != null)
+            Description = description;
     }
 
     public bool AddPlatform(PlatformType platformType)
-        => Platforms.Add(new Platform(platformType));
+        => Platforms.Add(Platform.Create(platformType));
 
     public bool RemovePlatform(PlatformType platformType)
     {
@@ -52,7 +54,7 @@ public sealed class Game
     }
 
     public bool AddGenre(GenreType genreType)
-        => Genres.Add(new Genre(genreType));
+        => Genres.Add(Genre.Create(genreType));
 
     public bool RemoveGenre(GenreType genreType)
     {

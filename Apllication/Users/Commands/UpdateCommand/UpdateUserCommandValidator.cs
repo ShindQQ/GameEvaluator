@@ -35,7 +35,7 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCom
         UpdateUserCommand command,
         string name,
         CancellationToken cancellationToken)
-        => await _context.Users
+        => await _context.User
         .Where(user => user.Id != command.Id)
         .AllAsync(user => !user.Name.Equals(name), cancellationToken);
 
@@ -43,7 +43,7 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCom
         UpdateUserCommand command,
         string email,
         CancellationToken cancellationToken)
-        => await _context.Users
+        => await _context.User
         .Where(user => user.Id != command.Id)
         .AllAsync(user => !user.Email.Equals(email), cancellationToken);
 }

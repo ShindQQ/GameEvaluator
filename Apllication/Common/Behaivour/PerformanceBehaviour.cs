@@ -21,12 +21,11 @@ public sealed class PerformanceBehaviour<TRequest, TResponse>
     private const int CriticalTime = 500;
 
     public PerformanceBehaviour(
-        Stopwatch timer,
         ILogger<TRequest> logger,
         IUserService userService,
         IUserRepository repository)
     {
-        _timer = timer;
+        _timer = new Stopwatch();
         _logger = logger;
         _userService = userService;
         _userRepository = repository;

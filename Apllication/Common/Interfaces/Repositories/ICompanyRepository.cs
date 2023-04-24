@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Companies;
+﻿using Apllication.Common.Interfaces.Repositories.Base;
+using Domain.Entities.Companies;
 
 namespace Apllication.Common.Interfaces.Repositories;
 

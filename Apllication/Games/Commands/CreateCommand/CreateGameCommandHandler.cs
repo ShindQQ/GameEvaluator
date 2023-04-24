@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces.Repositories;
+﻿using Apllication.Common.Interfaces;
+using Apllication.Common.Interfaces.Repositories;
 using Domain.Entities.Games;
 using MediatR;
 
@@ -6,18 +7,29 @@ namespace Apllication.Games.Commands.CreateCommand;
 
 public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand, GameId>
 {
-    private readonly IGameRepository _repository;
+    private readonly IApplicationDbContext _context;
 
-    public CreateGameCommandHandler(IGameRepository repository)
+    private readonly ICompanyRepository _companyRepository;
+
+    public CreateGameCommandHandler(IApplicationDbContext context,
+        ICompanyRepository companyRepository)
     {
-        _repository = repository;
+        _context = context;
+        _companyRepository = companyRepository;
     }
 
     public async Task<GameId> Handle(CreateGameCommand request, CancellationToken cancellationToken)
     {
-        var game = new Game(request.Name!, request.Description!);
+        var game = Game.Create(request.Name!, request.Description!);
 
-        await _repository.AddAsync(game, cancellationToken);
+        var company = await _companyRepository.GetByIdAsync(request.CompanyId);
+
+        if (company == null)
+            throw new ArgumentNullException(nameof(company));
+
+        company.AddGame(game);
+
+        await _context.SaveChangesAsync(cancellationToken);
 
         return game.Id;
     }

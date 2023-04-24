@@ -21,7 +21,7 @@ public sealed class UpdateCompanyCommandHandler : IRequestHandler<UpdateCompanyC
         if (company == null)
             throw new NotFoundException(nameof(Company), request.Id);
 
-        company.Update(request.Name!, request.Description!);
+        company.Update(request.Name, request.Description);
 
         await _repository.UpdateAsync(company, cancellationToken);
     }

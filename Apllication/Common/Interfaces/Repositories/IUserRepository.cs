@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Users;
+﻿using Apllication.Common.Interfaces.Repositories.Base;
+using Domain.Entities.Users;
 
 namespace Apllication.Common.Interfaces.Repositories;
 

@@ -21,7 +21,7 @@ public sealed class UpdateGameCommandHandler : IRequestHandler<UpdateGameCommand
         if (game == null)
             throw new NotFoundException(nameof(Game), request.Id);
 
-        game.Update(request.Name!, request.Description!);
+        game.Update(request.Name, request.Description);
 
         await _repository.UpdateAsync(game, cancellationToken);
     }

@@ -21,7 +21,7 @@ public sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand
         if (user == null)
             throw new NotFoundException(nameof(User), request.Id);
 
-        user.Update(request.Name!, request.Email!);
+        user.Update(request.Name, request.Email);
 
         await _repository.UpdateAsync(user, cancellationToken);
     }

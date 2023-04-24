@@ -15,7 +15,7 @@ public sealed class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyC
 
     public async Task<CompanyId> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
     {
-        var company = new Company(request.Name!, request.Description!);
+        var company = Company.Create(request.Name!, request.Description!);
 
         await _repository.AddAsync(company, cancellationToken);
 

@@ -25,57 +25,54 @@ public sealed class User
 
     public Company? Company { get; private set; }
 
-    public User(string name,
+    public static User Create(string name,
         string email,
         string password)
     {
         var passwordHash = PasswordHasher.Hash(password);
 
-        Id = new UserId(Guid.NewGuid());
-        Name = name;
-        Email = email;
-        Password = passwordHash;
-        AddRole(RoleType.User);
+        var user = new User
+        {
+            Id = new UserId(Guid.NewGuid()),
+            Name = name,
+            Email = email,
+            Password = passwordHash,
+        };
+
+        user.AddRole(RoleType.User);
+
+        return user;
     }
 
-    public void Update(string name, string email)
+    public void Update(string? name, string? email)
     {
-        Name = name;
-        Email = email;
+        if (name != null)
+            Name = name;
+
+        if (email != null)
+            Email = email;
     }
 
     public static bool VerifyPassword(string password, string passwordHash)
         => PasswordHasher.Verify(password, passwordHash);
 
     public bool AddRole(RoleType roleType)
-        => Roles.Add(new Role(roleType));
+        => Roles.Add(Role.Create(roleType));
 
     public bool RemoveRole(RoleType roleType)
-        => Roles.Remove(new Role(roleType));
+        => Roles.Remove(Role.Create(roleType));
 
     public bool AddGame(Game game)
-        => Games.Add(new UserGame(this, game));
+        => Games.Add(UserGame.Create(this, game));
 
-    public bool SetGameAsFavorite(GameId gameId)
+    public bool ChangeFavoriteState(GameId gameId)
     {
         var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
 
         if (userGame == null)
             return false;
 
-        userGame.SetFavorite();
-
-        return true;
-    }
-
-    public bool ResetFavoriteGame(GameId gameId)
-    {
-        var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
-
-        if (userGame == null)
-            return false;
-
-        userGame.RemoveFavorite();
+        userGame.ChangeFavoriteState();
 
         return true;
     }
