@@ -23,6 +23,8 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services.AddMemoryCache();
 
+builder.Services.AddSwaggerGenNewtonsoftSupport();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

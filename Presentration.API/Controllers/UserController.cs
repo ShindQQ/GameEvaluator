@@ -1,9 +1,12 @@
-﻿using Apllication.Users.Commands.CreateCommand;
+﻿using Apllication.Common.Requests;
+using Apllication.Users.Commands.CreateCommand;
 using Apllication.Users.Commands.DeleteCommand;
 using Apllication.Users.Commands.Roles.AddRole;
 using Apllication.Users.Commands.Roles.RemoveRole;
 using Apllication.Users.Commands.UpdateCommand;
 using Aplliction.Users.Queries;
+using Domain.Entities.Users;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,42 +32,61 @@ public sealed class UserController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("AddRole")]
-    public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleCommand request)
+    [HttpPut("{userId}/roles/{roleType}")]
+    public async Task<IActionResult> AddRoleAsync([FromRoute] UserId userId, [FromRoute] RoleType roleType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new AddRoleCommand
+        {
+            UserId = userId,
+            RoleType = roleType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("RemoveRole")]
-    public async Task<IActionResult> RemoveRoleAsync([FromBody] RemoveRoleCommand request)
+    [HttpDelete("{userId}/roles/{roleType}")]
+    public async Task<IActionResult> RemoveRoleAsync([FromRoute] UserId userId, [FromRoute] RoleType roleType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new RemoveRoleCommand
+        {
+            UserId = userId,
+            RoleType = roleType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("GetUsers")]
-    public async Task<IActionResult> GetAsync([FromBody] UserQuery request)
+    [HttpGet("{pageNumber}/{pageSize}")]
+    [HttpGet("{userId?}/{pageNumber}/{pageSize}")]
+    public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, UserId? userId = null)
     {
-        var result = await _mediator.Send(request);
+        var result = await _mediator.Send(new UserQuery
+        {
+            Id = userId,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        });
 
         return Ok(result);
     }
 
-    [HttpPatch]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserCommand request)
+    [HttpPatch("{userId}")]
+    public async Task<IActionResult> UpdateAsync([FromRoute] UserId userId, [FromBody] UpdateUserRequest request)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new UpdateUserCommand
+        {
+            Id = userId,
+            Name = request.Name,
+            Email = request.Email,
+        });
 
         return NoContent();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteAsync([FromBody] DeleteUserCommand request)
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] UserId userId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new DeleteUserCommand(userId));
 
         return NoContent();
     }

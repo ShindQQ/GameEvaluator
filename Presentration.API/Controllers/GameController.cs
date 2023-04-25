@@ -1,4 +1,5 @@
-﻿using Apllication.Games.Commands.CreateCommand;
+﻿using Apllication.Common.Requests;
+using Apllication.Games.Commands.CreateCommand;
 using Apllication.Games.Commands.DeleteCommand;
 using Apllication.Games.Commands.Genres.AddGenre;
 using Apllication.Games.Commands.Genres.RemoveGenre;
@@ -6,6 +7,8 @@ using Apllication.Games.Commands.Platforms.AddPlatform;
 using Apllication.Games.Commands.Platforms.RemovePlatform;
 using Apllication.Games.Commands.UpdateCommand;
 using Apllication.Games.Queries;
+using Domain.Entities.Games;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,58 +34,85 @@ public sealed class GameController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("AddPlatform")]
-    public async Task<IActionResult> AddPlatformAsync([FromBody] AddPlatformCommand request)
+    [HttpPut("{gameId}/platforms/{platformType}")]
+    public async Task<IActionResult> AddPlatformAsync([FromRoute] GameId gameId, [FromRoute] PlatformType platformType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new AddPlatformCommand
+        {
+            GameId = gameId,
+            PlatformType = platformType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("RemovePlatform")]
-    public async Task<IActionResult> RemovePlatformAsync([FromBody] RemovePlatformCommand request)
+    [HttpDelete("{gameId}/platforms/{platformType}")]
+    public async Task<IActionResult> RemovePlatformAsync([FromRoute] GameId gameId, [FromRoute] PlatformType platformType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new RemovePlatformCommand
+        {
+            GameId = gameId,
+            PlatformType = platformType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("AddGenre")]
-    public async Task<IActionResult> AddGenreAsync([FromBody] AddGenreCommand request)
+    [HttpPut("{gameId}/genres/{genreType}")]
+    public async Task<IActionResult> AddGenreAsync([FromRoute] GameId gameId, [FromRoute] GenreType genreType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new AddGenreCommand
+        {
+            GameId = gameId,
+            GenreType = genreType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("RemoveGenre")]
-    public async Task<IActionResult> RemoveGenreAsync([FromBody] RemoveGenreCommand request)
+    [HttpDelete("{gameId}/genres/{genreType}")]
+    public async Task<IActionResult> RemoveGenreAsync([FromRoute] GameId gameId, [FromRoute] GenreType genreType)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new RemoveGenreCommand
+        {
+            GameId = gameId,
+            GenreType = genreType,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("GetGames")]
-    public async Task<IActionResult> GetAsync([FromBody] GameQuery request)
+    [HttpGet("{pageNumber}/{pageSize}")]
+    [HttpGet("{gameId?}/{pageNumber}/{pageSize}")]
+    public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, GameId? gameId = null)
     {
-        var result = await _mediator.Send(request);
+        var result = await _mediator.Send(new GameQuery
+        {
+            Id = gameId,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        });
 
         return Ok(result);
     }
 
-    [HttpPatch]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameCommand request)
+    [HttpPatch("{gameId}")]
+    public async Task<IActionResult> UpdateAsync([FromRoute] GameId gameId, [FromBody] UpdateGameRequest request)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new UpdateGameCommand
+        {
+            Id = gameId,
+            Name = request.Name,
+            Description = request.Description,
+        });
 
         return NoContent();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteAsync([FromBody] DeleteGameCommand request)
+    [HttpDelete("{gameId}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] GameId gameId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new DeleteGameCommand(gameId));
 
         return NoContent();
     }

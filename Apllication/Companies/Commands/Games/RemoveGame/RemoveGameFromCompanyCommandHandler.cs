@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Apllication.Common.Exceptions;
+using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using MediatR;
 
@@ -23,7 +24,7 @@ public sealed class RemoveGameFromCompanyCommandHandler : IRequestHandler<Remove
         var company = await _companyRepository.GetByIdAsync(request.CompanyId, cancellationToken);
 
         if (company is null)
-            throw new NullReferenceException(nameof(company));
+            throw new NotFoundException(nameof(company), request.CompanyId);
 
         company.RemoveGame(request.GameId);
 

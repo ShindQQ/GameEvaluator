@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Apllication.Common.Exceptions;
+using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using MediatR;
 
@@ -21,7 +22,7 @@ public sealed class RemovePlatformCommandHandler : IRequestHandler<RemovePlatfor
         var game = await _repository.GetByIdAsync(request.GameId, cancellationToken);
 
         if (game is null)
-            throw new NullReferenceException(nameof(game));
+            throw new NotFoundException(nameof(game), request.GameId);
 
         game.RemovePlatform(request.PlatformType);
 

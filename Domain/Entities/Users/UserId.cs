@@ -1,3 +1,9 @@
-﻿namespace Domain.Entities.Users;
+﻿using Domain.Helpers;
+using Newtonsoft.Json;
+using System.ComponentModel;
 
-public record UserId(Guid Value);
+namespace Domain.Entities.Users;
+
+[JsonConverter(typeof(StronglyTypedIdJsonConverter<UserId>))]
+[TypeConverter(typeof(StronglyTypedIdTypeConverter<UserId>))]
+public record UserId(Guid Value) : IStronglyTypedId;

@@ -1,4 +1,5 @@
-﻿using Apllication.Companies.Commands.CreateCommand;
+﻿using Apllication.Common.Requests;
+using Apllication.Companies.Commands.CreateCommand;
 using Apllication.Companies.Commands.DeleteCommand;
 using Apllication.Companies.Commands.Games.AddGame;
 using Apllication.Companies.Commands.Games.RemoveGame;
@@ -6,6 +7,9 @@ using Apllication.Companies.Commands.UpdateCommand;
 using Apllication.Companies.Commands.Workers.AddWorker;
 using Apllication.Companies.Commands.Workers.RemoveWorker;
 using Apllication.Companies.Queries;
+using Domain.Entities.Companies;
+using Domain.Entities.Games;
+using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,58 +35,73 @@ public sealed class CompanyController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("AddGame")]
-    public async Task<IActionResult> AddGameAsync([FromBody] AddGameToCompanyCommand request)
+    [HttpPut("{companyId}/games/{gameId}")]
+    public async Task<IActionResult> AddGameAsync([FromRoute] CompanyId companyId, [FromRoute] GameId gameId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new AddGameToCompanyCommand
+        {
+            CompanyId = companyId,
+            GameId = gameId,
+        });
 
         return NoContent();
     }
 
-    [HttpPost("RemoveGame")]
-    public async Task<IActionResult> RemoveGameAsync([FromBody] RemoveGameFromCompanyCommand request)
+    [HttpDelete("{companyId}/games/{gameId}")]
+    public async Task<IActionResult> RemoveGameAsync([FromRoute] CompanyId companyId, [FromRoute] GameId gameId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new RemoveGameFromCompanyCommand { CompanyId = companyId, GameId = gameId });
 
         return NoContent();
     }
 
-    [HttpPost("AddWorker")]
-    public async Task<IActionResult> AddWorkerAsync([FromBody] AddWorkerCommand request)
+    [HttpPut("{companyId}/workers/{workerId}")]
+    public async Task<IActionResult> AddWorkerAsync([FromRoute] CompanyId companyId, [FromRoute] UserId workerId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new AddWorkerCommand { CompanyId = companyId, UserId = workerId });
 
         return NoContent();
     }
 
-    [HttpPost("RemoveWorker")]
-    public async Task<IActionResult> RemoveWorkerФsync([FromBody] RemoveWorkerCommand request)
+    [HttpDelete("{companyId}/workers/{workerId}")]
+    public async Task<IActionResult> RemoveWorkerФsync([FromRoute] CompanyId companyId, [FromRoute] UserId workerId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new RemoveWorkerCommand { CompanyId = companyId, UserId = workerId });
 
         return NoContent();
     }
 
-    [HttpPost("GetCompanies")]
-    public async Task<IActionResult> GetAsync([FromBody] CompanyQuery request)
+    [HttpGet("{pageNumber}/{pageSize}")]
+    [HttpGet("{companyId?}/{pageNumber}/{pageSize}")]
+    public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, CompanyId? companyId = null)
     {
-        var result = await _mediator.Send(request);
+        var result = await _mediator.Send(new CompanyQuery
+        {
+            Id = companyId,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        });
 
         return Ok(result);
     }
 
-    [HttpPatch]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateCompanyCommand request)
+    [HttpPatch("{companyId}")]
+    public async Task<IActionResult> UpdateAsync([FromRoute] CompanyId companyId, [FromBody] UpdateCompanyRequest request)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new UpdateCompanyCommand
+        {
+            Id = companyId,
+            Name = request.Name,
+            Description = request.Description,
+        });
 
         return NoContent();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteAsync([FromBody] DeleteCompanyCommand request)
+    [HttpDelete("{companyId}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] CompanyId companyId)
     {
-        await _mediator.Send(request);
+        await _mediator.Send(new DeleteCompanyCommand(companyId));
 
         return NoContent();
     }

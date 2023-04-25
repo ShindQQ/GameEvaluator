@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Apllication.Common.Exceptions;
+using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using MediatR;
 
@@ -27,12 +28,12 @@ public sealed class AddGameToCompanyCommandHandler : IRequestHandler<AddGameToCo
         var company = await _companyRepository.GetByIdAsync(request.CompanyId, cancellationToken);
 
         if (company is null)
-            throw new NullReferenceException(nameof(company));
+            throw new NotFoundException(nameof(company), request.CompanyId);
 
         var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken);
 
         if (game is null)
-            throw new NullReferenceException(nameof(game));
+            throw new NotFoundException(nameof(game), request.GameId);
 
         company.AddGame(game);
 

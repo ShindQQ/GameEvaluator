@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Apllication.Common.Exceptions;
+using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using MediatR;
 
@@ -21,7 +22,7 @@ public sealed class RemoveRoleCommandHandler : IRequestHandler<RemoveRoleCommand
         var user = await _repository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
-            throw new NullReferenceException(nameof(user));
+            throw new NotFoundException(nameof(user), request.UserId);
 
         user.RemoveRole(request.RoleType);
 
