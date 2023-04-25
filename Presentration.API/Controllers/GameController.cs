@@ -11,6 +11,7 @@ using Domain.Entities.Games;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Presentration.API.Controllers;
 
@@ -21,9 +22,12 @@ public sealed class GameController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public GameController(IMediator mediator)
+    private readonly IOutputCacheStore _cache;
+
+    public GameController(IMediator mediator, IOutputCacheStore cache)
     {
         _mediator = mediator;
+        _cache = cache;
     }
 
     [HttpPost]
@@ -35,7 +39,10 @@ public sealed class GameController : ControllerBase
     }
 
     [HttpPut("{gameId}/platforms/{platformType}")]
-    public async Task<IActionResult> AddPlatformAsync([FromRoute] GameId gameId, [FromRoute] PlatformType platformType)
+    public async Task<IActionResult> AddPlatformAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] PlatformType platformType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new AddPlatformCommand
         {
@@ -43,11 +50,16 @@ public sealed class GameController : ControllerBase
             PlatformType = platformType,
         });
 
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
         return NoContent();
     }
 
     [HttpDelete("{gameId}/platforms/{platformType}")]
-    public async Task<IActionResult> RemovePlatformAsync([FromRoute] GameId gameId, [FromRoute] PlatformType platformType)
+    public async Task<IActionResult> RemovePlatformAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] PlatformType platformType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemovePlatformCommand
         {
@@ -55,11 +67,16 @@ public sealed class GameController : ControllerBase
             PlatformType = platformType,
         });
 
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
         return NoContent();
     }
 
     [HttpPut("{gameId}/genres/{genreType}")]
-    public async Task<IActionResult> AddGenreAsync([FromRoute] GameId gameId, [FromRoute] GenreType genreType)
+    public async Task<IActionResult> AddGenreAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] GenreType genreType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new AddGenreCommand
         {
@@ -67,11 +84,16 @@ public sealed class GameController : ControllerBase
             GenreType = genreType,
         });
 
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
         return NoContent();
     }
 
     [HttpDelete("{gameId}/genres/{genreType}")]
-    public async Task<IActionResult> RemoveGenreAsync([FromRoute] GameId gameId, [FromRoute] GenreType genreType)
+    public async Task<IActionResult> RemoveGenreAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] GenreType genreType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveGenreCommand
         {
@@ -79,12 +101,18 @@ public sealed class GameController : ControllerBase
             GenreType = genreType,
         });
 
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
         return NoContent();
     }
 
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{gameId?}/{pageNumber}/{pageSize}")]
-    public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, GameId? gameId = null)
+    [OutputCache(PolicyName = "Games")]
+    public async Task<IActionResult> GetAsync(
+        int pageNumber,
+        int pageSize,
+        GameId? gameId = null)
     {
         var result = await _mediator.Send(new GameQuery
         {
@@ -97,7 +125,10 @@ public sealed class GameController : ControllerBase
     }
 
     [HttpPatch("{gameId}")]
-    public async Task<IActionResult> UpdateAsync([FromRoute] GameId gameId, [FromBody] UpdateGameRequest request)
+    public async Task<IActionResult> UpdateAsync(
+        [FromRoute] GameId gameId,
+        [FromBody] UpdateGameRequest request,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new UpdateGameCommand
         {
@@ -106,13 +137,19 @@ public sealed class GameController : ControllerBase
             Description = request.Description,
         });
 
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
         return NoContent();
     }
 
     [HttpDelete("{gameId}")]
-    public async Task<IActionResult> DeleteAsync([FromRoute] GameId gameId)
+    public async Task<IActionResult> DeleteAsync(
+        [FromRoute] GameId gameId,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteGameCommand(gameId));
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
 
         return NoContent();
     }

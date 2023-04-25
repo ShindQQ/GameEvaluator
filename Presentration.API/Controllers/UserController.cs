@@ -9,6 +9,7 @@ using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Presentration.API.Controllers;
 
@@ -19,21 +20,31 @@ public sealed class UserController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public UserController(IMediator mediator)
+    private readonly IOutputCacheStore _cache;
+
+    public UserController(IMediator mediator, IOutputCacheStore cache)
     {
         _mediator = mediator;
+        _cache = cache;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateUserCommand request)
+    public async Task<IActionResult> CreateAsync(
+        [FromBody] CreateUserCommand request,
+        CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(request);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
 
         return Ok(result);
     }
 
     [HttpPut("{userId}/roles/{roleType}")]
-    public async Task<IActionResult> AddRoleAsync([FromRoute] UserId userId, [FromRoute] RoleType roleType)
+    public async Task<IActionResult> AddRoleAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] RoleType roleType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new AddRoleCommand
         {
@@ -41,11 +52,16 @@ public sealed class UserController : ControllerBase
             RoleType = roleType,
         });
 
+        await _cache.EvictByTagAsync("users", cancellationToken);
+
         return NoContent();
     }
 
     [HttpDelete("{userId}/roles/{roleType}")]
-    public async Task<IActionResult> RemoveRoleAsync([FromRoute] UserId userId, [FromRoute] RoleType roleType)
+    public async Task<IActionResult> RemoveRoleAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] RoleType roleType,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveRoleCommand
         {
@@ -53,12 +69,18 @@ public sealed class UserController : ControllerBase
             RoleType = roleType,
         });
 
+        await _cache.EvictByTagAsync("users", cancellationToken);
+
         return NoContent();
     }
 
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{userId?}/{pageNumber}/{pageSize}")]
-    public async Task<IActionResult> GetAsync(int pageNumber, int pageSize, UserId? userId = null)
+    [OutputCache(PolicyName = "Users")]
+    public async Task<IActionResult> GetAsync(
+        int pageNumber,
+        int pageSize,
+        UserId? userId = null)
     {
         var result = await _mediator.Send(new UserQuery
         {
@@ -71,7 +93,10 @@ public sealed class UserController : ControllerBase
     }
 
     [HttpPatch("{userId}")]
-    public async Task<IActionResult> UpdateAsync([FromRoute] UserId userId, [FromBody] UpdateUserRequest request)
+    public async Task<IActionResult> UpdateAsync(
+        [FromRoute] UserId userId,
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new UpdateUserCommand
         {
@@ -80,13 +105,19 @@ public sealed class UserController : ControllerBase
             Email = request.Email,
         });
 
+        await _cache.EvictByTagAsync("users", cancellationToken);
+
         return NoContent();
     }
 
     [HttpDelete("{userId}")]
-    public async Task<IActionResult> DeleteAsync([FromRoute] UserId userId)
+    public async Task<IActionResult> DeleteAsync(
+        [FromRoute] UserId userId,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteUserCommand(userId));
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
 
         return NoContent();
     }
