@@ -17,6 +17,10 @@ public sealed class User
 
     public string Password { get; private set; } = string.Empty;
 
+    public string? RefreshToken { get; private set; }
+
+    public DateTime? RefreshTokenExpiryTime { get; private set; }
+
     public HashSet<UserGame> Games { get; private set; } = new();
 
     public HashSet<Role> Roles { get; private set; } = new();
@@ -44,6 +48,12 @@ public sealed class User
         return user;
     }
 
+    public void SetRefreshToken(string refreshToken, DateTime expireTime)
+    {
+        RefreshToken = refreshToken;
+        RefreshTokenExpiryTime = expireTime;
+    }
+
     public void Update(string? name, string? email)
     {
         if (name is not null)
@@ -53,8 +63,8 @@ public sealed class User
             Email = email;
     }
 
-    public static bool VerifyPassword(string password, string passwordHash)
-        => PasswordHasher.Verify(password, passwordHash);
+    public bool VerifyPassword(string password)
+        => PasswordHasher.Verify(password, Password);
 
     public bool AddRole(RoleType roleType)
         => Roles.Add(Role.Create(roleType));

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Companies;
+using Domain.Entities.Genres;
 using Domain.Entities.Intermidiate;
-using Domain.Enums;
-using Domain.ValueObjects;
+using Domain.Entities.Platforms;
 
 namespace Domain.Entities.Games;
 
@@ -38,32 +38,32 @@ public sealed class Game
             Description = description;
     }
 
-    public bool AddPlatform(PlatformType platformType)
-        => Platforms.Add(Platform.Create(platformType));
+    public bool AddPlatform(Platform platform)
+        => Platforms.Add(platform);
 
-    public bool RemovePlatform(PlatformType platformType)
+    public bool RemovePlatform(Platform platform)
     {
-        var platform = Platforms.FirstOrDefault(platform => platform.Name.Equals(platformType.ToString()));
+        var foundPlatform = Platforms.FirstOrDefault(platformEntity => platformEntity.Id == platform.Id);
 
-        if (platform is null)
+        if (foundPlatform is null)
             return false;
 
-        Platforms.Remove(platform);
+        Platforms.Remove(foundPlatform);
 
         return true;
     }
 
-    public bool AddGenre(GenreType genreType)
-        => Genres.Add(Genre.Create(genreType));
+    public bool AddGenre(Genre genre)
+        => Genres.Add(genre);
 
-    public bool RemoveGenre(GenreType genreType)
+    public bool RemoveGenre(Genre genre)
     {
-        var genre = Genres.FirstOrDefault(genre => genre.Name.Equals(genreType.ToString()));
+        var foundGenre = Genres.FirstOrDefault(genreEntity => genre.Id == genreEntity.Id);
 
-        if (genre is null)
+        if (foundGenre is null)
             return false;
 
-        Genres.Remove(genre);
+        Genres.Remove(foundGenre);
 
         return true;
     }

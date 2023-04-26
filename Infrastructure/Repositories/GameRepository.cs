@@ -15,10 +15,10 @@ public sealed class GameRepository
     }
 
     public override Task<IQueryable<Game>> GetAsync()
-        => Task.FromResult(Context.Game
+        => Task.FromResult(Context.Games
             .AsQueryable());
 
     public override async Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken)
-        => await Context.Game
+        => await Context.Games
             .FirstOrDefaultAsync(game => game.Id == id, cancellationToken);
 }

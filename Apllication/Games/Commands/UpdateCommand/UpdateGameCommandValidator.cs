@@ -30,7 +30,7 @@ public sealed class UpdateGameCommandValidator : AbstractValidator<UpdateGameCom
         UpdateGameCommand command,
         string name,
         CancellationToken cancellationToken)
-        => await _context.Game
+        => await _context.Games
           .Where(game => game.Id != command.Id)
           .AllAsync(game => !game.Name.Equals(name), cancellationToken);
 }

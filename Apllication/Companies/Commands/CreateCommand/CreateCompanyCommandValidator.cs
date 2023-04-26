@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apllication.Companies.Commands.CreateCommand;
 
-public sealed class UpdateCompanyCommandValidator : AbstractValidator<CreateCompanyCommand>
+public sealed class CreateCompanyCommandValidator : AbstractValidator<CreateCompanyCommand>
 {
     private readonly IApplicationDbContext _context;
 
-    public UpdateCompanyCommandValidator(IApplicationDbContext context)
+    public CreateCompanyCommandValidator(IApplicationDbContext context)
     {
         _context = context;
 
@@ -33,5 +33,5 @@ public sealed class UpdateCompanyCommandValidator : AbstractValidator<CreateComp
     public async Task<bool> BeUniqueName(
         string name,
         CancellationToken cancellationToken)
-        => await _context.Company.AllAsync(company => !company.Name.Equals(name), cancellationToken);
+        => await _context.Companies.AllAsync(company => !company.Name.Equals(name), cancellationToken);
 }

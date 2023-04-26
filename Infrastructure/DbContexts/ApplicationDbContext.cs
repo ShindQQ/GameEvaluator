@@ -1,7 +1,9 @@
 ﻿using Apllication.Common.Interfaces;
 using Domain.Entities.Companies;
 using Domain.Entities.Games;
+using Domain.Entities.Genres;
 using Domain.Entities.Intermidiate;
+using Domain.Entities.Platforms;
 using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +21,15 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
-    public DbSet<Company> Company => Set<Company>();
+    public DbSet<Company> Companies => Set<Company>();
 
-    public DbSet<Game> Game => base.Set<Game>();
+    public DbSet<Game> Games => Set<Game>();
 
     public DbSet<UserGame> UserGame => Set<UserGame>();
 
-    public DbSet<User> User => base.Set<User>();
+    public DbSet<User> Users => Set<User>();
+
+    public DbSet<Genre> Genres => Set<Genre>();
+
+    public DbSet<Platform> Platforms => Set<Platform>();
 }

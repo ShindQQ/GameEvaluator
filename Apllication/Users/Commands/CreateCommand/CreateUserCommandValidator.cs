@@ -42,12 +42,12 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<CreateUserCom
     public async Task<bool> BeUniqueName(
         string name,
         CancellationToken cancellationToken)
-        => await _context.User
+        => await _context.Users
         .AllAsync(user => !user.Name.Equals(name), cancellationToken);
 
     public async Task<bool> BeUniqueEmail(
         string email,
         CancellationToken cancellationToken)
-        => await _context.User
+        => await _context.Users
         .AllAsync(user => !user.Email.Equals(email), cancellationToken);
 }

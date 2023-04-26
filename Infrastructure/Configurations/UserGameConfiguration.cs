@@ -8,6 +8,8 @@ internal class UserGameConfiguration : IEntityTypeConfiguration<UserGame>
 {
     public void Configure(EntityTypeBuilder<UserGame> builder)
     {
+        builder.ToTable("UserGame");
+
         builder.HasKey(userGame => new { userGame.UserId, userGame.GameId });
 
         builder.HasOne(userGame => userGame.User)

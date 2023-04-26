@@ -8,6 +8,8 @@ internal class CompanyConfiguration : IEntityTypeConfiguration<Company>
 {
     public void Configure(EntityTypeBuilder<Company> builder)
     {
+        builder.ToTable("Companies");
+
         builder.HasKey(company => company.Id);
 
         builder.Property(company => company.Id).HasConversion(

@@ -1,4 +1,5 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Apllication.Common.Interface;
+using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using Infrastructure.DbContexts;
 using Infrastructure.Repositories;
@@ -23,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<IPlatformRepository, PlatformRepository>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
 
         return services;
     }

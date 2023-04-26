@@ -54,7 +54,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Games.Game", b =>
@@ -74,7 +74,27 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Game");
+                    b.ToTable("Games", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Genres.Genre", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Intermidiate.UserGame", b =>
@@ -95,7 +115,27 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("UserGame");
+                    b.ToTable("UserGame", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Platforms.Platform", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Platforms", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Users.User", b =>
@@ -121,11 +161,47 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("GameGenre", b =>
+                {
+                    b.Property<Guid>("GamesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GenresId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GamesId", "GenresId");
+
+                    b.HasIndex("GenresId");
+
+                    b.ToTable("GameGenre");
+                });
+
+            modelBuilder.Entity("GamePlatform", b =>
+                {
+                    b.Property<Guid>("GamesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PlatformsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GamesId", "PlatformsId");
+
+                    b.HasIndex("PlatformsId");
+
+                    b.ToTable("GamePlatform");
                 });
 
             modelBuilder.Entity("CompanyGame", b =>
@@ -141,61 +217,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("GamesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Games.Game", b =>
-                {
-                    b.OwnsMany("Domain.ValueObjects.Genre", "Genres", b1 =>
-                        {
-                            b1.Property<Guid>("GameId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(30)
-                                .HasColumnType("nvarchar(30)");
-
-                            b1.HasKey("GameId", "Id");
-
-                            b1.ToTable("Genre");
-
-                            b1.WithOwner()
-                                .HasForeignKey("GameId");
-                        });
-
-                    b.OwnsMany("Domain.ValueObjects.Platform", "Platforms", b1 =>
-                        {
-                            b1.Property<Guid>("GameId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(15)
-                                .HasColumnType("nvarchar(15)");
-
-                            b1.HasKey("GameId", "Id");
-
-                            b1.ToTable("Platform");
-
-                            b1.WithOwner()
-                                .HasForeignKey("GameId");
-                        });
-
-                    b.Navigation("Genres");
-
-                    b.Navigation("Platforms");
                 });
 
             modelBuilder.Entity("Domain.Entities.Intermidiate.UserGame", b =>
@@ -251,6 +272,36 @@ namespace Infrastructure.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("GameGenre", b =>
+                {
+                    b.HasOne("Domain.Entities.Games.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Genres.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GamePlatform", b =>
+                {
+                    b.HasOne("Domain.Entities.Games.Game", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Platforms.Platform", null)
+                        .WithMany()
+                        .HasForeignKey("PlatformsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Companies.Company", b =>

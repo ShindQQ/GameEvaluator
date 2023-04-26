@@ -1,4 +1,4 @@
-﻿using Apllication.Common.Models;
+﻿using Apllication.Common.Models.DTOs;
 using AutoMapper;
 using Domain.Entities.Companies;
 

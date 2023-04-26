@@ -8,6 +8,8 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
 {
     public void Configure(EntityTypeBuilder<Game> builder)
     {
+        builder.ToTable("Games");
+
         builder.HasKey(game => game.Id);
 
         builder.Property(game => game.Id).HasConversion(
@@ -23,14 +25,8 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.HasMany(game => game.Companies)
             .WithMany(company => company.Games);
 
-        builder.OwnsMany(game => game.Genres, jenreBuilder =>
-        {
-            jenreBuilder.Property(jenre => jenre.Name).HasMaxLength(30);
-        });
+        builder.HasMany(game => game.Genres).WithMany(genre => genre.Games);
 
-        builder.OwnsMany(game => game.Platforms, platformBuilder =>
-        {
-            platformBuilder.Property(platform => platform.Name).HasMaxLength(15);
-        });
+        builder.HasMany(game => game.Platforms).WithMany(platform => platform.Games);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Apllication.Common.Models;
+using Apllication.Common.Models.DTOs;
 using Domain.Entities.Games;
 using MediatR;
 

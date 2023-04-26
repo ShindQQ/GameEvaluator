@@ -15,10 +15,27 @@ public sealed class UserRepository
     }
 
     public override Task<IQueryable<User>> GetAsync()
-        => Task.FromResult(Context.User
+        => Task.FromResult(Context.Users
             .AsQueryable());
 
+    public async Task<User?> FindByEmailAsync(string email)
+        => await Context.Users
+        .Include(user => user.Company)
+        .Include(user => user.Roles)
+        .FirstOrDefaultAsync(user => user.Email.Equals(email));
+
+    public async Task<User?> FindByNameAsync(string name)
+        => await Context.Users
+        .FirstOrDefaultAsync(user => user.Name.Equals(name));
+
+    public async Task UpdateRefreshTokenAsync(User user, string refreshToken, DateTime expirationTime)
+    {
+        user.SetRefreshToken(refreshToken, expirationTime);
+
+        await Context.SaveChangesAsync();
+    }
+
     public override async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
-        => await Context.User
+        => await Context.Users
             .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 }

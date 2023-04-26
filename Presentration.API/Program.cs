@@ -1,42 +1,30 @@
 using Apllication;
-using Apllication.Common.Interfaces;
+using Domain.Helpers;
 using Infrastructre;
-using Presentration.API.Services;
+using Newtonsoft.Json.Serialization;
+using Presentration.API;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOutputCache(options =>
-{
-    options.AddPolicy("Companies", builder =>
-        builder.Expire(TimeSpan.FromMinutes(5))
-        .Tag("companies"));
-
-    options.AddPolicy("Games", builder =>
-        builder.Expire(TimeSpan.FromMinutes(5))
-        .Tag("games"));
-
-    options.AddPolicy("Users", builder =>
-        builder.Expire(TimeSpan.FromMinutes(5))
-        .Tag("Users"));
-});
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
-
-builder.Services.AddScoped<IUserService, UserService>();
-
-builder.Services.AddHttpContextAccessor();
-
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<IStronglyTypedId>());
+    });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
+
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration)
+    .AddAPI(builder.Configuration);
 
 var app = builder.Build();
 
@@ -52,6 +40,7 @@ app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

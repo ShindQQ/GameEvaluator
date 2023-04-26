@@ -30,7 +30,7 @@ public sealed class UpdateCompanyCommandValidator : AbstractValidator<UpdateComp
         UpdateCompanyCommand command,
         string name,
         CancellationToken cancellationToken)
-        => await _context.Company
+        => await _context.Companies
         .Where(company => company.Id != command.Id)
         .AllAsync(company => !company.Name.Equals(name), cancellationToken);
 }
