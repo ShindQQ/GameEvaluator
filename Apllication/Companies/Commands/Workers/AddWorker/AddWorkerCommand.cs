@@ -6,7 +6,7 @@ namespace Apllication.Companies.Commands.Workers.AddWorker;
 
 public record AddWorkerCommand : IRequest
 {
-    public CompanyId CompanyId { get; init; } = null!;
+    public CompanyId? CompanyId { get; init; }
 
     public UserId UserId { get; init; } = null!;
 }

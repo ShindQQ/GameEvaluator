@@ -8,6 +8,7 @@ using Aplliction.Users.Queries;
 using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -16,6 +17,7 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Roles = "SuperAdmin, Admin")]
 public sealed class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;

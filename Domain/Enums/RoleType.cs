@@ -4,5 +4,6 @@ public enum RoleType
 {
     User,
     Admin,
-    Company
+    Company,
+    SuperAdmin
 }

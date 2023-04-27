@@ -11,6 +11,7 @@ using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -32,6 +33,7 @@ public sealed class CompaniesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> CreateAsync(
         [FromBody] CreateCompanyCommand request,
         CancellationToken cancellationToken)
@@ -43,11 +45,30 @@ public sealed class CompaniesController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("{companyId}/games/")]
+    [HttpPost("/games")]
+    [Authorize(Roles = "Company")]
     public async Task<IActionResult> CreateGameAsync(
-        [FromRoute] CompanyId companyId,
-        [FromBody] CreateGameRequest request,
-        CancellationToken cancellationToken)
+    [FromBody] CreateGameRequest request,
+    CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new CreateGameCommand
+        {
+            Name = request.Name,
+            Description = request.Description,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPost("/{companyId}/games")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> CreateGameAsync(
+    [FromBody] CreateGameRequest request,
+    [FromRoute] CompanyId companyId,
+    CancellationToken cancellationToken)
     {
         await _mediator.Send(new CreateGameCommand
         {
@@ -62,11 +83,29 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{companyId}/games/{gameId}")]
+    [HttpDelete("games/{gameId}")]
+    [Authorize(Roles = "Company")]
     public async Task<IActionResult> RemoveGameAsync(
-        [FromRoute] CompanyId companyId,
         [FromRoute] GameId gameId,
         CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new RemoveGameFromCompanyCommand
+        {
+            GameId = gameId
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpDelete("/{companyId}/games/{gameId}")]
+
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> RemoveGameAsync(
+    [FromRoute] GameId gameId,
+    [FromRoute] CompanyId companyId,
+    CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveGameFromCompanyCommand
         {
@@ -79,11 +118,28 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{companyId}/workers/{workerId}")]
+    [HttpPut("workers/{workerId}")]
+    [Authorize(Roles = "Company")]
     public async Task<IActionResult> AddWorkerAsync(
-        [FromRoute] CompanyId companyId,
         [FromRoute] UserId workerId,
         CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new AddWorkerCommand
+        {
+            UserId = workerId
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPut("{companyId}/workers/{workerId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> AddWorkerAsync(
+       [FromRoute] UserId workerId,
+       [FromRoute] CompanyId companyId,
+       CancellationToken cancellationToken)
     {
         await _mediator.Send(new AddWorkerCommand
         {
@@ -96,11 +152,28 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{companyId}/workers/{workerId}")]
+    [HttpDelete("workers/{workerId}")]
+    [Authorize(Roles = "Company")]
     public async Task<IActionResult> RemoveWorkerAsync(
-        [FromRoute] CompanyId companyId,
         [FromRoute] UserId workerId,
         CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new RemoveWorkerCommand
+        {
+            UserId = workerId
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpDelete("workers/{workerId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> RemoveWorkerAsync(
+    [FromRoute] UserId workerId,
+    [FromRoute] CompanyId companyId,
+    CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveWorkerCommand
         {
@@ -116,6 +189,7 @@ public sealed class CompaniesController : ControllerBase
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{companyId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Companies")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,
@@ -133,6 +207,7 @@ public sealed class CompaniesController : ControllerBase
     }
 
     [HttpPatch("{companyId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] CompanyId companyId,
         [FromBody] UpdateCompanyRequest request,
@@ -151,6 +226,7 @@ public sealed class CompaniesController : ControllerBase
     }
 
     [HttpDelete("{companyId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> DeleteAsync(
         [FromRoute] CompanyId companyId,
         CancellationToken cancellationToken)

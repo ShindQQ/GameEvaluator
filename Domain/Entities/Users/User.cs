@@ -69,6 +69,9 @@ public sealed class User
     public bool AddRole(RoleType roleType)
         => Roles.Add(Role.Create(roleType));
 
+    public bool AddRole(string roleType)
+       => Roles.Add(Role.Create(roleType));
+
     public bool RemoveRole(RoleType roleType)
         => Roles.Remove(Role.Create(roleType));
 

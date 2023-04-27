@@ -1,5 +1,8 @@
 ﻿using Apllication.Common.Interfaces;
+using Apllication.Common.Interfaces.Repositories;
+using Domain.Entities.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Presentration.API.Options;
 using Presentration.API.Services;
@@ -54,6 +57,7 @@ namespace Presentration.API
             });
 
             services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
+            services.Configure<SuperAdminOptions>(configuration.GetSection("SuperAdmin"));
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthenticationService>();
@@ -61,6 +65,20 @@ namespace Presentration.API
             services.AddHttpContextAccessor();
 
             return services;
+        }
+
+        public static async Task AddSuperAdminRole(this IServiceScope scope)
+        {
+            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+            var admin = scope.ServiceProvider.GetRequiredService<IOptions<SuperAdminOptions>>().Value;
+
+            if (await userRepository.FindByEmailAsync(admin.Email) is null)
+            {
+                var adminUser = User.Create(admin.Email, admin.Email, admin.Password);
+                adminUser.AddRole("SuperAdmin");
+
+                await userRepository.AddAsync(adminUser);
+            }
         }
     }
 }

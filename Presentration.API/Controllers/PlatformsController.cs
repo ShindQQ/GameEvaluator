@@ -5,6 +5,7 @@ using Apllication.Platforms.Commands.UpdateCommand;
 using Apllication.Platforms.Queries;
 using Domain.Entities.Platforms;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -13,6 +14,7 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Roles = "SuperAdmin, Company, Admin")]
 public sealed class PlatformsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -42,6 +44,7 @@ public sealed class PlatformsController : ControllerBase
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{platformId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Platforms")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,

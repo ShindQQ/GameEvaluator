@@ -5,6 +5,7 @@ using Apllication.Genres.Commands.UpdateCommand;
 using Apllication.Genres.Queries;
 using Domain.Entities.Genres;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -13,6 +14,7 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Roles = "SuperAdmin, Admin")]
 public sealed class GenresController : ControllerBase
 {
     private readonly IMediator _mediator;

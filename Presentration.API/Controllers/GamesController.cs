@@ -10,6 +10,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Genres;
 using Domain.Entities.Platforms;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -18,6 +19,7 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize(Roles = "SuperAdmin, Company, Admin")]
 public sealed class GamesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -105,6 +107,7 @@ public sealed class GamesController : ControllerBase
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{gameId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Games")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,

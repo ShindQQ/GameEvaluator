@@ -5,6 +5,8 @@ using Domain.Entities.Platforms;
 using Domain.Entities.Users;
 using Domain.Helpers;
 using Infrastructre;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Presentration.API;
@@ -28,7 +30,30 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(setupAction =>
+{
+    setupAction.AddSecurityDefinition("DDDBearerAuth", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "Input a valid token to access this API"
+    });
+
+    setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "DDDBearerAuth"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 builder.Services
@@ -37,6 +62,11 @@ builder.Services
     .AddAPI(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    await scope.AddSuperAdminRole();
+}
 
 app.UseOutputCache();
 
@@ -55,4 +85,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
