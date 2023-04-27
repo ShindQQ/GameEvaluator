@@ -15,6 +15,7 @@ public sealed class Genre
     public static Genre Create(string name, string description)
         => new()
         {
+            Id = new GenreId(Guid.NewGuid()),
             Name = name,
             Description = description
         };

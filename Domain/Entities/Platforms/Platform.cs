@@ -15,6 +15,7 @@ public sealed class Platform
     public static Platform Create(string name, string description)
         => new()
         {
+            Id = new PlatformId(Guid.NewGuid()),
             Name = name,
             Description = description
         };

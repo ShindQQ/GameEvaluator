@@ -43,6 +43,7 @@ public sealed class GamesController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }
@@ -60,6 +61,7 @@ public sealed class GamesController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }
@@ -77,6 +79,7 @@ public sealed class GamesController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }
@@ -94,6 +97,7 @@ public sealed class GamesController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }
@@ -131,6 +135,7 @@ public sealed class GamesController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }
@@ -143,6 +148,7 @@ public sealed class GamesController : ControllerBase
         await _mediator.Send(new DeleteGameCommand(gameId), cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
     }

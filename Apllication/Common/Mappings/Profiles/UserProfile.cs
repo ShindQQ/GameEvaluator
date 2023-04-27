@@ -13,8 +13,8 @@ public sealed class UserProfile : Profile
             conf => conf.MapFrom(src => src.Games.Select(userGame => userGame.Game)))
             .ForMember(dest => dest.Id,
             conf => conf.MapFrom(src => src.Id.Value))
-            .ForMember(dest => dest.CompanyId,
-            conf => conf.MapFrom(src => src.CompanyId!.Value))
+            .ForMember(dest => dest.Company,
+            conf => conf.MapFrom(src => src.Company!.Name))
             .ForMember(dest => dest.Roles,
             conf => conf.MapFrom(src => src.Roles.Select(role => role.Name)));
     }

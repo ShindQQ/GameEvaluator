@@ -1,6 +1,11 @@
 using Apllication;
+using Domain.Entities.Companies;
+using Domain.Entities.Genres;
+using Domain.Entities.Platforms;
+using Domain.Entities.Users;
 using Domain.Helpers;
 using Infrastructre;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Presentration.API;
 using Serilog;
@@ -14,7 +19,12 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<IStronglyTypedId>());
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<UserId>());
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<CompanyId>());
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<GenreId>());
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<PlatformId>());
+        options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<GenreId>());
+        options.SerializerSettings.Converters.Add(new StringEnumConverter());
     });
 
 builder.Services.AddEndpointsApiExplorer();

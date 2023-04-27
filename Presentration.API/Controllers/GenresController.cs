@@ -33,6 +33,8 @@ public sealed class GenresController : ControllerBase
         var response = await _mediator.Send(request, cancellationToken);
 
         await _cache.EvictByTagAsync("genres", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
 
         return Ok(response);
     }
@@ -70,6 +72,8 @@ public sealed class GenresController : ControllerBase
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("genres", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
 
         return NoContent();
     }
@@ -82,6 +86,8 @@ public sealed class GenresController : ControllerBase
         await _mediator.Send(new DeleteGenreCommand(genreId), cancellationToken);
 
         await _cache.EvictByTagAsync("genres", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
 
         return NoContent();
     }

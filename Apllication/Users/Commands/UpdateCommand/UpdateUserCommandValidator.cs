@@ -13,8 +13,6 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCom
         _context = context;
 
         RuleFor(c => c.Name)
-            .NotEmpty()
-            .WithMessage("Name must not be empty!")
             .MinimumLength(3)
             .WithMessage("Name must be longer than 3 characters!")
             .MaximumLength(20)
@@ -22,13 +20,14 @@ public sealed class UpdateUserCommandValidator : AbstractValidator<UpdateUserCom
             .MustAsync(BeUniqueName).WithMessage("User with such name already exists");
 
         RuleFor(c => c.Email)
-            .NotEmpty()
-            .WithMessage("Email must not be empty!")
             .MinimumLength(10)
-            .WithMessage("Email must be longer than 3 characters!")
+            .WithMessage("Email must be longer than 10 characters!")
+            .EmailAddress()
+            .WithMessage("This email is not valid!")
             .MaximumLength(30)
             .WithMessage("Email must not exceed 30 characters!")
-            .MustAsync(BeUniqueEmail).WithMessage("User with such email already exists");
+            .MustAsync(BeUniqueEmail)
+            .WithMessage("User with such email already exists");
     }
 
     public async Task<bool> BeUniqueName(

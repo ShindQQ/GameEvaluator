@@ -22,7 +22,7 @@ public sealed class AuthenticationController : ControllerBase
         var tokenModel = await _authService.LoginAsync(authModel);
 
         if (tokenModel is null)
-            return BadRequest($"{authModel.Email} wasn`t found");
+            return Unauthorized($"User with email {authModel.Email} wasn`t found!");
 
         return Ok(tokenModel);
     }

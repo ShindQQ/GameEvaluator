@@ -8,6 +8,8 @@ public sealed class PlatformProfile : Profile
 {
     public PlatformProfile()
     {
-        CreateMap<Platform, PlatformDto>();
+        CreateMap<Platform, PlatformDto>()
+            .ForMember(dest => dest.Id,
+            conf => conf.MapFrom(src => src.Id.Value));
     }
 }

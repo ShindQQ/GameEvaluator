@@ -14,7 +14,5 @@ public sealed class UserDto
 
     public List<string> Roles { get; init; } = new();
 
-    public Guid? CompanyId { get; init; }
-
-    public CompanyDto? Company { get; init; }
+    public string Company { get; init; } = string.Empty;
 }
