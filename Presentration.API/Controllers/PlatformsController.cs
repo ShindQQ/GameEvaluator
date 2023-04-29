@@ -29,8 +29,8 @@ public sealed class PlatformsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateAsync(
-    [FromBody] CreatePaltformCommand request,
-    CancellationToken cancellationToken)
+        [FromBody] CreatePaltformCommand request,
+        CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(request, cancellationToken);
 
@@ -41,10 +41,10 @@ public sealed class PlatformsController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{pageNumber}/{pageSize}")]
-    [HttpGet("{platformId?}/{pageNumber}/{pageSize}")]
-    [OutputCache(PolicyName = "Platforms")]
     [AllowAnonymous]
+    [HttpGet("{pageNumber}/{pageSize}")]
+    [OutputCache(PolicyName = "Platforms")]
+    [HttpGet("{platformId?}/{pageNumber}/{pageSize}")]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,

@@ -1,9 +1,8 @@
 ﻿using Apllication.Common.Exceptions;
 using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
+using Domain.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace Apllication.Companies.Commands.Games.RemoveGame;
 
@@ -13,27 +12,29 @@ public sealed class RemoveGameFromCompanyCommandHandler : IRequestHandler<Remove
 
     private readonly IApplicationDbContext _context;
 
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
 
     public RemoveGameFromCompanyCommandHandler(
         ICompanyRepository companyRepository,
         IApplicationDbContext context,
-        IHttpContextAccessor httpContextAccessor)
+        IUserService userService)
     {
         _companyRepository = companyRepository;
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
+        _userService = userService;
     }
 
     public async Task Handle(RemoveGameFromCompanyCommand request, CancellationToken cancellationToken)
     {
-        var claim = _httpContextAccessor.HttpContext.User.FindFirst("CompanyId");
-        var companyId = claim is not null ? new CompanyId(Guid.Parse(claim.Value)) : request.CompanyId!;
+        var companyId = _userService.CompanyId;
 
-        var company = await _companyRepository.GetByIdAsync(companyId, cancellationToken);
+        if (_userService.RoleType == RoleType.SuperAdmin)
+            companyId = request.CompanyId;
+
+        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
 
         if (company is null)
-            throw new NotFoundException(nameof(company), companyId);
+            throw new NotFoundException(nameof(company), companyId!);
 
         company.RemoveGame(request.GameId);
 

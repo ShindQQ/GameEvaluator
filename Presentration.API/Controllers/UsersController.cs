@@ -1,10 +1,14 @@
 ﻿using Apllication.Common.Requests;
 using Apllication.Users.Commands.CreateCommand;
 using Apllication.Users.Commands.DeleteCommand;
+using Apllication.Users.Commands.Games.AddGame;
+using Apllication.Users.Commands.Games.SetFavorite;
+using Apllication.Users.Commands.Games.SetRating;
 using Apllication.Users.Commands.Roles.AddRole;
 using Apllication.Users.Commands.Roles.RemoveRole;
 using Apllication.Users.Commands.UpdateCommand;
 using Aplliction.Users.Queries;
+using Domain.Entities.Games;
 using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
@@ -76,9 +80,9 @@ public sealed class UsersController : ControllerBase
         return NoContent();
     }
 
+    [OutputCache(PolicyName = "Users")]
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{userId?}/{pageNumber}/{pageSize}")]
-    [OutputCache(PolicyName = "Users")]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,
@@ -121,6 +125,65 @@ public sealed class UsersController : ControllerBase
         await _mediator.Send(new DeleteUserCommand(userId), cancellationToken);
 
         await _cache.EvictByTagAsync("users", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPut("/{userId}/games/{gameId}")]
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    public async Task<IActionResult> AddGameAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] GameId gameId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new AddGameToUserCommand
+        {
+            UserId = userId,
+            GameId = gameId
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    [HttpPut("/{userId}/games/{gameId}/ratings/{rating}")]
+    public async Task<IActionResult> SetRatingAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] GameId gameId,
+        [FromRoute] int rating,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new SetRatingCommand
+        {
+            UserId = userId,
+            GameId = gameId,
+            Rating = rating
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    [HttpPut("/{userId}/games/{gameId}/favorites")]
+    public async Task<IActionResult> SetFavoriteAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] GameId gameId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new SetGameAsFavoriteCommand
+        {
+            UserId = userId,
+            GameId = gameId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
 
         return NoContent();
     }

@@ -42,8 +42,8 @@ public sealed class GenresController : ControllerBase
     }
 
     [HttpGet("{pageNumber}/{pageSize}")]
-    [HttpGet("{genreId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Genres")]
+    [HttpGet("{genreId?}/{pageNumber}/{pageSize}")]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
         int pageSize,

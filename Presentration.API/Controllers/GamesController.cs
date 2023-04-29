@@ -6,6 +6,7 @@ using Apllication.Games.Commands.Platforms.AddPlatform;
 using Apllication.Games.Commands.Platforms.RemovePlatform;
 using Apllication.Games.Commands.UpdateCommand;
 using Apllication.Games.Queries;
+using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Genres;
 using Domain.Entities.Platforms;
@@ -19,7 +20,7 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-[Authorize(Roles = "SuperAdmin, Company, Admin")]
+
 public sealed class GamesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -32,6 +33,7 @@ public sealed class GamesController : ControllerBase
         _cache = cache;
     }
 
+    [Authorize(Roles = "Company")]
     [HttpPut("{gameId}/platforms/{platformId}")]
     public async Task<IActionResult> AddPlatformAsync(
         [FromRoute] GameId gameId,
@@ -50,6 +52,28 @@ public sealed class GamesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpPut("{gameId}/companies/{companyId}/platforms/{platformId}")]
+    public async Task<IActionResult> AddPlatformAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] CompanyId companyId,
+        [FromRoute] PlatformId platformId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new AddPlatformToGameCommand
+        {
+            GameId = gameId,
+            CompanyId = companyId,
+            PlatformId = platformId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Company")]
     [HttpDelete("{gameId}/platforms/{platformId}")]
     public async Task<IActionResult> RemovePlatformAsync(
         [FromRoute] GameId gameId,
@@ -68,6 +92,28 @@ public sealed class GamesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpDelete("{gameId}/companies/{companyId}/platforms/{platformId}")]
+    public async Task<IActionResult> RemovePlatformAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] CompanyId companyId,
+        [FromRoute] PlatformId platformId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new RemovePlatformFromGameCommand
+        {
+            GameId = gameId,
+            CompanyId = companyId,
+            PlatformId = platformId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Company")]
     [HttpPut("{gameId}/genres/{genreId}")]
     public async Task<IActionResult> AddGenreAsync(
         [FromRoute] GameId gameId,
@@ -86,6 +132,28 @@ public sealed class GamesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpPut("{gameId}/companies/{companyId}/genres/{genreId}")]
+    public async Task<IActionResult> AddGenreAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] CompanyId companyId,
+        [FromRoute] GenreId genreId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new AddGenreToGameCommand
+        {
+            GameId = gameId,
+            CompanyId = companyId,
+            GenreId = genreId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Company")]
     [HttpDelete("{gameId}/genres/{genreId}")]
     public async Task<IActionResult> RemoveGenreAsync(
         [FromRoute] GameId gameId,
@@ -125,6 +193,7 @@ public sealed class GamesController : ControllerBase
     }
 
     [HttpPatch("{gameId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] GameId gameId,
         [FromBody] UpdateGameRequest request,
@@ -144,6 +213,7 @@ public sealed class GamesController : ControllerBase
     }
 
     [HttpDelete("{gameId}")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> DeleteAsync(
         [FromRoute] GameId gameId,
         CancellationToken cancellationToken)

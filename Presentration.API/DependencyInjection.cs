@@ -1,6 +1,7 @@
 ﻿using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
 using Domain.Entities.Users;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -75,7 +76,8 @@ namespace Presentration.API
             if (await userRepository.FindByEmailAsync(admin.Email) is null)
             {
                 var adminUser = User.Create(admin.Email, admin.Email, admin.Password);
-                adminUser.AddRole("SuperAdmin");
+                adminUser.AddRole(RoleType.SuperAdmin);
+                adminUser.RemoveRole(RoleType.User);
 
                 await userRepository.AddAsync(adminUser);
             }

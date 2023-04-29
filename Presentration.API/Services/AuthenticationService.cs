@@ -34,7 +34,7 @@ public sealed class AuthenticationService : IAuthService
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Name),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.Value.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Expiration, DateTime.Now.AddHours(1).ToString())
             };

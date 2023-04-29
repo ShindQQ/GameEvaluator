@@ -35,7 +35,28 @@ public sealed class UserRepository
         await Context.SaveChangesAsync();
     }
 
+    public async Task GetRecomendedGamesAsync(UserId userId, int ammountOfGames)
+    {
+        var userGenres = Context.Users
+            .Include(user => user.Games)
+            .First(user => user.Id == userId)
+            .Games
+            .SelectMany(game => game.Game.Genres)
+            .Distinct()
+            .ToList();
+
+        var games = Context.UserGame
+            .Include(userGame => userGame.Game)
+                .ThenInclude(game => game.Genres)
+             .Where(userGame => userGame.UserId != userId && userGame.IsFavorite)
+             .Select(userGame => userGame.Game)
+             .GroupBy(game => game.Genres, game => game);
+
+        Console.WriteLine();
+    }
+
     public override async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
         => await Context.Users
+            .Include(user => user.Games)
             .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 }

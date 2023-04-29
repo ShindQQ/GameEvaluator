@@ -48,8 +48,8 @@ public sealed class CompaniesController : ControllerBase
     [HttpPost("/games")]
     [Authorize(Roles = "Company")]
     public async Task<IActionResult> CreateGameAsync(
-    [FromBody] CreateGameRequest request,
-    CancellationToken cancellationToken)
+        [FromBody] CreateGameRequest request,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new CreateGameCommand
         {
@@ -66,9 +66,9 @@ public sealed class CompaniesController : ControllerBase
     [HttpPost("/{companyId}/games")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> CreateGameAsync(
-    [FromBody] CreateGameRequest request,
-    [FromRoute] CompanyId companyId,
-    CancellationToken cancellationToken)
+        [FromBody] CreateGameRequest request,
+        [FromRoute] CompanyId companyId,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new CreateGameCommand
         {
@@ -103,9 +103,9 @@ public sealed class CompaniesController : ControllerBase
 
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> RemoveGameAsync(
-    [FromRoute] GameId gameId,
-    [FromRoute] CompanyId companyId,
-    CancellationToken cancellationToken)
+        [FromRoute] GameId gameId,
+        [FromRoute] CompanyId companyId,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveGameFromCompanyCommand
         {
@@ -118,8 +118,8 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("workers/{workerId}")]
     [Authorize(Roles = "Company")]
+    [HttpPut("workers/{workerId}")]
     public async Task<IActionResult> AddWorkerAsync(
         [FromRoute] UserId workerId,
         CancellationToken cancellationToken)
@@ -134,8 +134,8 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{companyId}/workers/{workerId}")]
     [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpPut("{companyId}/workers/{workerId}")]
     public async Task<IActionResult> AddWorkerAsync(
        [FromRoute] UserId workerId,
        [FromRoute] CompanyId companyId,
@@ -152,8 +152,8 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("workers/{workerId}")]
     [Authorize(Roles = "Company")]
+    [HttpDelete("workers/{workerId}")]
     public async Task<IActionResult> RemoveWorkerAsync(
         [FromRoute] UserId workerId,
         CancellationToken cancellationToken)
@@ -168,12 +168,12 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("workers/{workerId}")]
     [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpDelete("/{companyId}/workers/{workerId}")]
     public async Task<IActionResult> RemoveWorkerAsync(
-    [FromRoute] UserId workerId,
-    [FromRoute] CompanyId companyId,
-    CancellationToken cancellationToken)
+        [FromRoute] UserId workerId,
+        [FromRoute] CompanyId companyId,
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new RemoveWorkerCommand
         {
@@ -187,8 +187,8 @@ public sealed class CompaniesController : ControllerBase
     }
 
     [HttpGet("{pageNumber}/{pageSize}")]
-    [HttpGet("{companyId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Companies")]
+    [HttpGet("{companyId?}/{pageNumber}/{pageSize}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetAsync(
         int pageNumber,
