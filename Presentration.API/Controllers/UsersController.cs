@@ -7,6 +7,7 @@ using Apllication.Users.Commands.Games.SetRating;
 using Apllication.Users.Commands.Roles.AddRole;
 using Apllication.Users.Commands.Roles.RemoveRole;
 using Apllication.Users.Commands.UpdateCommand;
+using Apllication.Users.Queries;
 using Aplliction.Users.Queries;
 using Domain.Entities.Games;
 using Domain.Entities.Users;
@@ -92,6 +93,25 @@ public sealed class UsersController : ControllerBase
         var result = await _mediator.Send(new UserQuery
         {
             Id = userId,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+        }, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet("/recomended/{userId}/{ammountOfGames}/{pageNumber}/{pageSize}")]
+    public async Task<IActionResult> GetRecomendedGamesAsync(
+        UserId userId,
+        int ammountOfGames,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new RecomendedGamesQuery
+        {
+            UserId = userId,
+            AmmountOfGames = ammountOfGames,
             PageNumber = pageNumber,
             PageSize = pageSize,
         }, cancellationToken);

@@ -24,7 +24,7 @@ public sealed class UserService : IUserService
 
         if (idClaim is not null)
         {
-            UserId =  Guid.TryParse(idClaim.Value, out Guid userId) ? new(userId) : null;
+            UserId = Guid.TryParse(idClaim.Value, out Guid userId) ? new(userId) : null;
             RoleType = Enum.Parse<RoleType>(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.Role)!.Value);
 
             var companyIdClaim = _httpContextAccessor.HttpContext!.User.FindFirst("CompanyId");

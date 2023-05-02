@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{84ED83DA-61E3-4E41-BB10-EC9AE1A318BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{84ED83DA-61E3-4E41-BB10-EC9AE1A318BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apllication", "Apllication\Apllication.csproj", "{39472E0D-A24B-4226-BB38-8374D9DBCACC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Apllication", "Apllication\Apllication.csproj", "{39472E0D-A24B-4226-BB38-8374D9DBCACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{3EB90A65-C665-40B7-AD93-8AD0B3C83050}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{3EB90A65-C665-40B7-AD93-8AD0B3C83050}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentration.API", "Presentration.API\Presentration.API.csproj", "{40AD4D26-E585-4C1F-A510-668B92AF6FA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentration.API", "Presentration.API\Presentration.API.csproj", "{40AD4D26-E585-4C1F-A510-668B92AF6FA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{FF2AF9CA-70E9-4B15-8CE2-EEE6CAE0BB13}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

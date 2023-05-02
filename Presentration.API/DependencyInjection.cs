@@ -1,86 +1,133 @@
 ﻿using Apllication.Common.Interfaces;
 using Apllication.Common.Interfaces.Repositories;
+using Domain.Entities.Companies;
+using Domain.Entities.Genres;
+using Domain.Entities.Platforms;
 using Domain.Entities.Users;
 using Domain.Enums;
+using Domain.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Presentration.API.Options;
 using Presentration.API.Services;
 using System.Text;
 
-namespace Presentration.API
+namespace Presentration.API;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddAPI(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddAPI(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOutputCache(options =>
+        services.AddControllers()
+            .AddNewtonsoftJson(options =>
             {
-                options.AddPolicy("Companies", builder =>
-                    builder.Expire(TimeSpan.FromMinutes(5))
-                    .Tag("companies"));
-
-                options.AddPolicy("Games", builder =>
-                    builder.Expire(TimeSpan.FromMinutes(5))
-                    .Tag("games"));
-
-                options.AddPolicy("Users", builder =>
-                    builder.Expire(TimeSpan.FromMinutes(5))
-                    .Tag("users"));
-
-                options.AddPolicy("Genres", builder =>
-                    builder.Expire(TimeSpan.FromMinutes(5))
-                    .Tag("genres"));
-
-                options.AddPolicy("Platforms", builder =>
-                    builder.Expire(TimeSpan.FromMinutes(5))
-                    .Tag("platforms"));
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<UserId>());
+                options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<CompanyId>());
+                options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<GenreId>());
+                options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<PlatformId>());
+                options.SerializerSettings.Converters.Add(new StronglyTypedIdJsonConverter<GenreId>());
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
-            services.AddAuthentication(options =>
+        services.AddEndpointsApiExplorer();
+
+        services.AddSwaggerGen(setupAction =>
+        {
+            setupAction.AddSecurityDefinition("DDDBearerAuth", new OpenApiSecurityScheme
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Description = "Input a valid token to access this API"
+            });
+
+            setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:SecretForKey"]!))
-                };
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "DDDBearerAuth"
+                        }
+                    },
+                    new List<string>()
+                }
             });
+        });
 
-            services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
-            services.Configure<SuperAdminOptions>(configuration.GetSection("SuperAdmin"));
+        services.AddSwaggerGenNewtonsoftSupport();
 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAuthService, AuthenticationService>();
-
-            services.AddHttpContextAccessor();
-
-            return services;
-        }
-
-        public static async Task AddSuperAdminRole(this IServiceScope scope)
+        services.AddOutputCache(options =>
         {
-            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-            var admin = scope.ServiceProvider.GetRequiredService<IOptions<SuperAdminOptions>>().Value;
+            options.AddPolicy("Companies", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                .Tag("companies"));
 
-            if (await userRepository.FindByEmailAsync(admin.Email) is null)
+            options.AddPolicy("Games", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                .Tag("games"));
+
+            options.AddPolicy("Users", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                .Tag("users"));
+
+            options.AddPolicy("Genres", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                .Tag("genres"));
+
+            options.AddPolicy("Platforms", builder =>
+                builder.Expire(TimeSpan.FromMinutes(5))
+                .Tag("platforms"));
+        });
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
             {
-                var adminUser = User.Create(admin.Email, admin.Email, admin.Password);
-                adminUser.AddRole(RoleType.SuperAdmin);
-                adminUser.RemoveRole(RoleType.User);
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:SecretForKey"]!))
+            };
+        });
 
-                await userRepository.AddAsync(adminUser);
-            }
+        services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
+        services.Configure<SuperAdminOptions>(configuration.GetSection("SuperAdmin"));
+
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthService, AuthenticationService>();
+
+        services.AddHttpContextAccessor();
+
+        return services;
+    }
+
+    public static async Task AddSuperAdminRole(this IServiceScope scope)
+    {
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+        var admin = scope.ServiceProvider.GetRequiredService<IOptions<SuperAdminOptions>>().Value;
+
+        if (await userRepository.FindByEmailAsync(admin.Email) is null)
+        {
+            var adminUser = User.Create(admin.Email, admin.Email, admin.Password);
+            adminUser.AddRole(RoleType.SuperAdmin);
+            adminUser.RemoveRole(RoleType.User);
+
+            await userRepository.AddAsync(adminUser);
         }
     }
 }

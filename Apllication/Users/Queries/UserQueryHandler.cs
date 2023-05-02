@@ -21,7 +21,6 @@ public sealed class UserQueryHandler : IRequestHandler<UserQuery, PaginatedList<
         _mapper = mapper;
     }
 
-
     public async Task<PaginatedList<UserDto>> Handle(UserQuery request, CancellationToken cancellationToken)
     {
         var queryable = await _repository.GetAsync();

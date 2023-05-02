@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+ api:
+  image: shinqq/game_evaluator
+  restart: unless-stopped
+  container_name: game_evaluator_container
+  build:
+   context: .
+   dockerfile: GameEvaluator/Dockerfile
+  ports:
+  - "8080:80" 
+  depends_on:
+  - db
+  networks:
+  - campus_net
+  environment:
+   - ASPNETCORE_ENVIRONMENT=Release
+ db:
+  image: mcr.microsoft.com/mssql/server:2019-latest
+  container_name: game_evaluator_db_container
+  ports: 
+  - "1450:1433"
+  environment:
+  - SA_PASSWORD=Pass@word
+  - ACCEPT_EULA=Y
+  networks:
+  - campus_net
+  volumes:
+  - game_evaluator_db_container:/var/lib/mssql/data
+
+volumes:
+  game_evaluator_db_container:
+
+networks:
+ campus_net:
+  driver: bridge
