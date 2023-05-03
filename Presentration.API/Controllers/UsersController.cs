@@ -111,9 +111,7 @@ public sealed class UsersController : ControllerBase
         var result = await _mediator.Send(new RecomendedGamesQuery
         {
             UserId = userId,
-            AmmountOfGames = ammountOfGames,
-            PageNumber = pageNumber,
-            PageSize = pageSize,
+            AmountOfGames = ammountOfGames,
         }, cancellationToken);
 
         return Ok(result);

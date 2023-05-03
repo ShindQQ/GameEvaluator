@@ -20,17 +20,20 @@ public sealed class UserService : IUserService
     {
         _httpContextAccessor = httpContextAccessor;
 
-        var idClaim = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier);
-
-        if (idClaim is not null)
+        if (_httpContextAccessor.HttpContext is not null)
         {
-            UserId = Guid.TryParse(idClaim.Value, out Guid userId) ? new(userId) : null;
-            RoleType = Enum.Parse<RoleType>(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.Role)!.Value);
+            var idClaim = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier);
 
-            var companyIdClaim = _httpContextAccessor.HttpContext!.User.FindFirst("CompanyId");
+            if (idClaim is not null)
+            {
+                UserId = Guid.TryParse(idClaim.Value, out Guid userId) ? new(userId) : null;
+                RoleType = Enum.Parse<RoleType>(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.Role)!.Value);
 
-            if (companyIdClaim is not null)
-                CompanyId = Guid.TryParse(companyIdClaim.Value, out Guid companyId) ? new(companyId) : null;
+                var companyIdClaim = _httpContextAccessor.HttpContext!.User.FindFirst("CompanyId");
+
+                if (companyIdClaim is not null)
+                    CompanyId = Guid.TryParse(companyIdClaim.Value, out Guid companyId) ? new(companyId) : null;
+            }
         }
     }
 }

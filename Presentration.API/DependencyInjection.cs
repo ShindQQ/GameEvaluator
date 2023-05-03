@@ -7,11 +7,13 @@ using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Presentration.API.BackgroundJobs;
 using Presentration.API.Options;
 using Presentration.API.Services;
 using System.Text;
@@ -107,11 +109,15 @@ public static class DependencyInjection
 
         services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
         services.Configure<SuperAdminOptions>(configuration.GetSection("SuperAdmin"));
+        services.Configure<EmailOptions>(configuration.GetSection("Email"));
 
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAuthService, AuthenticationService>();
 
         services.AddHttpContextAccessor();
+
+        services.AddHostedService<RecomendedGamesJob>();
 
         return services;
     }
@@ -121,7 +127,10 @@ public static class DependencyInjection
         var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
         var admin = scope.ServiceProvider.GetRequiredService<IOptions<SuperAdminOptions>>().Value;
 
-        if (await userRepository.FindByEmailAsync(admin.Email) is null)
+        var foundAdminUser = await (await userRepository.GetAsync())
+            .FirstOrDefaultAsync(user => user.Email.Equals(admin.Email));
+
+        if (foundAdminUser is null)
         {
             var adminUser = User.Create(admin.Email, admin.Email, admin.Password);
             adminUser.AddRole(RoleType.SuperAdmin);

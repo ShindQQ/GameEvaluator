@@ -2,6 +2,7 @@
 using Apllication.Common.Interfaces.Repositories;
 using Apllication.Common.Models;
 using Apllication.Common.Models.Tokens;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Presentration.API.Options;
@@ -26,7 +27,10 @@ public sealed class AuthenticationService : IAuthService
 
     public async Task<TokenModel?> LoginAsync(AuthModel authModel)
     {
-        var user = await _userRepository.FindByEmailAsync(authModel.Email);
+        var user = await (await _userRepository.GetAsync())
+            .Include(user => user.Company)
+            .Include(user => user.Roles)
+            .FirstOrDefaultAsync(user => user.Email.Equals(authModel.Email));
 
         if (user is not null && user.VerifyPassword(authModel.Password))
         {
@@ -50,7 +54,8 @@ public sealed class AuthenticationService : IAuthService
             var token = CreateAccessToken(authClaims);
             var refreshToken = CreateRefreshToken();
 
-            await _userRepository.UpdateRefreshTokenAsync(user, refreshToken, DateTime.Now.AddDays(1));
+            user.SetRefreshToken(refreshToken, DateTime.Now.AddDays(1));
+            await _userRepository.UpdateAsync(user);
 
             return new TokenModel
             {
@@ -71,7 +76,8 @@ public sealed class AuthenticationService : IAuthService
             return null;
 
         var username = principal?.Identity!.Name;
-        var user = await _userRepository.FindByNameAsync(username!);
+        var user = await (await _userRepository.GetAsync())
+            .FirstOrDefaultAsync(user => user.Name.Equals(username));
 
         if (user == null ||
             user.RefreshToken != tokenModel.RefreshToken ||
@@ -80,7 +86,8 @@ public sealed class AuthenticationService : IAuthService
 
         var newRefreshToken = CreateRefreshToken();
 
-        await _userRepository.UpdateRefreshTokenAsync(user, newRefreshToken, DateTime.Now.AddDays(1));
+        user.SetRefreshToken(newRefreshToken, DateTime.Now.AddDays(1));
+        await _userRepository.UpdateAsync(user);
 
         return new RefreshTokenModel
         {

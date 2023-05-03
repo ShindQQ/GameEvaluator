@@ -1,31 +1,42 @@
-﻿using Apllication.Common.Interfaces.Repositories;
-using Apllication.Common.Mappings;
-using Apllication.Common.Models;
+﻿using Apllication.Common.Interfaces;
 using Apllication.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Apllication.Users.Queries;
 
-public class RecomendedGamesQueryHandler : IRequestHandler<RecomendedGamesQuery, PaginatedList<GameDto>>
+public class RecomendedGamesQueryHandler : IRequestHandler<RecomendedGamesQuery, List<GameDto>>
 {
-    private readonly IUserRepository _repository;
+    private readonly IApplicationDbContext _context;
 
     private readonly IMapper _mapper;
 
-    public RecomendedGamesQueryHandler(IUserRepository repository, IMapper mapper)
+    public RecomendedGamesQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
-        _repository = repository;
+        _context = context;
         _mapper = mapper;
     }
 
-    public async Task<PaginatedList<GameDto>> Handle(RecomendedGamesQuery request, CancellationToken cancellationToken)
+    public async Task<List<GameDto>> Handle(RecomendedGamesQuery request, CancellationToken cancellationToken)
     {
-        var games = await _repository.GetRecomendedGamesAsync(request.UserId, request.AmmountOfGames, cancellationToken);
+        var games = _context.Games
+            .Where(game => _context.UserGame
+                .Where(userGame => userGame.UserId != request.UserId)
+                .Where(userGame => userGame.IsFavorite)
+                .GroupBy(userGame => userGame.GameId)
+                .OrderByDescending(group => group.Count())
+                .Select(group => group.Key)
+                .Contains(game.Id))
+            .Where(game => !_context.UserGame
+                .Where(userGame => userGame.UserId == request.UserId)
+                .Select(userGame => userGame.GameId)
+                .Contains(game.Id))
+            .Take(request.AmountOfGames);
 
         return await games
             .ProjectTo<GameDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize); 
+            .ToListAsync(cancellationToken);
     }
 }
