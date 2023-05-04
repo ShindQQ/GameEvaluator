@@ -1,6 +1,6 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Models;
-using Apllication.Common.Models.Tokens;
+﻿using Application.Common.Interfaces;
+using Application.Common.Models;
+using Application.Common.Models.Tokens;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentration.API.Controllers;

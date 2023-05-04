@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.CreateCommand;
+namespace Application.Users.Commands.CreateCommand;
 
 public record CreateUserCommand : IRequest<UserId>
 {

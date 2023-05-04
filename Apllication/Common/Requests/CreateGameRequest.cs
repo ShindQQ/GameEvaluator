@@ -1,4 +1,4 @@
-﻿namespace Apllication.Common.Requests;
+﻿namespace Application.Common.Requests;
 
 public record CreateGameRequest
 {

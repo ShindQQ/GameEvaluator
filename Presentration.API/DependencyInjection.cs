@@ -1,5 +1,5 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Companies;
 using Domain.Entities.Genres;
 using Domain.Entities.Platforms;

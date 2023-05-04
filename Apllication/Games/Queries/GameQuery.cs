@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Games.Queries;
+namespace Application.Games.Queries;
 
 public record GameQuery : IRequest<PaginatedList<GameDto>>
 {

@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interface;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interface;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Platforms.Commands.DeleteCommand
+namespace Application.Platforms.Commands.DeleteCommand
 {
     public sealed class DeletePlatformCommandHandler : IRequestHandler<DeletePlatformCommand>
     {

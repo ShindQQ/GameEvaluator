@@ -1,4 +1,4 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain.Entities.Companies;
 using Domain.Entities.Users;
 using Domain.Enums;

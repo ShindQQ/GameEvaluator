@@ -1,10 +1,10 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace Apllication.Common.Behaivour;
+namespace Application.Common.Behaivour;
 
 public sealed class PerformanceBehaviour<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>

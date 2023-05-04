@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.Games.SetRating;
+namespace Application.Users.Commands.Games.SetRating;
 
 public record SetRatingCommand : IRequest
 {

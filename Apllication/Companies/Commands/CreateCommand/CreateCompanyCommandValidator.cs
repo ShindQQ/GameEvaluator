@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Companies.Commands.CreateCommand;
+namespace Application.Companies.Commands.CreateCommand;
 
 public sealed class CreateCompanyCommandValidator : AbstractValidator<CreateCompanyCommand>
 {

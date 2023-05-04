@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Companies.Commands.Workers.AddWorker;
+namespace Application.Companies.Commands.Workers.AddWorker;
 
 public record AddWorkerCommand : IRequest
 {

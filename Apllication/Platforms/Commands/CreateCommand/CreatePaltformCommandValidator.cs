@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Platforms.Commands.CreateCommand;
+namespace Application.Platforms.Commands.CreateCommand;
 
 public sealed class CreatePaltformCommandValidator : AbstractValidator<CreatePaltformCommand>
 {

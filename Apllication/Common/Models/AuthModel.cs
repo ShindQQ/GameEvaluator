@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Companies;
 
-namespace Apllication.Common.Models;
+namespace Application.Common.Models;
 
 public record AuthModel
 {

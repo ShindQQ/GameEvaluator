@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Apllication.Users.Commands.Games.SetRating;
+namespace Application.Users.Commands.Games.SetRating;
 
 public sealed class SetRatingCommandValidator : AbstractValidator<SetRatingCommand>
 {

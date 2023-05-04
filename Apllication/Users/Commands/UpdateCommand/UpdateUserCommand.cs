@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.UpdateCommand;
+namespace Application.Users.Commands.UpdateCommand;
 
 public record UpdateUserCommand : IRequest
 {

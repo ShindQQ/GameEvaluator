@@ -1,10 +1,10 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Domain.Enums;
 using MediatR;
 
-namespace Apllication.Games.Commands.Genres.AddGenre;
+namespace Application.Games.Commands.Genres.AddGenre;
 
 public sealed class AddGenreToGameCommandHandler : IRequestHandler<AddGenreToGameCommand>
 {

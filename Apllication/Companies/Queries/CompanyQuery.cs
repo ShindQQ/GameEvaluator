@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using Domain.Entities.Companies;
 using MediatR;
 
-namespace Apllication.Companies.Queries;
+namespace Application.Companies.Queries;
 
 public record CompanyQuery : IRequest<PaginatedList<CompanyDto>>
 {

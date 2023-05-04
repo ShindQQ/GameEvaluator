@@ -2,7 +2,7 @@
 using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Companies.Commands.Games.RemoveGame;
+namespace Application.Companies.Commands.Games.RemoveGame;
 
 public record RemoveGameFromCompanyCommand : IRequest
 {

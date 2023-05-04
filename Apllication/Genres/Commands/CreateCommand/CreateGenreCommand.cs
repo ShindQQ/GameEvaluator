@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Genres.Commands.CreateCommand;
+namespace Application.Genres.Commands.CreateCommand;
 
 public record CreateGenreCommand : IRequest<GenreId>
 {

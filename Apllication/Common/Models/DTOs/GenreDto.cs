@@ -1,4 +1,4 @@
-﻿namespace Apllication.Common.Models.DTOs;
+﻿namespace Application.Common.Models.DTOs;
 
 public sealed class GenreDto
 {

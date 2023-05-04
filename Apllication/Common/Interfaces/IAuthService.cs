@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Models;
-using Apllication.Common.Models.Tokens;
+﻿using Application.Common.Models;
+using Application.Common.Models.Tokens;
 
-namespace Apllication.Common.Interfaces;
+namespace Application.Common.Interfaces;
 
 public interface IAuthService
 {

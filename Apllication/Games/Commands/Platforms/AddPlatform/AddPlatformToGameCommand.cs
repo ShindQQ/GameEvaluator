@@ -3,7 +3,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Games.Commands.Platforms.AddPlatform;
+namespace Application.Games.Commands.Platforms.AddPlatform;
 
 public record AddPlatformToGameCommand : IRequest
 {

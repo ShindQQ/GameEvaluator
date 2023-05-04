@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Games.Commands.UpdateCommand;
+namespace Application.Games.Commands.UpdateCommand;
 
 public record UpdateGameCommand : IRequest
 {

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Companies;
 using MediatR;
 
-namespace Apllication.Companies.Commands.CreateCommand;
+namespace Application.Companies.Commands.CreateCommand;
 
 public record CreateCompanyCommand : IRequest<CompanyId>
 {

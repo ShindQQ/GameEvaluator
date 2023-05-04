@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Companies;
 using MediatR;
 
-namespace Apllication.Companies.Commands.UpdateCommand;
+namespace Application.Companies.Commands.UpdateCommand;
 
 public record UpdateCompanyCommand : IRequest
 {

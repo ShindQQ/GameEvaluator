@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Platforms.Commands.UpdateCommand;
+namespace Application.Platforms.Commands.UpdateCommand;
 
 public record UpdatePlatformCommand : IRequest
 {

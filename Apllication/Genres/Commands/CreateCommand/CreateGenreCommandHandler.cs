@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Genres.Commands.CreateCommand;
+namespace Application.Genres.Commands.CreateCommand;
 
 public sealed class CreateGenreCommandHandler : IRequestHandler<CreateGenreCommand, GenreId>
 {

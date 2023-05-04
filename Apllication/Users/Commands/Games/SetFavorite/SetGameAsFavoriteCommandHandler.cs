@@ -1,10 +1,10 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Users.Commands.Games.SetFavorite;
+namespace Application.Users.Commands.Games.SetFavorite;
 
 public sealed class SetGameAsFavoriteCommandHandler : IRequestHandler<SetGameAsFavoriteCommand>
 {

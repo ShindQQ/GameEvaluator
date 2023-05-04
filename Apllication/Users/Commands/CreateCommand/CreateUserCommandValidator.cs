@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Users.Commands.CreateCommand;
+namespace Application.Users.Commands.CreateCommand;
 
 public sealed class UpdateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {

@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using Domain.Enums;
 
-namespace Apllication.Common.Interfaces;
+namespace Application.Common.Interfaces;
 
 public interface IUserService
 {

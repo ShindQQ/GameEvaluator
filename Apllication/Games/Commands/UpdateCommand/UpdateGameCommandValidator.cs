@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Games.Commands.UpdateCommand;
+namespace Application.Games.Commands.UpdateCommand;
 
 public sealed class UpdateGameCommandValidator : AbstractValidator<UpdateGameCommand>
 {

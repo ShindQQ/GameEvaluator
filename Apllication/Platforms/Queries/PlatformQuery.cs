@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Platforms.Queries;
+namespace Application.Platforms.Queries;
 
 public sealed class PlatformQuery : IRequest<PaginatedList<PlatformDto>>
 {

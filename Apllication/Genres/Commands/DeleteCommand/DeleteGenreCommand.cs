@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Genres.Commands.DeleteCommand;
+namespace Application.Genres.Commands.DeleteCommand;
 
 public record DeleteGenreCommand(GenreId Id) : IRequest;

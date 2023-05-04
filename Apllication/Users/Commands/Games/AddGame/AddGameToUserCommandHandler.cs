@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using MediatR;
 
-namespace Apllication.Users.Commands.Games.AddGame;
+namespace Application.Users.Commands.Games.AddGame;
 
 public sealed class AddGameToUserCommandHandler : IRequestHandler<AddGameToUserCommand>
 {

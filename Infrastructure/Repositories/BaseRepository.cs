@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Interfaces.Repositories.Base;
+﻿using Application.Common.Interfaces.Repositories.Base;
 using Infrastructure.DbContexts;
 
-namespace Apllication.Infrastructure;
+namespace Application.Infrastructure;
 
 public abstract class BaseRepository<TEntity, TEntityId>
     : IBaseRepository<TEntity, TEntityId>

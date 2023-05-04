@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Genres.Commands.CreateCommand;
+namespace Application.Genres.Commands.CreateCommand;
 
 public sealed class CreateGenreCommandValidator : AbstractValidator<CreateGenreCommand>
 {

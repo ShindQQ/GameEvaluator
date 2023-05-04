@@ -1,4 +1,4 @@
-﻿namespace Apllication.Common.Models.Tokens;
+﻿namespace Application.Common.Models.Tokens;
 
 public record RefreshTokenModel
 {

@@ -1,10 +1,10 @@
-﻿using Apllication.Common.Behaivour;
+﻿using Application.Common.Behaivour;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Apllication;
+namespace Application;
 
 public static class DependencyInjection
 {

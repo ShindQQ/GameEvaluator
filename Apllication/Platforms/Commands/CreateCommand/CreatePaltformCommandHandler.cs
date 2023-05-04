@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interface;
+﻿using Application.Common.Interface;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Platforms.Commands.CreateCommand;
+namespace Application.Platforms.Commands.CreateCommand;
 
 public sealed class CreatePaltformCommandHandler : IRequestHandler<CreatePaltformCommand, PlatformId>
 {

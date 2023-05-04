@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.Games.AddGame;
+namespace Application.Users.Commands.Games.AddGame;
 
 public sealed record AddGameToUserCommand : IRequest
 {

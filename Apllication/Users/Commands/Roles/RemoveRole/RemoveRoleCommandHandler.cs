@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using MediatR;
 
-namespace Apllication.Users.Commands.Roles.RemoveRole;
+namespace Application.Users.Commands.Roles.RemoveRole;
 
 public sealed class RemoveRoleCommandHandler : IRequestHandler<RemoveRoleCommand>
 {

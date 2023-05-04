@@ -1,11 +1,11 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interface;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interface;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Domain.Enums;
 using MediatR;
 
-namespace Apllication.Games.Commands.Platforms.RemovePlatform;
+namespace Application.Games.Commands.Platforms.RemovePlatform;
 
 public sealed class RemovePlatformFromGameCommandHandler : IRequestHandler<RemovePlatformFromGameCommand>
 {

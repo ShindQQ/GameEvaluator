@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.CreateCommand
+namespace Application.Users.Commands.CreateCommand
 {
     internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserId>
     {

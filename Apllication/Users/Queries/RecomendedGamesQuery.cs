@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models.DTOs;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Queries;
+namespace Application.Users.Queries;
 
 public record RecomendedGamesQuery : IRequest<List<GameDto>>
 {

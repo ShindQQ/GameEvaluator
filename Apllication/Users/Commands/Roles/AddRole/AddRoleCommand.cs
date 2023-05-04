@@ -2,7 +2,7 @@
 using Domain.Enums;
 using MediatR;
 
-namespace Apllication.Users.Commands.Roles.AddRole;
+namespace Application.Users.Commands.Roles.AddRole;
 
 public record AddRoleCommand : IRequest
 {

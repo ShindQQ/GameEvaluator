@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Interfaces.Repositories.Base;
+﻿using Application.Common.Interfaces.Repositories.Base;
 using Domain.Entities.Users;
 
-namespace Apllication.Common.Interfaces.Repositories;
+namespace Application.Common.Interfaces.Repositories;
 
 public interface IUserRepository : IBaseRepository<User, UserId>
 {

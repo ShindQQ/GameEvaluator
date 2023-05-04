@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Companies.Commands.Games.CreateCommand;
+namespace Application.Companies.Commands.Games.CreateCommand;
 
 public sealed class CreateGameCommandValidator : AbstractValidator<CreateGameCommand>
 {

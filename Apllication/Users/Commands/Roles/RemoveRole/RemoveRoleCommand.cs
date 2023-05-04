@@ -2,7 +2,7 @@
 using Domain.Enums;
 using MediatR;
 
-namespace Apllication.Users.Commands.Roles.RemoveRole;
+namespace Application.Users.Commands.Roles.RemoveRole;
 
 public record RemoveRoleCommand : IRequest
 {

@@ -3,7 +3,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Games.Commands.Genres.AddGenre;
+namespace Application.Games.Commands.Genres.AddGenre;
 
 public record AddGenreToGameCommand : IRequest
 {

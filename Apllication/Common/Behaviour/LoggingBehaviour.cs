@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace Apllication.Common.Behaivour;
+namespace Application.Common.Behaivour;
 
 public sealed class LoggingBehaviour<TRequest>
     : IRequestPreProcessor<TRequest>

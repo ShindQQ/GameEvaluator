@@ -1,6 +1,6 @@
-﻿using Apllication.Common.Interface;
-using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interface;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
 using Infrastructure.DbContexts;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;

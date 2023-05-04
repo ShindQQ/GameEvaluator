@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Requests;
-using Apllication.Genres.Commands.CreateCommand;
-using Apllication.Genres.Commands.DeleteCommand;
-using Apllication.Genres.Commands.UpdateCommand;
-using Apllication.Genres.Queries;
+﻿using Application.Common.Requests;
+using Application.Genres.Commands.CreateCommand;
+using Application.Genres.Commands.DeleteCommand;
+using Application.Genres.Commands.UpdateCommand;
+using Application.Genres.Queries;
 using Domain.Entities.Genres;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

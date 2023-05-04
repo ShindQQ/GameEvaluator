@@ -2,7 +2,7 @@
 using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Companies.Commands.Games.CreateCommand;
+namespace Application.Companies.Commands.Games.CreateCommand;
 
 public record CreateGameCommand : IRequest<GameId>
 {

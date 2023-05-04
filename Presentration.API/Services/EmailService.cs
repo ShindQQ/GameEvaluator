@@ -1,5 +1,5 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Interfaces;
+using Application.Common.Models.DTOs;
 using Domain.Entities.Users;
 using MailBodyPack;
 using MailKit.Net.Smtp;

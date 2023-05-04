@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Companies;
 using MediatR;
 
-namespace Apllication.Companies.Commands.DeleteCommand;
+namespace Application.Companies.Commands.DeleteCommand;
 
 public sealed class DeleteCompanyCommandHandler : IRequestHandler<DeleteCompanyCommand>
 {

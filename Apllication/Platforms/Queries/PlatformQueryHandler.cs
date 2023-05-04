@@ -1,12 +1,12 @@
-﻿using Apllication.Common.Interface;
-using Apllication.Common.Mappings;
-using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Interface;
+using Application.Common.Mappings;
+using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 
-namespace Apllication.Platforms.Queries;
+namespace Application.Platforms.Queries;
 
 public sealed class PlatformQueryHandler : IRequestHandler<PlatformQuery, PaginatedList<PlatformDto>>
 {

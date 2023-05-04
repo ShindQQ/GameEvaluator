@@ -1,12 +1,12 @@
-﻿using Apllication.Common.Interfaces.Repositories;
-using Apllication.Common.Mappings;
-using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Interfaces.Repositories;
+using Application.Common.Mappings;
+using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 
-namespace Apllication.Games.Queries;
+namespace Application.Games.Queries;
 
 public sealed class GameQueryHandler : IRequestHandler<GameQuery, PaginatedList<GameDto>>
 {

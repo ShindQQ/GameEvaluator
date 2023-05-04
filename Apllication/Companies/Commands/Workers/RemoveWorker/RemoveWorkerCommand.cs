@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Companies.Commands.Workers.RemoveWorker;
+namespace Application.Companies.Commands.Workers.RemoveWorker;
 
 public record RemoveWorkerCommand : IRequest
 {

@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.Games.SetFavorite;
+namespace Application.Users.Commands.Games.SetFavorite;
 
 public record SetGameAsFavoriteCommand : IRequest
 {

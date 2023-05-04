@@ -1,5 +1,5 @@
-﻿using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using Domain.Entities.Users;
 using MediatR;
 

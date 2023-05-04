@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models.DTOs;
 using AutoMapper;
 using Domain.Entities.Platforms;
 
-namespace Apllication.Common.Mappings.Profiles;
+namespace Application.Common.Mappings.Profiles;
 
 public sealed class PlatformProfile : Profile
 {

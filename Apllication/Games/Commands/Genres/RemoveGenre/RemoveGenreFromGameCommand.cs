@@ -3,7 +3,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Games.Commands.Genres.RemoveGenre;
+namespace Application.Games.Commands.Genres.RemoveGenre;
 
 public record RemoveGenreFromGameCommand : IRequest
 {

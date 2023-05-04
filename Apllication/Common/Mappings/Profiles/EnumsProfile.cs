@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Enums;
 
-namespace Apllication.Common.Mappings.Profiles;
+namespace Application.Common.Mappings.Profiles;
 
 public sealed class EnumsProfile : Profile
 {

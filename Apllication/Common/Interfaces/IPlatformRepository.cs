@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Interfaces.Repositories.Base;
+﻿using Application.Common.Interfaces.Repositories.Base;
 using Domain.Entities.Platforms;
 
-namespace Apllication.Common.Interface;
+namespace Application.Common.Interface;
 
 public interface IPlatformRepository : IBaseRepository<Platform, PlatformId>
 {

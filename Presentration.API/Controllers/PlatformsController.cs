@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Requests;
-using Apllication.Platforms.Commands.CreateCommand;
-using Apllication.Platforms.Commands.DeleteCommand;
-using Apllication.Platforms.Commands.UpdateCommand;
-using Apllication.Platforms.Queries;
+﻿using Application.Common.Requests;
+using Application.Platforms.Commands.CreateCommand;
+using Application.Platforms.Commands.DeleteCommand;
+using Application.Platforms.Commands.UpdateCommand;
+using Application.Platforms.Queries;
 using Domain.Entities.Platforms;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

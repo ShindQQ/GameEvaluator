@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Platforms.Commands.UpdateCommand;
+namespace Application.Platforms.Commands.UpdateCommand;
 
 public sealed class UpdatePlatformCommandValidator : AbstractValidator<UpdatePlatformCommand>
 {

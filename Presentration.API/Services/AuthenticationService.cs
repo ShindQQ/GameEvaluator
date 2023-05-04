@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
-using Apllication.Common.Models;
-using Apllication.Common.Models.Tokens;
+﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
+using Application.Common.Models;
+using Application.Common.Models.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

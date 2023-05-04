@@ -1,7 +1,7 @@
-﻿using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Models.DTOs;
 using Domain.Entities.Users;
 
-namespace Apllication.Common.Interfaces;
+namespace Application.Common.Interfaces;
 
 public interface IEmailService
 {

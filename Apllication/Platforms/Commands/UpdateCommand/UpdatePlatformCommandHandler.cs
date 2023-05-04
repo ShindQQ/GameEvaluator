@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interface;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interface;
 using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Platforms.Commands.UpdateCommand;
+namespace Application.Platforms.Commands.UpdateCommand;
 
 public sealed class UpdatePlatformCommandHandler : IRequestHandler<UpdatePlatformCommand>
 {

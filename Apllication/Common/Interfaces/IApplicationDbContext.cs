@@ -6,7 +6,7 @@ using Domain.Entities.Platforms;
 using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Common.Interfaces;
+namespace Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {

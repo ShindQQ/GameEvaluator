@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Companies;
 using MediatR;
 
-namespace Apllication.Companies.Commands.CreateCommand;
+namespace Application.Companies.Commands.CreateCommand;
 
 public sealed class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand, CompanyId>
 {

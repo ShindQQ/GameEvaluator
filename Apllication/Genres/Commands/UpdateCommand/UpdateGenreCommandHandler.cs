@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Genres.Commands.UpdateCommand;
+namespace Application.Genres.Commands.UpdateCommand;
 
 public sealed class UpdateGenreCommandHandler : IRequestHandler<UpdateGenreCommand>
 {

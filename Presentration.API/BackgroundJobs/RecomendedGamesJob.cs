@@ -1,6 +1,6 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Interfaces.Repositories;
-using Apllication.Users.Queries;
+﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
+using Application.Users.Queries;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

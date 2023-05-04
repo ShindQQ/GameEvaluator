@@ -1,5 +1,5 @@
-﻿using Apllication.Common.Interfaces.Repositories;
-using Apllication.Infrastructure;
+﻿using Application.Common.Interfaces.Repositories;
+using Application.Infrastructure;
 using Domain.Entities.Games;
 using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Genres;
 using MediatR;
 
-namespace Apllication.Genres.Commands.UpdateCommand;
+namespace Application.Genres.Commands.UpdateCommand;
 
 public record UpdateGenreCommand : IRequest
 {

@@ -1,13 +1,13 @@
-﻿using Apllication.Common.Interfaces.Repositories;
-using Apllication.Common.Mappings;
-using Apllication.Common.Models;
-using Apllication.Common.Models.DTOs;
-using Aplliction.Users.Queries;
+﻿using Aplliction.Users.Queries;
+using Application.Common.Interfaces.Repositories;
+using Application.Common.Mappings;
+using Application.Common.Models;
+using Application.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 
-namespace Apllication.Users.Queries;
+namespace Application.Users.Queries;
 
 public sealed class UserQueryHandler : IRequestHandler<UserQuery, PaginatedList<UserDto>>
 {

@@ -1,8 +1,8 @@
-﻿using Apllication.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Genres.Commands.UpdateCommand;
+namespace Application.Genres.Commands.UpdateCommand;
 
 public sealed class UpdateGenreCommandValidator : AbstractValidator<UpdateGenreCommand>
 {

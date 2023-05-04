@@ -1,4 +1,4 @@
-using Apllication;
+using Application;
 using Infrastructre;
 using Presentration.API;
 using Serilog;
@@ -38,3 +38,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
+
+
+public partial class Program { }

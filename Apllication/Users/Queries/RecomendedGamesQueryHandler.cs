@@ -1,11 +1,11 @@
-﻿using Apllication.Common.Interfaces;
-using Apllication.Common.Models.DTOs;
+﻿using Application.Common.Interfaces;
+using Application.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apllication.Users.Queries;
+namespace Application.Users.Queries;
 
 public class RecomendedGamesQueryHandler : IRequestHandler<RecomendedGamesQuery, List<GameDto>>
 {

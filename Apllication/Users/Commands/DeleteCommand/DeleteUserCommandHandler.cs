@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Apllication.Users.Commands.DeleteCommand;
+namespace Application.Users.Commands.DeleteCommand;
 
 public sealed class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
 {

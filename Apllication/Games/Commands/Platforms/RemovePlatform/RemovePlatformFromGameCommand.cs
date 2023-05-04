@@ -3,7 +3,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Apllication.Games.Commands.Platforms.RemovePlatform;
+namespace Application.Games.Commands.Platforms.RemovePlatform;
 
 public record RemovePlatformFromGameCommand : IRequest
 {

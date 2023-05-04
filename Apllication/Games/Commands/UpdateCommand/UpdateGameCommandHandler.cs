@@ -1,9 +1,9 @@
-﻿using Apllication.Common.Exceptions;
-using Apllication.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Games;
 using MediatR;
 
-namespace Apllication.Games.Commands.UpdateCommand;
+namespace Application.Games.Commands.UpdateCommand;
 
 public sealed class UpdateGameCommandHandler : IRequestHandler<UpdateGameCommand>
 {
