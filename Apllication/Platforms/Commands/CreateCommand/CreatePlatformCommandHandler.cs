@@ -4,16 +4,16 @@ using MediatR;
 
 namespace Application.Platforms.Commands.CreateCommand;
 
-public sealed class CreatePaltformCommandHandler : IRequestHandler<CreatePaltformCommand, PlatformId>
+public sealed class CreatePlatformCommandHandler : IRequestHandler<CreatePlatformCommand, PlatformId>
 {
     private readonly IPlatformRepository _repository;
 
-    public CreatePaltformCommandHandler(IPlatformRepository repository)
+    public CreatePlatformCommandHandler(IPlatformRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task<PlatformId> Handle(CreatePaltformCommand request, CancellationToken cancellationToken)
+    public async Task<PlatformId> Handle(CreatePlatformCommand request, CancellationToken cancellationToken)
     {
         var platform = Platform.Create(request.Name!, request.Description!);
 

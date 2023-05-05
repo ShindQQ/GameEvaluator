@@ -29,7 +29,7 @@ public sealed class PlatformsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateAsync(
-        [FromBody] CreatePaltformCommand request,
+        [FromBody] CreatePlatformCommand request,
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(request, cancellationToken);

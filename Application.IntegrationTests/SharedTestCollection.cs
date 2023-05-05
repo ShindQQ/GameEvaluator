@@ -4,6 +4,6 @@ using Xunit;
 namespace GameEvaluator.Application.IntegrationTests;
 
 [CollectionDefinition("Test collection")]
-public sealed class SharedTestCollection : ICollectionFixture<CustomerApiFactory>
+public class SharedTestCollection : ICollectionFixture<CustomerApiFactory>
 {
 }

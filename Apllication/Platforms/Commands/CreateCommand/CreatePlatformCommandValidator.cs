@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Platforms.Commands.CreateCommand;
 
-public sealed class CreatePaltformCommandValidator : AbstractValidator<CreatePaltformCommand>
+public sealed class CreatePlatformCommandValidator : AbstractValidator<CreatePlatformCommand>
 {
     private readonly IApplicationDbContext _context;
 
-    public CreatePaltformCommandValidator(IApplicationDbContext context)
+    public CreatePlatformCommandValidator(IApplicationDbContext context)
     {
         _context = context;
 

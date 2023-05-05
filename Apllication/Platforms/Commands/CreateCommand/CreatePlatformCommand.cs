@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Platforms.Commands.CreateCommand;
 
-public record CreatePaltformCommand : IRequest<PlatformId>
+public record CreatePlatformCommand : IRequest<PlatformId>
 {
     public string? Name { get; init; }
 
