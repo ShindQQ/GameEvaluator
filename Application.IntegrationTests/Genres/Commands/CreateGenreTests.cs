@@ -17,10 +17,7 @@ public sealed class CreateGenreTests : BaseTestFixture
     }
 
     [Theory]
-    [InlineData("", "")]
-    [InlineData("Name", "Description<20")]
-    [InlineData("<3", "Description<20")]
-    [InlineData("<3", "Description bigger then 20 characters")]
+    [MemberData(nameof(SetNameDescriptionData))]
     public async Task CreateGenreCommand_Empty_ReturnValidationException(
         string name, string description)
     {

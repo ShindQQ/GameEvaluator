@@ -1,30 +1,30 @@
-﻿using Application.IntegrationTests;
-using Application.Platforms.Commands.CreateCommand;
-using Application.Platforms.Queries;
-using Domain.Entities.Platforms;
+﻿using Application.Companies.Commands.CreateCommand;
+using Application.Companies.Queries;
+using Application.IntegrationTests;
+using Domain.Entities.Companies;
 using FluentAssertions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace GameEvaluator.Application.IntegrationTests.Platforms.Queries;
+namespace GameEvaluator.Application.IntegrationTests.Companies.Queries;
 
 [Collection("Test collection")]
-public sealed class PlatformQueryTests : BaseTestFixture
+public sealed class CompanyQueryTests : BaseTestFixture
 {
-    public PlatformQueryTests(CustomerApiFactory apiFactory) : base(apiFactory)
+    public CompanyQueryTests(CustomerApiFactory apiFactory) : base(apiFactory)
     {
     }
 
     [Fact]
-    public async Task PlatformQuery_NotExistingId_ReturnEmptyList()
+    public async Task CompanyQuery_NotExistingId_ReturnEmptyList()
     {
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new PlatformQuery
+        var command = new CompanyQuery
         {
-            Id = new PlatformId(Guid.NewGuid()),
+            Id = new CompanyId(Guid.NewGuid()),
             PageNumber = 1,
             PageSize = 100
         };
@@ -35,21 +35,21 @@ public sealed class PlatformQueryTests : BaseTestFixture
     }
 
     [Fact]
-    public async Task PlatformQuery_FiveAddedItems_ReturnListWithFiveItems()
+    public async Task CompanyQuery_FiveAddedItems_ReturnListWithFiveItems()
     {
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
         for (int i = 0; i < 5; i++)
         {
-            await mediator!.Send(new CreatePlatformCommand
+            await mediator!.Send(new CreateCompanyCommand
             {
                 Name = $"test{i}",
                 Description = $"Really big description number {i}"
             }, CancellationToken.None);
         }
 
-        var queryCommand = new PlatformQuery
+        var queryCommand = new CompanyQuery
         {
             PageNumber = 1,
             PageSize = 100

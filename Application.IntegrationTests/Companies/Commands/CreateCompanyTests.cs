@@ -1,33 +1,33 @@
-﻿using Application.IntegrationTests;
-using Application.Platforms.Commands.CreateCommand;
-using Domain.Entities.Platforms;
+﻿using Application.Companies.Commands.CreateCommand;
+using Application.IntegrationTests;
+using Domain.Entities.Companies;
 using FluentAssertions;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace GameEvaluator.Application.IntegrationTests.Platforms.Commands;
+namespace GameEvaluator.Application.IntegrationTests.Companies.Commands;
 
 [Collection("Test collection")]
-public sealed class CreatePlatfromTests : BaseTestFixture
+public sealed class CreateCompanyTests : BaseTestFixture
 {
-    public CreatePlatfromTests(CustomerApiFactory apiFactory) : base(apiFactory)
+    public CreateCompanyTests(CustomerApiFactory apiFactory) : base(apiFactory)
     {
     }
 
     [Theory]
     [MemberData(nameof(SetNameDescriptionData))]
-    public async Task CreatePlatformCommand_Empty_ReturnValidationException(
+    public async Task CreateCompanyCommand_Empty_ReturnValidationException(
         string name, string description)
     {
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreatePlatformCommand
+        var command = new CreateCompanyCommand
         {
             Name = name,
-            Description = description,
+            Description = description
         };
 
         await FluentActions
@@ -37,21 +37,21 @@ public sealed class CreatePlatfromTests : BaseTestFixture
 
     [Theory]
     [InlineData("Name", "Description bigger then 20 characters")]
-    public async Task CreatePlatformCommand_WithNameAndDescription_ReturnCreatedPlatformId(
+    public async Task CreateCompanyCommand_WithCorrectData_ReturnCreatedCompanyId(
         string name, string description)
     {
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreatePlatformCommand
+        var command = new CreateCompanyCommand
         {
             Name = name,
-            Description = description,
+            Description = description
         };
 
         var itemId = await mediator!.Send(command, CancellationToken.None);
 
         itemId.Should().NotBeNull();
-        itemId.Should().BeOfType<PlatformId>();
+        itemId.Should().BeOfType<CompanyId>();
     }
 }
