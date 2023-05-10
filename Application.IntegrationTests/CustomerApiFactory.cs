@@ -47,7 +47,7 @@ public sealed class CustomerApiFactory : WebApplicationFactory<Program>, IAsyncL
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
             var integrationConfig = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.test.json")
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -56,12 +56,16 @@ public sealed class CustomerApiFactory : WebApplicationFactory<Program>, IAsyncL
 
         builder.ConfigureServices((builder, services) =>
         {
-
             services
                 .Remove<DbContextOptions<ApplicationDbContext>>()
                 .AddDbContext<ApplicationDbContext>((sp, options) =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                         builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+            var serviceProvider = services.BuildServiceProvider();
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.EnsureCreated();
         });
     }
 

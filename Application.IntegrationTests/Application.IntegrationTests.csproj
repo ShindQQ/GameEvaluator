@@ -15,6 +15,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="NBomber" Version="4.1.2" />
+    <PackageReference Include="NBomber.Http" Version="4.1.1" />
     <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="Testcontainers" Version="3.1.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="3.1.0" />
@@ -27,6 +29,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Presentration.API\Presentration.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
