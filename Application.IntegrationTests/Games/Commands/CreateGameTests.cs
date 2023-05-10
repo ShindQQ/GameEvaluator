@@ -18,7 +18,6 @@ namespace GameEvaluator.Application.IntegrationTests.Games.Commands;
 public sealed class CreateGameTests : BaseTestFixture
 {
     private Mock<IUserService> _userService = null!;
-    private Mock<IGameRepository> _gameRepository = null!;
 
     public CreateGameTests(CustomerApiFactory apiFactory) : base(apiFactory)
     {

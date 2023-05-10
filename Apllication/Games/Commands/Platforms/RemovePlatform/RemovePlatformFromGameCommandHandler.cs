@@ -38,6 +38,9 @@ public sealed class RemovePlatformFromGameCommandHandler : IRequestHandler<Remov
 
         var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
 
+        if (company is null)
+            throw new NotFoundException(nameof(company), companyId!);
+
         var game = company!.Games.FirstOrDefault(game => game.Id == request.GameId);
 
         if (game is null)

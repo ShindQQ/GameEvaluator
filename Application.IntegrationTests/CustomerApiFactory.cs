@@ -1,5 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using Infrastructure.DbContexts;
+﻿using Infrastructure.DbContexts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -8,18 +7,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Respawn.Graph;
 using System.Data.Common;
-using Testcontainers.MsSql;
 using Xunit;
 
 namespace Application.IntegrationTests;
 
 public sealed class CustomerApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
-        .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-        .WithCleanUp(true)
-        .Build();
+    //private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
+    //    .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+    //    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+    //    .WithCleanUp(true)
+    //    .Build();
 
     private DbConnection _dbConnection = default!;
 
@@ -99,6 +97,6 @@ public sealed class CustomerApiFactory : WebApplicationFactory<Program>, IAsyncL
 
     public new async Task DisposeAsync()
     {
-        await _dbContainer.StopAsync();
+        //await _dbContainer.StopAsync();
     }
 }
