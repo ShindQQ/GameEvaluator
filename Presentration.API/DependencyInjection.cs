@@ -110,6 +110,7 @@ public static class DependencyInjection
         services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
         services.Configure<SuperAdminOptions>(configuration.GetSection("SuperAdmin"));
         services.Configure<EmailOptions>(configuration.GetSection("Email"));
+        services.Configure<RecommendedGamesJobOptions>(configuration.GetSection("RecommendedGames"));
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();

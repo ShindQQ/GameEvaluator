@@ -4,6 +4,8 @@ using Application.Users.Queries;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Presentration.API.Options;
 
 namespace Presentration.API.BackgroundJobs;
 
@@ -13,10 +15,14 @@ public sealed class RecomendedGamesJob : BackgroundService
 
     private readonly IServiceProvider _serviceProvider;
 
+    private readonly RecommendedGamesJobOptions _recommendedGamesOptions;
+
     public RecomendedGamesJob(
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IOptions<RecommendedGamesJobOptions> emailOptions)
     {
-        _periodicTimer = new(TimeSpan.FromDays(1));
+        _recommendedGamesOptions = emailOptions.Value;
+        _periodicTimer = new(TimeSpan.FromDays(_recommendedGamesOptions.TimerValue));
         _serviceProvider = serviceProvider;
     }
 
@@ -39,7 +45,7 @@ public sealed class RecomendedGamesJob : BackgroundService
                 var games = await mediator.Send(new RecomendedGamesQuery
                 {
                     UserId = user.Id,
-                    AmountOfGames = 5
+                    AmountOfGames = _recommendedGamesOptions.AmountOfGames
                 }, cancellationToken);
 
                 await emailService.SendEmailAsync(user, games);
