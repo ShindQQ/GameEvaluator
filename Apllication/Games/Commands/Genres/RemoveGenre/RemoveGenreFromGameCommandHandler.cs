@@ -1,6 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities.Companies;
+using Domain.Entities.Games;
+using Domain.Entities.Genres;
 using Domain.Enums;
 using MediatR;
 
@@ -35,20 +38,14 @@ public sealed class RemoveGenreFromGameCommandHandler : IRequestHandler<RemoveGe
         if (_userService.RoleType == RoleType.SuperAdmin)
             companyId = request.CompanyId;
 
-        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
+        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), companyId!);
 
-        if (company is null)
-            throw new NotFoundException(nameof(company), companyId!);
+        var game = company!.Games.FirstOrDefault(game => game.Id == request.GameId)
+            ?? throw new NotFoundException(nameof(Game), request.GameId);
 
-        var game = company!.Games.FirstOrDefault(game => game.Id == request.GameId);
-
-        if (game is null)
-            throw new NotFoundException(nameof(game), request.GameId);
-
-        var genre = await _genreRepository.GetByIdAsync(request.GenreId, cancellationToken);
-
-        if (genre is null)
-            throw new NotFoundException(nameof(genre), request.GenreId);
+        var genre = await _genreRepository.GetByIdAsync(request.GenreId, cancellationToken)
+            ?? throw new NotFoundException(nameof(Genre), request.GenreId);
 
         game.RemoveGenre(genre);
 

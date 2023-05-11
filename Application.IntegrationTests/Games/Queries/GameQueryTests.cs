@@ -74,13 +74,11 @@ public sealed class GameQueryTests : BaseTestFixture
             }, CancellationToken.None);
         }
 
-        var queryCommand = new GameQuery
+        var res = await mediator!.Send(new GameQuery
         {
             PageNumber = 1,
             PageSize = 100
-        };
-
-        var res = await mediator!.Send(queryCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         res.Items.Count.Should().Be(5);
     }

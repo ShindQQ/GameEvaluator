@@ -49,13 +49,11 @@ public sealed class PlatformQueryTests : BaseTestFixture
             }, CancellationToken.None);
         }
 
-        var queryCommand = new PlatformQuery
+        var res = await mediator!.Send(new PlatformQuery
         {
             PageNumber = 1,
             PageSize = 100
-        };
-
-        var res = await mediator!.Send(queryCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         res.Items.Count.Should().Be(5);
     }

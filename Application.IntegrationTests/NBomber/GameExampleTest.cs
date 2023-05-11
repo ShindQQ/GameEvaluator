@@ -13,11 +13,9 @@ public sealed class GameExampleTest : BaseTestFixture
     }
 
     [Fact]
-    public async void GetGamesTest()
+    public void GetGamesTest()
     {
         using var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync("http://localhost:5283/api/Games/1/5");
-
 
         var scenario = Scenario.Create("games_scenario", async context =>
         {
@@ -43,7 +41,6 @@ public sealed class GameExampleTest : BaseTestFixture
 
         var scnStats = result.GetScenarioStats("games_scenario");
         var step1Stats = scnStats.GetStepStats("step_1");
-
 
         Assert.True(result.AllBytes > 0);
         Assert.True(result.AllRequestCount > 0);

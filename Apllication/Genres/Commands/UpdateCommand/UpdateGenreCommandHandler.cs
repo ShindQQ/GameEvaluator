@@ -16,10 +16,8 @@ public sealed class UpdateGenreCommandHandler : IRequestHandler<UpdateGenreComma
 
     public async Task Handle(UpdateGenreCommand request, CancellationToken cancellationToken)
     {
-        var genre = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (genre == null)
-            throw new NotFoundException(nameof(Genre), request.Id);
+        var genre = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Genre), request.Id);
 
         genre.Update(request.Name, request.Description);
 

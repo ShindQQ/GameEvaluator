@@ -49,13 +49,11 @@ public sealed class CompanyQueryTests : BaseTestFixture
             }, CancellationToken.None);
         }
 
-        var queryCommand = new CompanyQuery
+        var res = await mediator!.Send(new CompanyQuery
         {
             PageNumber = 1,
             PageSize = 100
-        };
-
-        var res = await mediator!.Send(queryCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         res.Items.Count.Should().Be(5);
     }

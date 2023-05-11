@@ -43,13 +43,11 @@ public sealed class CreatePlatfromTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreatePlatformCommand
+        var itemId = await mediator!.Send(new CreatePlatformCommand
         {
             Name = name,
             Description = description,
-        };
-
-        var itemId = await mediator!.Send(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         itemId.Should().NotBeNull();
         itemId.Should().BeOfType<PlatformId>();

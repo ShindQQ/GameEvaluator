@@ -39,16 +39,13 @@ public sealed class DeleteGenreTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreateGenreCommand
+        var itemId = await mediator!.Send(new CreateGenreCommand
         {
             Name = name,
             Description = description
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var deleteCommand = new DeleteGenreCommand(itemId);
-
-        await mediator!.Send(deleteCommand, CancellationToken.None);
+        await mediator!.Send(new DeleteGenreCommand(itemId), CancellationToken.None);
 
         var res = await mediator!.Send(new GenreQuery { Id = itemId });
 

@@ -45,21 +45,18 @@ public sealed class UpdateCompanyTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreateCompanyCommand
+        var itemId = await mediator!.Send(new CreateCompanyCommand
         {
             Name = name,
             Description = description
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var updateCommand = new UpdateCompanyCommand
+        await mediator!.Send(new UpdateCompanyCommand
         {
             Id = itemId,
             Name = updateName,
             Description = updateDescription
-        };
-
-        await mediator!.Send(updateCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         var res = await mediator!.Send(new CompanyQuery
         {

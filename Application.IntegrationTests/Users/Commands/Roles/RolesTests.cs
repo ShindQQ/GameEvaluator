@@ -78,7 +78,7 @@ public sealed class RolesTests : BaseTestFixture
             RoleType = RoleType.Company,
         });
 
-        var smth = await ((ApplicationDbContext)dbContext).Users
+        var userRoles = await ((ApplicationDbContext)dbContext).Users
             .Where(user => user.Id == itemId)
             .Select(user =>
             new
@@ -87,7 +87,7 @@ public sealed class RolesTests : BaseTestFixture
                 user.Roles
             }).ToListAsync();
 
-        var roles = smth.First().Roles.Where(role => role.Name.Equals(RoleType.Company.ToString()));
+        var roles = userRoles.First().Roles.Where(role => role.Name.Equals(RoleType.Company.ToString()));
 
         roles.First().Name.Should().Be(RoleType.Company.ToString());
     }
@@ -120,7 +120,7 @@ public sealed class RolesTests : BaseTestFixture
             RoleType = RoleType.Company,
         });
 
-        var smth = await ((ApplicationDbContext)dbContext).Users
+        var userRoles = await ((ApplicationDbContext)dbContext).Users
             .Where(user => user.Id == itemId)
             .Select(user =>
             new
@@ -129,7 +129,7 @@ public sealed class RolesTests : BaseTestFixture
                 user.Roles
             }).ToListAsync();
 
-        var roles = smth.First().Roles.Where(role => role.Name.Equals(RoleType.Company.ToString()));
+        var roles = userRoles.First().Roles.Where(role => role.Name.Equals(RoleType.Company.ToString()));
 
         roles.Count().Should().Be(0);
     }

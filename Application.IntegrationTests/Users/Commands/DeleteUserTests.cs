@@ -39,17 +39,14 @@ public sealed class DeleteUserTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreateUserCommand
+        var itemId = await mediator!.Send(new CreateUserCommand
         {
             Name = name,
             Email = email,
             Password = password
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var deleteCommand = new DeleteUserCommand(itemId);
-
-        await mediator!.Send(deleteCommand, CancellationToken.None);
+        await mediator!.Send(new DeleteUserCommand(itemId), CancellationToken.None);
 
         var res = await mediator!.Send(new UserQuery { Id = itemId });
 

@@ -109,14 +109,12 @@ public sealed class PlatformTests : BaseTestFixture
             Description = description
         }, CancellationToken.None);
 
-        var command = new CreateGameCommand
+        var itemId = await createHandler.Handle(new CreateGameCommand
         {
             CompanyId = companyId,
             Name = name,
             Description = description
-        };
-
-        var itemId = await createHandler.Handle(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         var platform = await mediator.Send(new CreatePlatformCommand
         {
@@ -167,14 +165,12 @@ public sealed class PlatformTests : BaseTestFixture
             Description = description
         }, CancellationToken.None);
 
-        var command = new CreateGameCommand
+        var itemId = await createHandler.Handle(new CreateGameCommand
         {
             CompanyId = companyId,
             Name = name,
             Description = description
-        };
-
-        var itemId = await createHandler.Handle(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         var platformId = await mediator.Send(new CreatePlatformCommand
         {

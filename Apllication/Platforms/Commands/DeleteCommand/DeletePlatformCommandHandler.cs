@@ -16,10 +16,8 @@ namespace Application.Platforms.Commands.DeleteCommand
 
         public async Task Handle(DeletePlatformCommand request, CancellationToken cancellationToken)
         {
-            var platform = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-            if (platform == null)
-                throw new NotFoundException(nameof(Platform), request.Id);
+            var platform = await _repository.GetByIdAsync(request.Id, cancellationToken)
+                ?? throw new NotFoundException(nameof(Platform), request.Id);
 
             await _repository.DeleteAsync(platform, cancellationToken);
         }

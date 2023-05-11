@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities.Companies;
 using Domain.Enums;
 using MediatR;
 
@@ -31,10 +32,8 @@ public sealed class RemoveWorkerCommandHandler : IRequestHandler<RemoveWorkerCom
         if (_userService.RoleType == RoleType.SuperAdmin)
             companyId = request.CompanyId;
 
-        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
-
-        if (company is null)
-            throw new NotFoundException(nameof(company), companyId!);
+        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), companyId!);
 
         company.RemoveWorker(request.UserId);
 

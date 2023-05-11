@@ -49,13 +49,11 @@ public sealed class GenreQueryTests : BaseTestFixture
             }, CancellationToken.None);
         }
 
-        var queryCommand = new GenreQuery
+        var res = await mediator!.Send(new GenreQuery
         {
             PageNumber = 1,
             PageSize = 100
-        };
-
-        var res = await mediator!.Send(queryCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         res.Items.Count.Should().Be(5);
     }

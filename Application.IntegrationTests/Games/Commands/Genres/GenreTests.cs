@@ -108,14 +108,12 @@ public sealed class GenreTests : BaseTestFixture
             Description = description
         }, CancellationToken.None);
 
-        var command = new CreateGameCommand
+        var itemId = await createHandler.Handle(new CreateGameCommand
         {
             CompanyId = companyId,
             Name = name,
             Description = description
-        };
-
-        var itemId = await createHandler.Handle(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         var genreId = await mediator.Send(new CreateGenreCommand
         {
@@ -166,14 +164,12 @@ public sealed class GenreTests : BaseTestFixture
             Description = description
         }, CancellationToken.None);
 
-        var command = new CreateGameCommand
+        var itemId = await createHandler.Handle(new CreateGameCommand
         {
             CompanyId = companyId,
             Name = name,
             Description = description
-        };
-
-        var itemId = await createHandler.Handle(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         var genreId = await mediator.Send(new CreateGenreCommand
         {

@@ -16,10 +16,8 @@ public sealed class UpdateCompanyCommandHandler : IRequestHandler<UpdateCompanyC
 
     public async Task Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
     {
-        var company = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (company == null)
-            throw new NotFoundException(nameof(Company), request.Id);
+        var company = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), request.Id);
 
         company.Update(request.Name, request.Description);
 

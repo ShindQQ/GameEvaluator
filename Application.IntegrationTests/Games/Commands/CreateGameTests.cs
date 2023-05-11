@@ -67,14 +67,12 @@ public sealed class CreateGameTests : BaseTestFixture
             Description = description
         }, CancellationToken.None);
 
-        var command = new CreateGameCommand
+        var itemId = await handler.Handle(new CreateGameCommand
         {
             CompanyId = companyId,
             Name = name,
             Description = description
-        };
-
-        var itemId = await handler.Handle(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         itemId.Should().NotBeNull();
         itemId.Should().BeOfType<GameId>();

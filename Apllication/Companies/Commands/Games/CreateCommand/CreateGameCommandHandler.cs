@@ -37,10 +37,8 @@ public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand
         if (_userService.RoleType == RoleType.SuperAdmin)
             companyId = request.CompanyId;
 
-        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
-
-        if (company is null)
-            throw new NotFoundException(nameof(Company), companyId!);
+        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), companyId!);
 
         var game = Game.Create(request.Name!, request.Description!);
 

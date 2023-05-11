@@ -77,7 +77,11 @@ public sealed class WorkersTests : BaseTestFixture
         _userService = new Mock<IUserService>();
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
-        var handler = new AddWorkerCommandHandler(companyRepository, userRepository, dbContext, _userService!.Object);
+        var handler = new AddWorkerCommandHandler(
+            companyRepository,
+            userRepository,
+            dbContext,
+            _userService!.Object);
 
         var companyId = await mediator!.Send(new CreateCompanyCommand
         {
@@ -120,8 +124,15 @@ public sealed class WorkersTests : BaseTestFixture
         _userService = new Mock<IUserService>();
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
-        var addHandler = new AddWorkerCommandHandler(companyRepository, userRepository, dbContext, _userService!.Object);
-        var removeHandler = new RemoveWorkerCommandHandler(companyRepository, dbContext, _userService!.Object);
+        var addHandler = new AddWorkerCommandHandler(
+            companyRepository,
+            userRepository,
+            dbContext,
+            _userService!.Object);
+        var removeHandler = new RemoveWorkerCommandHandler(
+            companyRepository,
+            dbContext,
+            _userService!.Object);
 
         var companyId = await mediator!.Send(new CreateCompanyCommand
         {

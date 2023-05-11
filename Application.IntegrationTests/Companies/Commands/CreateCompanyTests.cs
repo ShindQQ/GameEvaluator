@@ -43,13 +43,11 @@ public sealed class CreateCompanyTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreateCompanyCommand
+        var itemId = await mediator!.Send(new CreateCompanyCommand
         {
             Name = name,
             Description = description
-        };
-
-        var itemId = await mediator!.Send(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         itemId.Should().NotBeNull();
         itemId.Should().BeOfType<CompanyId>();

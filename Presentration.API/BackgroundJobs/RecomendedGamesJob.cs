@@ -34,7 +34,7 @@ public sealed class RecomendedGamesJob : BackgroundService
                 .Where(user => user.Roles.Any(role => role.Name == RoleType.User.ToString()))
                 .ToListAsync(cancellationToken);
 
-            foreach (var user in users)
+            Parallel.ForEach(users, async user =>
             {
                 var games = await mediator.Send(new RecomendedGamesQuery
                 {
@@ -43,7 +43,7 @@ public sealed class RecomendedGamesJob : BackgroundService
                 }, cancellationToken);
 
                 await emailService.SendEmailAsync(user, games);
-            }
+            });
         }
     }
 }

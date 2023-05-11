@@ -16,10 +16,8 @@ public sealed class DeleteCompanyCommandHandler : IRequestHandler<DeleteCompanyC
 
     public async Task Handle(DeleteCompanyCommand request, CancellationToken cancellationToken)
     {
-        var company = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (company == null)
-            throw new NotFoundException(nameof(Company), request.Id);
+        var company = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), request.Id);
 
         await _repository.DeleteAsync(company, cancellationToken);
     }

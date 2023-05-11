@@ -1,6 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities.Companies;
+using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
 
@@ -35,15 +37,11 @@ public sealed class AddWorkerCommandHandler : IRequestHandler<AddWorkerCommand>
         if (_userService.RoleType == RoleType.SuperAdmin)
             companyId = request.CompanyId;
 
-        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken);
+        var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(Company), companyId!);
 
-        if (company is null)
-            throw new NotFoundException(nameof(company), companyId!);
-
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
-
-        if (user is null)
-            throw new NotFoundException(nameof(user), request.UserId);
+        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), request.UserId);
 
         company.AddWorker(user);
 

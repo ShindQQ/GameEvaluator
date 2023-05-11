@@ -39,16 +39,13 @@ public sealed class DeletePlatformTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreatePlatformCommand
+        var itemId = await mediator!.Send(new CreatePlatformCommand
         {
             Name = name,
             Description = description
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var deleteCommand = new DeletePlatformCommand(itemId);
-
-        await mediator!.Send(deleteCommand, CancellationToken.None);
+        await mediator!.Send(new DeletePlatformCommand(itemId), CancellationToken.None);
 
         var res = await mediator!.Send(new PlatformQuery { Id = itemId });
 

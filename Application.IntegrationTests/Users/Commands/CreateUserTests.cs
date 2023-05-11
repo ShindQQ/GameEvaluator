@@ -44,14 +44,12 @@ public sealed class CreateUserTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreateUserCommand
+        var itemId = await mediator!.Send(new CreateUserCommand
         {
             Name = name,
             Email = email,
             Password = password
-        };
-
-        var itemId = await mediator!.Send(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         itemId.Should().NotBeNull();
         itemId.Should().BeOfType<UserId>();

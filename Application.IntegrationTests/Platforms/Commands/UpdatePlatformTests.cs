@@ -45,21 +45,18 @@ public sealed class UpdatePlatformTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreatePlatformCommand
+        var itemId = await mediator!.Send(new CreatePlatformCommand
         {
             Name = name,
             Description = description
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var updateCommand = new UpdatePlatformCommand
+        await mediator!.Send(new UpdatePlatformCommand
         {
             Id = itemId,
             Name = updateName,
             Description = updateDescription
-        };
-
-        await mediator!.Send(updateCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         var res = await mediator!.Send(new PlatformQuery
         {

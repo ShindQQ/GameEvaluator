@@ -2,6 +2,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Games;
+using Domain.Entities.Users;
 using MediatR;
 
 namespace Application.Users.Commands.Games.SetFavorite;
@@ -26,10 +27,8 @@ public sealed class SetGameAsFavoriteCommandHandler : IRequestHandler<SetGameAsF
 
     public async Task Handle(SetGameAsFavoriteCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
-
-        if (user is null)
-            throw new NotFoundException(nameof(user), request.UserId);
+        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), request.UserId);
 
         var requestStatus = user.ChangeFavoriteState(request.GameId);
 

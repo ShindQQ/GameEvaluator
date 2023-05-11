@@ -45,22 +45,19 @@ public sealed class UpdateUserTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreateUserCommand
+        var itemId = await mediator!.Send(new CreateUserCommand
         {
             Name = name,
             Email = email,
             Password = password
-        };
+        }, CancellationToken.None);
 
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
-        var updateCommand = new UpdateUserCommand
+        await mediator!.Send(new UpdateUserCommand
         {
             Id = itemId,
             Name = updateName,
             Email = updateEmail,
-        };
-
-        await mediator!.Send(updateCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         var res = await mediator!.Send(new UserQuery
         {

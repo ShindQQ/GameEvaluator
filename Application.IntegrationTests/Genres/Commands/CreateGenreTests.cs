@@ -43,13 +43,11 @@ public sealed class CreateGenreTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var command = new CreateGenreCommand
+        var itemId = await mediator!.Send(new CreateGenreCommand
         {
             Name = name,
             Description = description,
-        };
-
-        var itemId = await mediator!.Send(command, CancellationToken.None);
+        }, CancellationToken.None);
 
         itemId.Should().NotBeNull();
         itemId.Should().BeOfType<GenreId>();

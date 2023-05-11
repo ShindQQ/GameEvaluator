@@ -16,10 +16,8 @@ public sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand
 
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (user == null)
-            throw new NotFoundException(nameof(User), request.Id);
+        var user = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), request.Id);
 
         user.Update(request.Name, request.Email);
 

@@ -50,13 +50,11 @@ public sealed class UserQueryTests : BaseTestFixture
             }, CancellationToken.None);
         }
 
-        var queryCommand = new UserQuery
+        var res = await mediator!.Send(new UserQuery
         {
             PageNumber = 1,
             PageSize = 100
-        };
-
-        var res = await mediator!.Send(queryCommand, CancellationToken.None);
+        }, CancellationToken.None);
 
         res.Items.Count.Should().Be(5);
     }

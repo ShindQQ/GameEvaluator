@@ -39,13 +39,11 @@ public sealed class DeleteCompanyTests : BaseTestFixture
         using var scope = _apiFactory.Services.CreateScope();
         var mediator = scope.ServiceProvider.GetService<IMediator>();
 
-        var addCommand = new CreateCompanyCommand
+        var itemId = await mediator!.Send(new CreateCompanyCommand
         {
             Name = name,
             Description = description
-        };
-
-        var itemId = await mediator!.Send(addCommand, CancellationToken.None);
+        }, CancellationToken.None);
         var deleteCommand = new DeleteCompanyCommand(itemId);
 
         await mediator!.Send(deleteCommand, CancellationToken.None);

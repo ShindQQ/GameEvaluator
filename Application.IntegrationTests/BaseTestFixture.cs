@@ -17,7 +17,6 @@ public class BaseTestFixture : IAsyncLifetime
 
     public virtual Task InitializeAsync() => Task.CompletedTask;
 
-
     public static IEnumerable<object[]> SetNameDescriptionData()
     {
         yield return new object[] { "", "" };

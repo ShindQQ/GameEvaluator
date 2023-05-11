@@ -1,6 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities.Games;
+using Domain.Entities.Users;
 using MediatR;
 
 namespace Application.Users.Commands.Games.AddGame;
@@ -25,15 +27,11 @@ public sealed class AddGameToUserCommandHandler : IRequestHandler<AddGameToUserC
 
     public async Task Handle(AddGameToUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), request.UserId);
 
-        if (user is null)
-            throw new NotFoundException(nameof(user), request.UserId);
-
-        var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken);
-
-        if (game is null)
-            throw new NotFoundException(nameof(game), request.GameId);
+        var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken)
+            ?? throw new NotFoundException(nameof(Game), request.GameId);
 
         user.AddGame(game);
 

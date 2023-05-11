@@ -16,10 +16,8 @@ public sealed class DeleteGameCommandHandler : IRequestHandler<DeleteGameCommand
 
     public async Task Handle(DeleteGameCommand request, CancellationToken cancellationToken)
     {
-        var game = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
-        if (game == null)
-            throw new NotFoundException(nameof(Game), request.Id);
+        var game = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Game), request.Id);
 
         await _repository.DeleteAsync(game, cancellationToken);
     }
