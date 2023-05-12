@@ -1,6 +1,9 @@
 using Application;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
 using Infrastructre;
 using Presentration.API;
+using Presentration.API.BackgroundJobs;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +40,24 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+{
+    DashboardTitle = "Game Evaluator",
+    Authorization = new[]
+    {
+        new HangfireCustomBasicAuthenticationFilter
+        {
+            Pass = builder.Configuration.GetSection("SuperAdmin:Password").Value,
+            User = builder.Configuration.GetSection("SuperAdmin:Password").Value
+        }
+    }
+});
+
+app.MapHangfireDashboard();
+
+RecurringJob.AddOrUpdate<RecomendedGamesScheduler>("recomended games",
+        x => x.SendRecomendedGamesAsync(new CancellationToken()), Cron.Daily);
 
 await app.RunAsync();
 

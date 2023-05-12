@@ -6,6 +6,7 @@ using Domain.Entities.Platforms;
 using Domain.Entities.Users;
 using Domain.Enums;
 using Domain.Helpers;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -115,10 +116,21 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAuthService, AuthenticationService>();
+        services.AddScoped<IRecomendedGamesScheduler, RecomendedGamesScheduler>();
 
         services.AddHttpContextAccessor();
 
-        services.AddHostedService<RecomendedGamesJob>();
+        //services.AddHostedService<RecomendedGamesJob>();
+
+        services.AddHangfire((provider, config) =>
+        {
+            config.UseSimpleAssemblyNameTypeSerializer();
+            config.UseRecommendedSerializerSettings();
+            config.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"));
+            config.UseFilter(new AutomaticRetryAttribute { Attempts = 5 });
+        });
+
+        services.AddHangfireServer();
 
         return services;
     }
