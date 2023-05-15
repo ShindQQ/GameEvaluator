@@ -116,7 +116,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAuthService, AuthenticationService>();
-        services.AddScoped<IRecomendedGamesScheduler, RecomendedGamesScheduler>();
+        services.AddScoped<IScheduler, Scheduler>();
 
         services.AddHttpContextAccessor();
 

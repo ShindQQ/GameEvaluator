@@ -9,7 +9,7 @@ using Presentration.API.Options;
 
 namespace Presentration.API.BackgroundJobs;
 
-public sealed class RecomendedGamesScheduler : IRecomendedGamesScheduler
+public sealed class Scheduler : IScheduler
 {
     private readonly RecommendedGamesJobOptions _recommendedGamesOptions;
 
@@ -19,13 +19,13 @@ public sealed class RecomendedGamesScheduler : IRecomendedGamesScheduler
 
     private readonly IEmailService _emailService;
 
-    public RecomendedGamesScheduler(
-       IOptions<RecommendedGamesJobOptions> emailOptions,
+    public Scheduler(
+       IOptions<RecommendedGamesJobOptions> recommendedGamesOptions,
        IUserRepository userRepository,
        IMediator mediator,
        IEmailService emailService)
     {
-        _recommendedGamesOptions = emailOptions.Value;
+        _recommendedGamesOptions = recommendedGamesOptions.Value;
         _userRepository = userRepository;
         _mediator = mediator;
         _emailService = emailService;
@@ -33,7 +33,6 @@ public sealed class RecomendedGamesScheduler : IRecomendedGamesScheduler
 
     public async Task SendRecomendedGamesAsync(CancellationToken cancellationToken)
     {
-
         var users = await (await _userRepository.GetAsync())
             .Where(user => user.Roles.Any(role => role.Name == RoleType.User.ToString()))
             .ToListAsync(cancellationToken);
@@ -47,6 +46,19 @@ public sealed class RecomendedGamesScheduler : IRecomendedGamesScheduler
             }, cancellationToken);
 
             await _emailService.SendEmailAsync(user, games);
+        }
+    }
+
+    public async Task UnbanUsersAsync(CancellationToken cancellationToken)
+    {
+        var users = await (await _userRepository.GetAsync())
+           .Where(user => user.Roles.Any(role => role.Name == RoleType.User.ToString()))
+           .ToListAsync(cancellationToken);
+
+        foreach (var user in users)
+        {
+            if (user.BanState is not null && user.BanState.BannedTo.Equals(DateTime.Now))
+                user.UnBan();
         }
     }
 }

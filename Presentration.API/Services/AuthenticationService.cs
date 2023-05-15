@@ -32,8 +32,19 @@ public sealed class AuthenticationService : IAuthService
             .Include(user => user.Roles)
             .FirstOrDefaultAsync(user => user.Email.Equals(authModel.Email));
 
-        if (user is not null && user.VerifyPassword(authModel.Password))
+        if (user is not null)
         {
+            if (!user.VerifyPassword(authModel.Password))
+                return new TokenModel
+                {
+                    PasswordIncorrect = true
+                };
+            if (user.BanState is not null)
+                return new TokenModel
+                {
+                    IsBanned = true
+                };
+
             var userRoles = user.Roles;
 
             var authClaims = new List<Claim>

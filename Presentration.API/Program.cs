@@ -56,8 +56,11 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions()
 
 app.MapHangfireDashboard();
 
-RecurringJob.AddOrUpdate<RecomendedGamesScheduler>("recomended games",
-        x => x.SendRecomendedGamesAsync(new CancellationToken()), Cron.Daily);
+//RecurringJob.AddOrUpdate<Scheduler>("recomended games",
+//        x => x.SendRecomendedGamesAsync(new CancellationToken()), Cron.Daily);
+
+RecurringJob.AddOrUpdate<Scheduler>("unban users",
+        x => x.UnbanUsersAsync(new CancellationToken()), Cron.Hourly);
 
 await app.RunAsync();
 

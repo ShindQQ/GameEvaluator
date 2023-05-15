@@ -1,5 +1,7 @@
 ﻿using Aplliction.Users.Queries;
 using Application.Common.Requests;
+using Application.Users.Commands.Bans.Ban;
+using Application.Users.Commands.Bans.Unban;
 using Application.Users.Commands.CreateCommand;
 using Application.Users.Commands.DeleteCommand;
 using Application.Users.Commands.Games.AddGame;
@@ -100,12 +102,10 @@ public sealed class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("/recomended/{userId}/{ammountOfGames}/{pageNumber}/{pageSize}")]
+    [HttpGet("/recomended/{userId}/{ammountOfGames}")]
     public async Task<IActionResult> GetRecomendedGamesAsync(
         UserId userId,
         int ammountOfGames,
-        int pageNumber,
-        int pageSize,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new RecomendedGamesQuery
@@ -198,6 +198,37 @@ public sealed class UsersController : ControllerBase
         {
             UserId = userId,
             GameId = gameId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPut("/ban")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> BanUserAsync(
+        BanCommand banCommand,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(banCommand, cancellationToken);
+
+        await _cache.EvictByTagAsync("users", cancellationToken);
+        await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpPut("/{userId}/unban")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public async Task<IActionResult> UnbanUserAsync(
+        [FromRoute] UserId userId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new UnbanCommand
+        {
+            UserId = userId,
         }, cancellationToken);
 
         await _cache.EvictByTagAsync("users", cancellationToken);

@@ -29,6 +29,8 @@ public sealed class User
 
     public Company? Company { get; private set; }
 
+    public Ban? BanState { get; private set; }
+
     public static User Create(string name,
         string email,
         string password)
@@ -46,6 +48,16 @@ public sealed class User
         user.AddRole(RoleType.User);
 
         return user;
+    }
+
+    public void Ban(DateTime banTo)
+    {
+        BanState = ValueObjects.Ban.Create(banTo);
+    }
+
+    public void UnBan()
+    {
+        BanState = null;
     }
 
     public void SetRefreshToken(string refreshToken, DateTime expireTime)

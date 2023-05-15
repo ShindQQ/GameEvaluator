@@ -31,6 +31,10 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             roleBuilder.Property(role => role.Name).HasMaxLength(15);
         });
 
+        builder.OwnsOne(user => user.BanState, banBuilder =>
+        {
+        });
+
         builder.HasOne(user => user.Company)
             .WithMany(company => company.Workers)
             .HasForeignKey(user => user.CompanyId);

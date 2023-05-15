@@ -16,6 +16,12 @@ public sealed class UserProfile : Profile
             .ForMember(dest => dest.Company,
             conf => conf.MapFrom(src => src.Company!.Name))
             .ForMember(dest => dest.Roles,
-            conf => conf.MapFrom(src => src.Roles.Select(role => role.Name)));
+            conf => conf.MapFrom(src => src.Roles.Select(role => role.Name)))
+            .ForMember(dest => dest.Banned,
+            conf => conf.MapFrom(src => src.BanState!.IsBaned))
+            .ForMember(dest => dest.BannedAt,
+            conf => conf.MapFrom(src => src.BanState!.BannedAt))
+            .ForMember(dest => dest.BannedTo,
+            conf => conf.MapFrom(src => src.BanState!.BannedTo));
     }
 }

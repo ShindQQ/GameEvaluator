@@ -14,5 +14,11 @@ public sealed class UserDto
 
     public List<string> Roles { get; init; } = new();
 
+    public bool? Banned { get; init; } = false;
+
+    public DateTime? BannedAt { get; init; } = DateTime.MinValue;
+
+    public DateTime? BannedTo { get; init; } = DateTime.MinValue;
+
     public string Company { get; init; } = string.Empty;
 }

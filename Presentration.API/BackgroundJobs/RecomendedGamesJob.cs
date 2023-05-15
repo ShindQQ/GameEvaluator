@@ -19,9 +19,9 @@ public sealed class RecomendedGamesJob : BackgroundService
 
     public RecomendedGamesJob(
         IServiceProvider serviceProvider,
-        IOptions<RecommendedGamesJobOptions> emailOptions)
+        IOptions<RecommendedGamesJobOptions> recommendedGamesOptions)
     {
-        _recommendedGamesOptions = emailOptions.Value;
+        _recommendedGamesOptions = recommendedGamesOptions.Value;
         _periodicTimer = new(TimeSpan.FromDays(_recommendedGamesOptions.TimerValue));
         _serviceProvider = serviceProvider;
     }
