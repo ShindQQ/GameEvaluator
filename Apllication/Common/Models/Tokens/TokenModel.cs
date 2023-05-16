@@ -7,8 +7,4 @@ public record TokenModel
     public string RefreshToken { get; init; } = string.Empty;
 
     public DateTime Expiration { get; init; }
-
-    public bool IsBanned { get; init; }
-
-    public bool PasswordIncorrect { get; init; }
 }

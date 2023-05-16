@@ -23,10 +23,6 @@ public sealed class AuthenticationController : ControllerBase
 
         if (tokenModel is null)
             return Unauthorized($"User with email {authModel.Email} wasn`t found!");
-        if (tokenModel.IsBanned)
-            return Unauthorized($"User with email {authModel.Email} is banned!");
-        if (tokenModel.PasswordIncorrect)
-            return Unauthorized($"User with email {authModel.Email} typed wrong password!");
 
         return Ok(tokenModel);
     }

@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Models;
 using Application.Common.Models.Tokens;
@@ -35,15 +36,9 @@ public sealed class AuthenticationService : IAuthService
         if (user is not null)
         {
             if (!user.VerifyPassword(authModel.Password))
-                return new TokenModel
-                {
-                    PasswordIncorrect = true
-                };
+                throw new PasswordException(nameof(user), user.Id);
             if (user.BanState is not null)
-                return new TokenModel
-                {
-                    IsBanned = true
-                };
+                throw new BanException(nameof(user), user.Id);
 
             var userRoles = user.Roles;
 

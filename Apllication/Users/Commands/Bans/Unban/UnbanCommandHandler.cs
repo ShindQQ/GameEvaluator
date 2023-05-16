@@ -23,6 +23,9 @@ public sealed class UnbanCommandHandler : IRequestHandler<UnbanCommand>
         var user = await _repository.GetByIdAsync(request.UserId, cancellationToken)
             ?? throw new NotFoundException(nameof(User), request.UserId);
 
+        if (user.BanState is null)
+            throw new BanException($"User {request.UserId} is not banned!");
+
         user.UnBan();
 
         await _context.SaveChangesAsync(cancellationToken);
