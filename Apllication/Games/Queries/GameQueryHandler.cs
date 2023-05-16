@@ -5,6 +5,7 @@ using Application.Common.Models.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Games.Queries;
 
@@ -22,7 +23,10 @@ public sealed class GameQueryHandler : IRequestHandler<GameQuery, PaginatedList<
 
     public async Task<PaginatedList<GameDto>> Handle(GameQuery request, CancellationToken cancellationToken)
     {
-        var queryable = await _repository.GetAsync();
+        var queryable = (await _repository.GetAsync())
+            .Include(game => game.Comments)
+            .ThenInclude(comment => comment.ChildrenComments)
+            .AsQueryable();
 
         if (request.Id is not null)
             queryable = queryable.Where(entity => entity.Id == request.Id);

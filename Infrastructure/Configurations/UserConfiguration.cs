@@ -38,5 +38,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasOne(user => user.Company)
             .WithMany(company => company.Workers)
             .HasForeignKey(user => user.CompanyId);
+
+        builder.HasMany(user => user.Comments).WithOne(comment => comment.User).OnDelete(DeleteBehavior.Cascade);
     }
 }

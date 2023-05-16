@@ -1,5 +1,4 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interface;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Companies;

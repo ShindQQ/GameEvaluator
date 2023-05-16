@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Companies;
+﻿using Domain.Entities.Comments;
+using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Intermidiate;
 using Domain.Enums;
@@ -30,6 +31,8 @@ public sealed class User
     public Company? Company { get; private set; }
 
     public Ban? BanState { get; private set; }
+
+    public HashSet<Comment> Comments { get; private set; } = new();
 
     public static User Create(string name,
         string email,

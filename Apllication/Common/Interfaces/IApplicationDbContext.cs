@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Companies;
+﻿using Domain.Entities.Comments;
+using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Genres;
 using Domain.Entities.Intermidiate;
@@ -21,6 +22,8 @@ public interface IApplicationDbContext
     public DbSet<Genre> Genres { get; }
 
     public DbSet<Platform> Platforms { get; }
+
+    public DbSet<Comment> Comments { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

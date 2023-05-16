@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Companies;
+﻿using Domain.Entities.Comments;
+using Domain.Entities.Companies;
 using Domain.Entities.Genres;
 using Domain.Entities.Intermidiate;
 using Domain.Entities.Platforms;
@@ -12,6 +13,8 @@ public sealed class Game
     public string Name { get; private set; } = string.Empty;
 
     public string Description { get; private set; } = string.Empty;
+
+    public HashSet<Comment> Comments { get; private set; } = new();
 
     public HashSet<Genre> Genres { get; private set; } = new();
 
@@ -66,5 +69,10 @@ public sealed class Game
         Genres.Remove(foundGenre);
 
         return true;
+    }
+
+    public void AddComment(Comment comment)
+    {
+        Comments.Add(comment);
     }
 }

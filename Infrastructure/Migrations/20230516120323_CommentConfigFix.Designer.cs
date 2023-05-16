@@ -4,6 +4,7 @@ using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516120323_CommentConfigFix")]
+    partial class CommentConfigFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,16 +56,11 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
                     b.HasIndex("ParentCommentId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comments", (string)null);
                 });
@@ -261,17 +259,9 @@ namespace Infrastructure.Migrations
                         .WithMany("ChildrenComments")
                         .HasForeignKey("ParentCommentId");
 
-                    b.HasOne("Domain.Entities.Users.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Game");
 
                     b.Navigation("ParentComment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Intermidiate.UserGame", b =>
@@ -402,8 +392,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Users.User", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Games");
                 });
 #pragma warning restore 612, 618

@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Entities.Comments;
 using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Genres;
@@ -32,4 +33,6 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Genre> Genres => Set<Genre>();
 
     public DbSet<Platform> Platforms => Set<Platform>();
+
+    public DbSet<Comment> Comments => Set<Comment>();
 }

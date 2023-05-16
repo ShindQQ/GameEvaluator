@@ -8,7 +8,8 @@ public sealed class GenreProfile : Profile
 {
     public GenreProfile()
     {
-        CreateMap<Genre, GenreDto>().ForMember(dest => dest.Id,
+        CreateMap<Genre, GenreDto>()
+            .ForMember(dest => dest.Id,
             conf => conf.MapFrom(src => src.Id.Value));
     }
 }

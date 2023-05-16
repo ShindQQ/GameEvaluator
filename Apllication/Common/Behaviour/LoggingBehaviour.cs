@@ -33,7 +33,7 @@ public sealed class LoggingBehaviour<TRequest>
 
         if (userId != null)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
             if (user != null)
                 userName = user.Name;

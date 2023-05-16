@@ -8,7 +8,8 @@ public sealed class CompanyProfile : Profile
 {
     public CompanyProfile()
     {
-        CreateMap<Company, CompanyDto>().ForMember(dest => dest.Id,
+        CreateMap<Company, CompanyDto>()
+            .ForMember(dest => dest.Id,
             conf => conf.MapFrom(src => src.Id.Value));
     }
 }

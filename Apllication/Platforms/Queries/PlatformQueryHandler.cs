@@ -1,4 +1,4 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Interfaces.Repositories;
 using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Common.Models.DTOs;
