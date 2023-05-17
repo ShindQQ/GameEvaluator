@@ -1,7 +1,4 @@
 ﻿using Application.Common.Requests;
-using Application.Games.Commands.Comments.AddComment;
-using Application.Games.Commands.Comments.AddCommentToComment;
-using Application.Games.Commands.Comments.RemoveComment;
 using Application.Games.Commands.DeleteCommand;
 using Application.Games.Commands.Genres.AddGenre;
 using Application.Games.Commands.Genres.RemoveGenre;
@@ -9,7 +6,6 @@ using Application.Games.Commands.Platforms.AddPlatform;
 using Application.Games.Commands.Platforms.RemovePlatform;
 using Application.Games.Commands.UpdateCommand;
 using Application.Games.Queries;
-using Domain.Entities.Comments;
 using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Entities.Genres;
@@ -24,7 +20,6 @@ namespace Presentration.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-
 public sealed class GamesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -223,59 +218,6 @@ public sealed class GamesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteGameCommand(gameId), cancellationToken);
-
-        await _cache.EvictByTagAsync("games", cancellationToken);
-        await _cache.EvictByTagAsync("companies", cancellationToken);
-
-        return NoContent();
-    }
-
-    [HttpPost("{gameId}/Comments")]
-    public async Task<IActionResult> AddCommentAsync(
-        [FromRoute] GameId gameId,
-        [FromBody] CreateCommentRequest request,
-        CancellationToken cancellationToken)
-    {
-        var id = await _mediator.Send(new AddCommentCommand
-        {
-            GameId = gameId,
-            UserId = request.UserId,
-            Text = request.Text,
-        }, cancellationToken);
-
-        await _cache.EvictByTagAsync("games", cancellationToken);
-        await _cache.EvictByTagAsync("companies", cancellationToken);
-
-        return Ok(id);
-    }
-
-    [HttpPost("{gameId}/Comments/{commentId}")]
-    public async Task<IActionResult> AddCommentToCommentAsync(
-        [FromRoute] GameId gameId,
-        [FromRoute] CommentId commentId,
-        [FromBody] CreateCommentRequest request,
-        CancellationToken cancellationToken)
-    {
-        await _mediator.Send(new AddCommentToCommentCommand
-        {
-            GameId = gameId,
-            ParrentCommentId = commentId,
-            UserId = request.UserId,
-            Text = request.Text,
-        }, cancellationToken);
-
-        await _cache.EvictByTagAsync("games", cancellationToken);
-        await _cache.EvictByTagAsync("companies", cancellationToken);
-
-        return NoContent();
-    }
-
-    [HttpDelete("/Comments/{commentId}")]
-    public async Task<IActionResult> RemoveCommentAsync(
-        [FromRoute] CommentId commentId,
-        CancellationToken cancellationToken)
-    {
-        await _mediator.Send(new RemoveCommentCommand(commentId), cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
         await _cache.EvictByTagAsync("companies", cancellationToken);

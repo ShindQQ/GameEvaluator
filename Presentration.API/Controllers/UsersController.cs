@@ -1,5 +1,6 @@
 ﻿using Aplliction.Users.Queries;
 using Application.Common.Requests;
+using Application.Games.Commands.Comments.RemoveComment;
 using Application.Users.Commands.Bans.Ban;
 using Application.Users.Commands.Bans.Unban;
 using Application.Users.Commands.CreateCommand;
@@ -11,6 +12,7 @@ using Application.Users.Commands.Roles.AddRole;
 using Application.Users.Commands.Roles.RemoveRole;
 using Application.Users.Commands.UpdateCommand;
 using Application.Users.Queries;
+using Domain.Entities.Comments;
 using Domain.Entities.Games;
 using Domain.Entities.Users;
 using Domain.Enums;
@@ -233,6 +235,22 @@ public sealed class UsersController : ControllerBase
 
         await _cache.EvictByTagAsync("users", cancellationToken);
         await _cache.EvictByTagAsync("games", cancellationToken);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{userId}/Comments/{commentId}")]
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    public async Task<IActionResult> RemoveCommentAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] CommentId commentId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new RemoveCommentCommand(commentId, userId), cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+        await _cache.EvictByTagAsync("users", cancellationToken);
 
         return NoContent();
     }

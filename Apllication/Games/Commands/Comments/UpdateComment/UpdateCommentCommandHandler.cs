@@ -5,15 +5,15 @@ using Domain.Entities.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Games.Commands.Comments.RemoveComment;
+namespace Application.Games.Commands.Comments.UpdateComment;
 
-public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentCommand>
+public sealed class UpdateCommentCommandhandler : IRequestHandler<UpdateCommentCommand>
 {
     private readonly ICommentRepository _commentRepository;
 
     private readonly IUserRepository _userRepository;
 
-    public RemoveCommentCommandHandler(
+    public UpdateCommentCommandhandler(
         ICommentRepository commentRepository,
         IUserRepository userRepository)
     {
@@ -21,7 +21,7 @@ public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentC
         _userRepository = userRepository;
     }
 
-    public async Task Handle(RemoveCommentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateCommentCommand request, CancellationToken cancellationToken)
     {
         var user = await (await _userRepository.GetAsync())
             .Include(user => user.Comments.Where(comment => comment.Id == request.Id))
@@ -31,6 +31,8 @@ public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentC
         var comment = user.Comments.FirstOrDefault()
             ?? throw new NotFoundException(nameof(Comment), request.Id);
 
-        await _commentRepository.DeleteAsync(comment, cancellationToken);
+        comment.Update(request.Text);
+
+        await _commentRepository.UpdateAsync(comment);
     }
 }

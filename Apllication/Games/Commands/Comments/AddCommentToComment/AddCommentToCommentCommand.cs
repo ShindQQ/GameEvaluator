@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Games.Commands.Comments.AddCommentToComment;
 
-public record AddCommentToCommentCommand : IRequest
+public record AddCommentToCommentCommand : IRequest<CommentId>
 {
     public CommentId ParrentCommentId { get; init; } = null!;
 

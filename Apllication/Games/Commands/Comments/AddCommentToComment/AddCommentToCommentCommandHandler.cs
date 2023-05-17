@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Application.Games.Commands.Comments.AddCommentToComment;
 
-public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddCommentToCommentCommand>
+public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddCommentToCommentCommand, CommentId>
 {
     private readonly IGameRepository _gameRepository;
 
@@ -29,7 +29,7 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
         _userRepository = userRepository;
     }
 
-    public async Task Handle(AddCommentToCommentCommand request, CancellationToken cancellationToken)
+    public async Task<CommentId> Handle(AddCommentToCommentCommand request, CancellationToken cancellationToken)
     {
         var comment = await _commentRepository.GetByIdAsync(request.ParrentCommentId, cancellationToken)
             ?? throw new NotFoundException(nameof(Comment), request.ParrentCommentId);
@@ -40,8 +40,10 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
             ?? throw new NotFoundException(nameof(User), request.UserId);
 
-        comment.CreateChild(request.Text, user);
+        var child = comment.CreateChild(request.Text, user);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return child.Id;
     }
 }
