@@ -9,7 +9,7 @@ public record AddCommentCommand : IRequest<CommentId>
 {
     public GameId GameId { get; init; } = null!;
 
-    public UserId UserId { get; init; } = null!;
+    public UserId? UserId { get; init; }
 
     public string Text { get; init; } = string.Empty;
 }

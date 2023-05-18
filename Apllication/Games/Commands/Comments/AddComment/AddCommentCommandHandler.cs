@@ -18,24 +18,30 @@ public sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand
 
     private readonly IApplicationDbContext _dbContext;
 
+    private readonly IUserService _userService;
+
     public AddCommentCommandHandler(IGameRepository gameRepository,
         ICommentRepository commentRepository,
         IApplicationDbContext dbContext,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IUserService userService)
     {
         _gameRepository = gameRepository;
         _commentRepository = commentRepository;
         _dbContext = dbContext;
         _userRepository = userRepository;
+        _userService = userService;
     }
 
     public async Task<CommentId> Handle(AddCommentCommand request, CancellationToken cancellationToken)
     {
+        var userId = request.UserId is null ? _userService.UserId : request.UserId;
+
         var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken)
             ?? throw new NotFoundException(nameof(Game), request.GameId);
 
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+        var user = await _userRepository.GetByIdAsync(userId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId!);
 
         var comment = Comment.Create(request.Text, game, user);
 

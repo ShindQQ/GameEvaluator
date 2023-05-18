@@ -106,6 +106,24 @@ public static class DependencyInjection
                 ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication:SecretForKey"]!))
             };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+
+                    var path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) &&
+                        path.StartsWithSegments("/commentsHub"))
+                    {
+                        context.Token = accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         services.Configure<AuthOptions>(configuration.GetSection("Authentication"));
@@ -131,6 +149,11 @@ public static class DependencyInjection
         });
 
         services.AddHangfireServer();
+
+        services.AddSignalR(config =>
+        {
+            config.EnableDetailedErrors = true;
+        });
 
         return services;
     }

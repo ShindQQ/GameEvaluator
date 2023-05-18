@@ -4,6 +4,7 @@ using HangfireBasicAuthenticationFilter;
 using Infrastructre;
 using Presentration.API;
 using Presentration.API.BackgroundJobs;
+using Presentration.API.Hubs;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,6 +62,9 @@ app.MapHangfireDashboard();
 
 RecurringJob.AddOrUpdate<Scheduler>("unban users",
         x => x.UnbanUsersAsync(new CancellationToken()), Cron.Hourly);
+
+app.MapHub<CommentsHub>("/commentsHub");
+app.UseWebSockets();
 
 await app.RunAsync();
 
