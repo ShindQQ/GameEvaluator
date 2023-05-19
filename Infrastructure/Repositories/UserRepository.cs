@@ -20,6 +20,6 @@ public sealed class UserRepository
 
     public override async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
         => await Context.Users
-            .Include(user => user.Games)
+            .Include(user => user.UserGames)
             .FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
 }

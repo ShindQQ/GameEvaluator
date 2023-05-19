@@ -13,7 +13,7 @@ internal class UserGameConfiguration : IEntityTypeConfiguration<UserGame>
         builder.HasKey(userGame => new { userGame.UserId, userGame.GameId });
 
         builder.HasOne(userGame => userGame.User)
-            .WithMany(user => user.Games)
+            .WithMany(user => user.UserGames)
             .HasForeignKey(userGame => userGame.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 

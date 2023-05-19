@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Requests;
 using Application.Games.Commands.Comments.AddCommentToComment;
 using Domain.Entities.Comments;
@@ -7,6 +8,7 @@ using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 
 namespace Presentration.API.Hubs;
@@ -31,7 +33,12 @@ public sealed class CommentsHub : Hub, ICommentsHub
     [HubMethodName("AddCommentToComment")]
     public async Task AddCommentToCommentAsync(AddCommentToCommentRequest request)
     {
+        var userWithParentComment = await (await _userRepository.GetAsync())
+            .Include(user => user.Comments.Where(comment => comment.Id.Value == request.CommentId))
+            .FirstOrDefaultAsync();
 
+        if (userWithParentComment is null || userWithParentComment.Comments.Count == 0)
+            throw new NotFoundException($"Comment with id {request.CommentId} was not found!");
 
         await _mediator.Send(new AddCommentToCommentCommand
         {
@@ -40,16 +47,16 @@ public sealed class CommentsHub : Hub, ICommentsHub
             Text = request.Text,
         });
 
-        await SendMessageAsync(request.Text);
+        await SendMessageAsync(userWithParentComment.Id, request.Text);
     }
 
-    private async Task SendMessageAsync(string message)
+    private async Task SendMessageAsync(UserId userId, string message)
     {
-        var connectionIds = _dictionary.Select(x => x.Key);
-        foreach (var connection in connectionIds)
-        {
-            await Clients.User(connection.ToString()).SendAsync("ReceiveComment", message);
-        }
+        if (_dictionary.TryGetValue(userId.Value, out var connectionIds))
+            foreach (var connection in connectionIds)
+            {
+                await Clients.User(connection.ToString()).SendAsync("ReceiveComment", message);
+            }
     }
 
     public override async Task OnConnectedAsync()

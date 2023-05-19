@@ -10,7 +10,7 @@ public sealed class UserProfile : Profile
     {
         CreateMap<User, UserDto>()
             .ForMember(dest => dest.Games,
-            conf => conf.MapFrom(src => src.Games.Select(userGame => userGame.Game)))
+            conf => conf.MapFrom(src => src.UserGames.Select(userGame => userGame.Game)))
             .ForMember(dest => dest.Id,
             conf => conf.MapFrom(src => src.Id.Value))
             .ForMember(dest => dest.Company,

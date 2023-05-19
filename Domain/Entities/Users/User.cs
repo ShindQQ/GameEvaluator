@@ -22,7 +22,7 @@ public sealed class User
 
     public DateTime? RefreshTokenExpiryTime { get; private set; }
 
-    public HashSet<UserGame> Games { get; private set; } = new();
+    public HashSet<UserGame> UserGames { get; private set; } = new();
 
     public HashSet<Role> Roles { get; private set; } = new();
 
@@ -88,11 +88,11 @@ public sealed class User
         => Roles.Remove(Role.Create(roleType));
 
     public bool AddGame(Game game)
-        => Games.Add(UserGame.Create(this, game));
+        => UserGames.Add(UserGame.Create(this, game));
 
     public bool ChangeFavoriteState(GameId gameId)
     {
-        var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
+        var userGame = UserGames.FirstOrDefault(game => game.GameId == gameId);
 
         if (userGame is null)
             return false;
@@ -104,7 +104,7 @@ public sealed class User
 
     public bool SetRatingToTheGame(GameId gameId, int rating)
     {
-        var userGame = Games.FirstOrDefault(game => game.GameId == gameId);
+        var userGame = UserGames.FirstOrDefault(game => game.GameId == gameId);
 
         if (userGame is null)
             return false;

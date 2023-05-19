@@ -93,7 +93,7 @@ public sealed class AddGameToUserTests : BaseTestFixture
         }, CancellationToken.None);
 
         var games = await ((ApplicationDbContext)dbContext)
-            .Users.Include(user => user.Games).Select(user => user.Games).ToListAsync();
+            .Users.Include(user => user.UserGames).Select(user => user.UserGames).ToListAsync();
 
         games.Count.Should().Be(1);
     }

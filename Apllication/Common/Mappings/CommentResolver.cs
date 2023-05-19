@@ -1,17 +1,11 @@
 ﻿using Application.Common.Models.DTOs;
-using AutoMapper;
 using Domain.Entities.Comments;
 
 namespace Application.Common.Mappings;
 
-public class CommentResolver : IValueResolver<Comment, CommentDto, CommentDto>
+public static class CommentResolver
 {
-    public CommentDto Resolve(Comment source, CommentDto destination, CommentDto destMember, ResolutionContext context)
-    {
-        return MapCommentToCommentDto(source)!;
-    }
-
-    public CommentDto? MapCommentToCommentDto(Comment comment)
+    public static CommentDto? MapCommentToCommentDto(Comment comment)
     {
         if (comment is null)
             return null;
@@ -22,7 +16,7 @@ public class CommentResolver : IValueResolver<Comment, CommentDto, CommentDto>
             GameId = comment.GameId.Value,
             LeftBy = comment.User.Name,
             Text = comment.Text,
-            ParentCommentId = comment.ParentCommentId!.Value
+            ParentCommentId = comment.ParentCommentId is null ? null : comment.ParentCommentId.Value,
         };
 
         if (comment.ChildrenComments is not null && comment.ChildrenComments.Count > 0)
