@@ -22,8 +22,6 @@ public sealed class UserProfile : Profile
             .ForMember(dest => dest.BannedAt,
             conf => conf.MapFrom(src => src.BanState!.BannedAt))
             .ForMember(dest => dest.BannedTo,
-            conf => conf.MapFrom(src => src.BanState!.BannedTo))
-            .ForMember(dest => dest.Comments,
-            conf => conf.MapFrom(src => src.Comments));
+            conf => conf.MapFrom(src => src.BanState!.BannedTo));
     }
 }

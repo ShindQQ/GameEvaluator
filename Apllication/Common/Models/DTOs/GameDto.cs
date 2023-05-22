@@ -17,6 +17,4 @@ public sealed class GameDto
     public List<string> CompaniesNames { get; init; } = new();
 
     public List<string> Platforms { get; init; } = new();
-
-    public List<CommentDto> Comments { get; init; } = new();
 }

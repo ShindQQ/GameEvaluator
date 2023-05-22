@@ -2,7 +2,7 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.Games.Commands.Comments.UpdateComment;
+namespace Application.Comments.Commands.UpdateComment;
 
 public record UpdateCommentCommand : IRequest
 {

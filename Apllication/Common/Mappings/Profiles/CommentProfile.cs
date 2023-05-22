@@ -18,11 +18,6 @@ public sealed class CommentProfile : Profile
             .ForMember(dest => dest.ChildrenComments,
             conf => conf.MapFrom(src => src.ChildrenComments))
             .ForMember(dest => dest.LeftBy,
-            conf => conf.MapFrom(src => src.User.Name))
-            .MaxDepth(4);
-
-        //CreateMap<Comment, CommentDto>()
-        //    .ForMember(dest => dest,
-        //    conf => conf.MapFrom<CommentResolver>());
+            conf => conf.MapFrom(src => src.User.Name));
     }
 }

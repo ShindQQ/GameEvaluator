@@ -2,6 +2,6 @@
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.Games.Commands.Comments.RemoveComment;
+namespace Application.Comments.Commands.RemoveComment;
 
 public record RemoveCommentCommand(CommentId Id, UserId UserId) : IRequest;

@@ -21,6 +21,4 @@ public sealed class UserDto
     public DateTime? BannedTo { get; init; } = DateTime.MinValue;
 
     public string Company { get; init; } = string.Empty;
-
-    public List<CommentDto> Comments { get; init; } = new();
 }

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Games.Commands.Comments.AddCommentToComment;
+namespace Application.Comments.Commands.AddCommentToComment;
 
 public sealed class AddCommentToCommentCommandValidator : AbstractValidator<AddCommentToCommentCommand>
 {

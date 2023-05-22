@@ -1,4 +1,5 @@
-﻿using Application.Common.Requests;
+﻿using Application.Comments.Queries.GameComments;
+using Application.Common.Requests;
 using Application.Games.Commands.DeleteCommand;
 using Application.Games.Commands.Genres.AddGenre;
 using Application.Games.Commands.Genres.RemoveGenre;
@@ -223,5 +224,26 @@ public sealed class GamesController : ControllerBase
         await _cache.EvictByTagAsync("companies", cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpGet("{gameId}/Comments/{pageNumber}/{pageSize}")]
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    public async Task<IActionResult> GetCommentsAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] int pageNumber,
+        [FromRoute] int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var comments = await _mediator.Send(new GameCommentsQuery
+        {
+            GameId = gameId,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("users", cancellationToken);
+
+        return Ok(comments);
     }
 }

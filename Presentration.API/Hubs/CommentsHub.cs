@@ -1,7 +1,7 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Comments.Commands.AddCommentToComment;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Requests;
-using Application.Games.Commands.Comments.AddCommentToComment;
 using Domain.Entities.Comments;
 using Domain.Entities.Games;
 using Domain.Entities.Users;

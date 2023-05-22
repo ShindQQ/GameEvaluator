@@ -6,9 +6,9 @@ using Domain.Entities.Games;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.Games.Commands.Comments.AddCommentToComment;
+namespace Application.Comments.Commands.AddComment;
 
-public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddCommentToCommentCommand, CommentId>
+public sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, CommentId>
 {
     private readonly IGameRepository _gameRepository;
 
@@ -20,7 +20,7 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
 
     private readonly IUserService _userService;
 
-    public AddCommentToCommentCommandHandler(IGameRepository gameRepository,
+    public AddCommentCommandHandler(IGameRepository gameRepository,
         ICommentRepository commentRepository,
         IApplicationDbContext dbContext,
         IUserRepository userRepository,
@@ -33,23 +33,24 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
         _userService = userService;
     }
 
-    public async Task<CommentId> Handle(AddCommentToCommentCommand request, CancellationToken cancellationToken)
+    public async Task<CommentId> Handle(AddCommentCommand request, CancellationToken cancellationToken)
     {
         var userId = request.UserId is null ? _userService.UserId : request.UserId;
-
-        var comment = await _commentRepository.GetByIdAsync(request.ParrentCommentId, cancellationToken)
-            ?? throw new NotFoundException(nameof(Comment), request.ParrentCommentId);
 
         var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken)
             ?? throw new NotFoundException(nameof(Game), request.GameId);
 
-        var user = await _userRepository.GetByIdAsync(userId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), userId);
+        var user = await _userRepository.GetByIdAsync(userId!, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), userId!);
 
-        var child = comment.CreateChild(request.Text, user);
+        var comment = Comment.Create(request.Text, game, user);
+
+        await _commentRepository.AddAsync(comment, cancellationToken);
+
+        game.AddComment(comment);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return child.Id;
+        return comment.Id;
     }
 }

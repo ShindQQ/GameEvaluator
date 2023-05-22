@@ -3,7 +3,7 @@ using Domain.Entities.Games;
 using Domain.Entities.Users;
 using MediatR;
 
-namespace Application.Games.Commands.Comments.AddCommentToComment;
+namespace Application.Comments.Commands.AddCommentToComment;
 
 public record AddCommentToCommentCommand : IRequest<CommentId>
 {

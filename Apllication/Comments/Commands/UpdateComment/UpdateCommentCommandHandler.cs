@@ -6,7 +6,7 @@ using Domain.Entities.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Games.Commands.Comments.UpdateComment;
+namespace Application.Comments.Commands.UpdateComment;
 
 public sealed class UpdateCommentCommandhandler : IRequestHandler<UpdateCommentCommand>
 {

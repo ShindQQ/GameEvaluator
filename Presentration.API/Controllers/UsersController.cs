@@ -1,6 +1,7 @@
 ﻿using Aplliction.Users.Queries;
+using Application.Comments.Commands.RemoveComment;
+using Application.Comments.Queries.UserComments;
 using Application.Common.Requests;
-using Application.Games.Commands.Comments.RemoveComment;
 using Application.Users.Commands.Bans.Ban;
 using Application.Users.Commands.Bans.Unban;
 using Application.Users.Commands.CreateCommand;
@@ -253,5 +254,26 @@ public sealed class UsersController : ControllerBase
         await _cache.EvictByTagAsync("users", cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpGet("{userId}/Comments/{pageNumber}/{pageSize}")]
+    [Authorize(Roles = "SuperAdmin, Admin, User")]
+    public async Task<IActionResult> GetCommentsAsync(
+        [FromRoute] UserId userId,
+        [FromRoute] int pageNumber,
+        [FromRoute] int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var comments = await _mediator.Send(new UserCommentsQuery
+        {
+            UserId = userId,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("users", cancellationToken);
+
+        return Ok(comments);
     }
 }

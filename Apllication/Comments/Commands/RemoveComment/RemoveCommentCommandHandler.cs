@@ -5,7 +5,7 @@ using Domain.Entities.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Games.Commands.Comments.RemoveComment;
+namespace Application.Comments.Commands.RemoveComment;
 
 public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentCommand>
 {
@@ -25,7 +25,7 @@ public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentC
     {
         var user = await (await _userRepository.GetAsync())
             .Include(user => user.Comments.Where(comment => comment.Id == request.Id))
-            .FirstOrDefaultAsync(user => user.Id == request.UserId)
+            .FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken)
             ?? throw new NotFoundException(nameof(User), request.UserId);
 
         var comment = user.Comments.FirstOrDefault()

@@ -1,7 +1,7 @@
-﻿using Application.Common.Requests;
-using Application.Games.Commands.Comments.AddComment;
-using Application.Games.Commands.Comments.AddCommentToComment;
-using Application.Games.Commands.Comments.UpdateComment;
+﻿using Application.Comments.Commands.AddComment;
+using Application.Comments.Commands.AddCommentToComment;
+using Application.Comments.Commands.UpdateComment;
+using Application.Common.Requests;
 using Domain.Entities.Comments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
