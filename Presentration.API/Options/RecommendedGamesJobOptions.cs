@@ -1,6 +1,6 @@
 ﻿namespace Presentration.API.Options;
 
-public sealed class RecommendedGamesJobOptions
+public record RecommendedGamesJobOptions
 {
     public int TimerValue { get; init; }
 

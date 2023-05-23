@@ -3,7 +3,7 @@ using Domain.Entities.Users;
 
 namespace Application.Common.Requests;
 
-public sealed class CreateCommentRequest
+public record CreateCommentRequest
 {
     public UserId UserId { get; init; } = null!;
 

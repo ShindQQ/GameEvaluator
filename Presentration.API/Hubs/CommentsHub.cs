@@ -14,7 +14,7 @@ using System.Collections.Concurrent;
 namespace Presentration.API.Hubs;
 
 [Authorize]
-public sealed class CommentsHub : Hub, ICommentsHub
+public sealed class CommentsHub : Hub
 {
     private readonly IMediator _mediator;
 

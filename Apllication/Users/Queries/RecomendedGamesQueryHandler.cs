@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Users.Queries;
 
-public class RecomendedGamesQueryHandler : IRequestHandler<RecomendedGamesQuery, List<GameDto>>
+public sealed class RecomendedGamesQueryHandler : IRequestHandler<RecomendedGamesQuery, List<GameDto>>
 {
     private readonly IApplicationDbContext _context;
 

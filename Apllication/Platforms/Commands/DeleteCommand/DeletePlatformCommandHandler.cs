@@ -3,23 +3,22 @@ using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Platforms;
 using MediatR;
 
-namespace Application.Platforms.Commands.DeleteCommand
+namespace Application.Platforms.Commands.DeleteCommand;
+
+public sealed class DeletePlatformCommandHandler : IRequestHandler<DeletePlatformCommand>
 {
-    public sealed class DeletePlatformCommandHandler : IRequestHandler<DeletePlatformCommand>
+    private readonly IPlatformRepository _repository;
+
+    public DeletePlatformCommandHandler(IPlatformRepository repository)
     {
-        private readonly IPlatformRepository _repository;
+        _repository = repository;
+    }
 
-        public DeletePlatformCommandHandler(IPlatformRepository repository)
-        {
-            _repository = repository;
-        }
+    public async Task Handle(DeletePlatformCommand request, CancellationToken cancellationToken)
+    {
+        var platform = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new NotFoundException(nameof(Platform), request.Id);
 
-        public async Task Handle(DeletePlatformCommand request, CancellationToken cancellationToken)
-        {
-            var platform = await _repository.GetByIdAsync(request.Id, cancellationToken)
-                ?? throw new NotFoundException(nameof(Platform), request.Id);
-
-            await _repository.DeleteAsync(platform, cancellationToken);
-        }
+        await _repository.DeleteAsync(platform, cancellationToken);
     }
 }

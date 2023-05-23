@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Platforms.Queries;
 
-public sealed class PlatformQuery : IRequest<PaginatedList<PlatformDto>>
+public record PlatformQuery : IRequest<PaginatedList<PlatformDto>>
 {
     public PlatformId? Id { get; init; }
 

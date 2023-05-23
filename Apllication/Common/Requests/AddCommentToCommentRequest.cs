@@ -1,6 +1,6 @@
 ﻿namespace Application.Common.Requests;
 
-public sealed class AddCommentToCommentRequest
+public record AddCommentToCommentRequest
 {
     public Guid CommentId { get; init; }
 

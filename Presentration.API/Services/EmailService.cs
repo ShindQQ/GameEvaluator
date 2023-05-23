@@ -10,7 +10,7 @@ using Presentration.API.Options;
 
 namespace Presentration.API.Services;
 
-public class EmailService : IEmailService
+public sealed class EmailService : IEmailService
 {
     private readonly EmailOptions _emailOptions;
 

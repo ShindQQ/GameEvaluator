@@ -1,6 +1,6 @@
 ﻿namespace Presentration.API.Options;
 
-public sealed class SuperAdminOptions
+public record SuperAdminOptions
 {
     public string Email { get; init; } = string.Empty;
 

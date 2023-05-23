@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Users.Commands.Games.AddGame;
 
-public sealed record AddGameToUserCommand : IRequest
+public record AddGameToUserCommand : IRequest
 {
     public UserId UserId { get; init; } = null!;
 
