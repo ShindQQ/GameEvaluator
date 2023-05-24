@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D2C33DC6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.IntegrationTests", "Application.IntegrationTests\Application.IntegrationTests.csproj", "{28ACF03C-95EC-4E3D-A915-433CA3878BD1}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "GameEvaluator.Web", "GameEvaluator.Web\GameEvaluator.Web.esproj", "{C964D3EF-5DDF-493B-92D6-FD39099912D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,12 @@ Global
 		{28ACF03C-95EC-4E3D-A915-433CA3878BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28ACF03C-95EC-4E3D-A915-433CA3878BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28ACF03C-95EC-4E3D-A915-433CA3878BD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C964D3EF-5DDF-493B-92D6-FD39099912D3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
