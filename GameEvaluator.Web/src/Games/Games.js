@@ -4,11 +4,11 @@ import { fetchGames, selectAllGames } from "./gamesSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
-export const RenderGames = () =>
+export const Games = () =>
 {
     const games = useSelector(selectAllGames);
-    const gamesStatus = useSelector(state => state.games.status)
-    const loading = useSelector(state => state.games.loading)
+    const gamesStatus = useSelector(state => state.games.status);
+    const loading = useSelector(state => state.games.loading);
     const dispatch = useDispatch();
 
     const columns = [
@@ -33,8 +33,8 @@ export const RenderGames = () =>
             key: 'averageRating',
             render: payload => {
                 return <p>{!payload.AverageRating && payload.averageRating != 0 ? "No users" : payload.averageRating}</p>
-            }
-            
+            },
+            sorter: (a, b) => a.index - b.index
         },
         {
             title: 'Genres',
@@ -62,19 +62,20 @@ export const RenderGames = () =>
         },
     });
 
-    const fetchData = (params) =>{
+    const fetchData = (params) => {
         var tParams;
         if(params != null)
         {
             tParams = {
-                pagination:{
+                pagination: {
                     current: params.current,
                     pageSize: params.pageSize,
                 },
             };
             setTableParams(tParams);
         }
-        else{
+        else
+        {
             tParams = tableParams;
         }
         
@@ -100,7 +101,7 @@ export const RenderGames = () =>
 
     if(gamesStatus === 'succeeded') 
     return (
-        <Table dataSource={games[0].Items.map((game, index) => {
+        <Table dataSource={games.Items.map((game, index) => {
             return {
             key: game.Id,
             index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,

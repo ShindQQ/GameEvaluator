@@ -36,9 +36,9 @@ public sealed class AuthenticationService : IAuthService
         if (user is not null)
         {
             if (!user.VerifyPassword(authModel.Password))
-                throw new PasswordException(nameof(user), user.Id);
+                return null;
             if (user.BanState is not null)
-                throw new BanException(nameof(user), user.Id);
+                return null;
 
             var userRoles = user.Roles;
 

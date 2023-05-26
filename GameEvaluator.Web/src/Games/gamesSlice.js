@@ -13,7 +13,7 @@ export const gamesSlice = createSlice({
     initialState: {
         status: 'idle',
         loading: false,
-        data: [] 
+        data: {} 
     },
     reducers: {
        
@@ -22,15 +22,16 @@ export const gamesSlice = createSlice({
         builder.addCase(fetchGames.pending, (state, action) => {
             state.loading = true;
             state.status = 'loading'
-          }).addCase(fetchGames.fulfilled, (state, action) => {
-              state.loading = false;
-              state.status = 'succeeded'
-              state.data.push(action.payload)
-          }).addCase(fetchGames.rejected, (state, action) => {
+        }).addCase(fetchGames.fulfilled, (state, action) => {
             state.loading = false;
-            state.status = 'failed'
-          })
-        }
+            state.status = 'succeeded'
+            state.data = action.payload
+        }).addCase(fetchGames.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+    }
 })
+
 export const selectAllGames = state => state.games.data
 export default gamesSlice.reducer;
