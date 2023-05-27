@@ -20,3 +20,31 @@ button {
 button:focus {
   outline: rgba(255,155,115,1) 5px ;
 }
+
+.ant-btn-primary {
+  background: rgba(252,196,98,1);
+}
+
+.ant-btn-primary:hover {
+  background: rgba(255,155,115,1) !important;
+}
+
+.ant-input:hover {
+  border-color: rgba(255,155,115,1) !important;
+  outline: 0;
+}
+
+.ant-input:focus {
+  border-color: rgba(255,155,115,1) !important;
+  outline: 0;
+}
+
+.ant-input-password:hover {
+  border-color: rgba(255,155,115,1) !important;
+  outline: 0;
+}
+
+.ant-input-password:focus {
+  border-color: rgba(255,155,115,1) !important;
+  outline: 0;
+}

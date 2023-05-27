@@ -69,11 +69,10 @@ export function Login(){
                 ]}
                 label={<label style={{color:'rgba(255,155,115,1)', margin:'0'}}>Password</label>} 
                 name={"password"}>
-                    <Input placeholder="Enter your password!" />
+                    <Input.Password placeholder="Enter your password!" required/>
                 </Form.Item>
                 <Button type="primary" htmlType="submit" block 
-                onClick={login}
-                style={{ backgroundColor: "rgba(252,196,98,1)", border:'none'}}>
+                onClick={login}>
                     Login
                 </Button>
             </Form>

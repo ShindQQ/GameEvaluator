@@ -4,7 +4,7 @@ import { Layout } from "./Layout"
 import { Login } from "./Login/Login";
 
 const App = () => {
-    if (localStorage.getItem("auth") != null && new Date().getTime() - localStorage.getItem("auth") > 36000000) {
+    if (localStorage.getItem("auth") != null && new Date(localStorage.getItem("auth").Expiration) >= new Date()) {
         localStorage.removeItem("auth");
         localStorage.removeItem("isAuthenticated");
     }
