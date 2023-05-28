@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import AnimatedRoutes from "./AnimatedRoutes"
-import { Layout } from "./Layout"
 import { Login } from "./Login/Login";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Games } from "./Games/Games";
+import { Home } from "./Home/Home";
 
 const App = () => {
     if (localStorage.getItem("auth") != null && new Date(localStorage.getItem("auth").Expiration) >= new Date()) {
@@ -17,14 +18,13 @@ const App = () => {
         localStorage.setItem("isAuthenticated", JSON.stringify(isAuthenticated));
     }, [isAuthenticated]);
 
-    if(isAuthenticated)
-        return (
-            <Layout>
-                <AnimatedRoutes />
-            </Layout>
-        )
-    else 
-        return <Login />
+    return (
+        <Routes>
+            <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}/>
+            <Route path="/login" element={<Login />}/>
+            <Route path="/games" element={<Games />}/>
+        </Routes>
+    )
 }
 
 export default App;

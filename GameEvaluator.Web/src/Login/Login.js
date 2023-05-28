@@ -1,10 +1,12 @@
 import { Button, Form, Input, Typography, message } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Login(){
 
     const [formValues, setFormValues] = useState({});
-    
+    const navigate = useNavigate();
+
     const handleFormChange = (changedValues, allValues) => {
         setFormValues(allValues);
     };
@@ -25,7 +27,7 @@ export function Login(){
         }).then(auth => {
             localStorage.setItem('auth', JSON.stringify(auth));
             message.success("Logined!")
-            window.location.reload(false);
+            navigate("/");
         }).catch(() => {
             message.error("Email or password are incorrect!");
         });

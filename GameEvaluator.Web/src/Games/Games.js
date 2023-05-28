@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { fetchGames, selectAllGames } from "./gamesSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import {Layout} from '../Layout';
 
 export const Games = () =>
 {
@@ -101,20 +102,22 @@ export const Games = () =>
 
     if(gamesStatus === 'succeeded') 
     return (
-        <Table dataSource={games.Items.map((game, index) => {
-            return {
-            key: game.Id,
-            index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-            name: game.Name,
-            description: game.Description,
-            averageRating: game.AverageRating,
-            genres: game.Genres,
-            companies: game.CompaniesNames,
-            platforms: game.Platforms
-        }})} 
-        pagination={tableParams.pagination}
-        loading={loading}
-        columns={columns}
-        onChange={fetchData}> </Table>
+        <Layout>
+            <Table dataSource={games.Items.map((game, index) => {
+                return {
+                    key: game.Id,
+                    index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                    name: game.Name,
+                    description: game.Description,
+                    averageRating: game.AverageRating,
+                    genres: game.Genres,
+                    companies: game.CompaniesNames,
+                    platforms: game.Platforms
+                }})} 
+                pagination={tableParams.pagination}
+                loading={loading}
+                columns={columns}
+                onChange={fetchData}> </Table>
+        </Layout>
     ); 
 }
