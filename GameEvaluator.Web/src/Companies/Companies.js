@@ -1,15 +1,13 @@
+import { useDispatch, useSelector } from "react-redux"
+import { fetchCompanies, selectAllCompanies } from "./companiesSlice"
 import { useEffect, useState } from "react";
-import { Table } from 'antd';
-import { fetchGames, selectAllGames } from "./gamesSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { Layout } from '../Layout';
+import { Table } from "antd";
 
-export const Games = () =>
-{
-    const games = useSelector(selectAllGames);
-    const gamesStatus = useSelector(state => state.games.status);
-    const loading = useSelector(state => state.games.loading);
+export const Companies = () => {
+    const companies = useSelector(selectAllCompanies);
+    const companiesStatus = useSelector(state => state.companies.status);
+    const loading = useSelector(state => state.companies.loading);
     const dispatch = useDispatch();
 
     const columns = [
@@ -30,27 +28,14 @@ export const Games = () =>
             key: 'description'
         },
         {
-            title: 'Average Rating',
-            key: 'averageRating',
-            render: payload => {
-                return <p>{!payload.AverageRating && payload.averageRating != 0 ? "No users" : payload.averageRating}</p>
-            },
-            sorter: (a, b) => a.index - b.index
+            title: 'Games',
+            dataIndex: 'games',
+            key: 'games'
         },
         {
-            title: 'Genres',
-            dataIndex: 'genres',
-            key: 'genres'
-        },
-        {
-            title: 'Companies',
-            dataIndex: 'companies',
-            key: 'companies'
-        },
-        {
-            title: 'Platforms',
-            dataIndex: 'platforms',
-            key: 'platforms'
+            title: 'Workers',
+            dataIndex: 'workers',
+            key: 'workers'
         },
     ];
 
@@ -79,7 +64,7 @@ export const Games = () =>
         {
             tParams = tableParams;
         }
-        
+
         setTableParams({
             ...tableParams,
             pagination: {
@@ -87,38 +72,37 @@ export const Games = () =>
                 pageSize: tParams.pagination.pageSize,
                 showSizeChanger: true, 
                 pageSizeOptions: ['2', '5','10', '20', '30'],
-                total: games.TotalCount
+                total: companies.TotalCount
             }
         });
     }
-    
+
     useEffect(() => {
-        if(gamesStatus === 'idle')
+        if(companiesStatus === 'idle')
         {
-            dispatch(fetchGames(tableParams));
+            dispatch(fetchCompanies(tableParams));
             fetchData();
         }
-    }, [gamesStatus, dispatch]);
+    }, [companiesStatus, dispatch]);
 
-    if(gamesStatus === 'succeeded') 
+    if(companiesStatus === 'succeeded')
     return (
         <Layout>
-            <Table dataSource={games.Items.map((game, index) => {
+            <Table dataSource={companies.Items.map((company, index) => {
                 return {
-                    key: game.Id,
+                    key: company.Id,
                     index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: game.Name,
-                    description: game.Description,
-                    averageRating: game.AverageRating,
-                    genres: game.Genres.length !== 0 ? game.Genres.join(' ') : 'There is no genres yet',
-                    companies: game.CompaniesNames,
-                    platforms: game.Platforms.length !== 0 ? game.Platforms.join(' ') : 'There is no genres yet'
-                }})} 
+                    name: company.Name, 
+                    description: company.Description,
+                    games: company.Games.length !== 0 ? company.Games.map(game => game.Name).join(" ") : "Company has no games",
+                    workers: company.Workers.length !== 0 ? company.Workers.map(worker => worker.Name).join(" ") : "Company has no workers",
+                }
+                })}
                 pagination={tableParams.pagination}
                 loading={loading}
                 columns={columns}
-                onChange={fetchData}> 
+                onChange={fetchData}>
             </Table>
         </Layout>
-    ); 
+    )
 }

@@ -1,15 +1,14 @@
+import { useDispatch, useSelector } from "react-redux"
+import { fetchGenres, selectAllGenres } from "./genresSlice"
 import { useEffect, useState } from "react";
-import { Table } from 'antd';
-import { fetchGames, selectAllGames } from "./gamesSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { Layout } from '../Layout';
+import { Layout } from "../Layout";
+import { Table } from "antd";
 
-export const Games = () =>
-{
-    const games = useSelector(selectAllGames);
-    const gamesStatus = useSelector(state => state.games.status);
-    const loading = useSelector(state => state.games.loading);
+
+export const Genres = () => {
+    const genres = useSelector(selectAllGenres);
+    const genresStatus = useSelector(state => state.genres.status);
+    const loading = useSelector(state => state.genres.loading);
     const dispatch = useDispatch();
 
     const columns = [
@@ -28,29 +27,6 @@ export const Games = () =>
             title: 'Description',
             dataIndex: 'description',
             key: 'description'
-        },
-        {
-            title: 'Average Rating',
-            key: 'averageRating',
-            render: payload => {
-                return <p>{!payload.AverageRating && payload.averageRating != 0 ? "No users" : payload.averageRating}</p>
-            },
-            sorter: (a, b) => a.index - b.index
-        },
-        {
-            title: 'Genres',
-            dataIndex: 'genres',
-            key: 'genres'
-        },
-        {
-            title: 'Companies',
-            dataIndex: 'companies',
-            key: 'companies'
-        },
-        {
-            title: 'Platforms',
-            dataIndex: 'platforms',
-            key: 'platforms'
         },
     ];
 
@@ -87,32 +63,28 @@ export const Games = () =>
                 pageSize: tParams.pagination.pageSize,
                 showSizeChanger: true, 
                 pageSizeOptions: ['2', '5','10', '20', '30'],
-                total: games.TotalCount
+                total: genres.TotalCount
             }
         });
     }
-    
+
     useEffect(() => {
-        if(gamesStatus === 'idle')
+        if(genresStatus === 'idle')
         {
-            dispatch(fetchGames(tableParams));
+            dispatch(fetchGenres(tableParams));
             fetchData();
         }
-    }, [gamesStatus, dispatch]);
+    }, [genresStatus, dispatch]);
 
-    if(gamesStatus === 'succeeded') 
+    if(genresStatus === 'succeeded') 
     return (
         <Layout>
-            <Table dataSource={games.Items.map((game, index) => {
+            <Table dataSource={genres.Items.map((genre, index) => {
                 return {
-                    key: game.Id,
+                    key: genre.Id,
                     index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: game.Name,
-                    description: game.Description,
-                    averageRating: game.AverageRating,
-                    genres: game.Genres.length !== 0 ? game.Genres.join(' ') : 'There is no genres yet',
-                    companies: game.CompaniesNames,
-                    platforms: game.Platforms.length !== 0 ? game.Platforms.join(' ') : 'There is no genres yet'
+                    name: genre.Name,
+                    description: genre.Description,
                 }})} 
                 pagination={tableParams.pagination}
                 loading={loading}

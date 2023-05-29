@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Menu } from 'antd';
-import { HomeOutlined, FundOutlined, TeamOutlined, BugOutlined, FireOutlined, GlobalOutlined } from '@ant-design/icons';
+import { HomeOutlined, FundOutlined, TeamOutlined, BugOutlined, FireOutlined, GlobalOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 export class Layout extends Component {
@@ -61,16 +61,24 @@ function RenderMenu(){
     return (
         <Menu
             onClick={({key})=>{
-                navigate(key);
+                if(key=='signout') {
+                    localStorage.removeItem("auth");
+                    localStorage.removeItem("isAuthenticated");
+                    navigate('/login');
+                }
+                else {
+                    navigate(key);
+                }
             }}
             style={{minWidth:'10%', fontSize:'18px'}}
             items={[
-                { label:"Home", key:'/', icon:<HomeOutlined /> },
-                { label:"Companies", key:'/companies', icon:<FundOutlined /> },
-                { label:"Games", key:'/games', icon:<BugOutlined /> },
-                { label:"Genres", key:'/genres', icon:<FireOutlined /> },
-                { label:"Platforms", key:'/platforms', icon:<GlobalOutlined /> },
-                { label:"Users", key:'/users', icon:<TeamOutlined /> },
+                { label: "Home", key:'/home', icon:<HomeOutlined /> },
+                { label: "Companies", key:'/companies', icon:<FundOutlined /> },
+                { label: "Games", key:'/games', icon:<BugOutlined /> },
+                { label: "Genres", key:'/genres', icon:<FireOutlined /> },
+                { label: "Platforms", key:'/platforms', icon:<GlobalOutlined /> },
+                { label: "Users", key:'/users', icon:<TeamOutlined /> },
+                { label: "Signout", key: 'signout', danger:true, icon:<PoweroffOutlined /> }
             ]}>
         </Menu>
     );

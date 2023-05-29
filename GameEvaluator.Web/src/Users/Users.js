@@ -1,15 +1,13 @@
+import { useDispatch, useSelector } from "react-redux"
+import { fetchUsers, selectAllUsers } from "./usersSlice"
 import { useEffect, useState } from "react";
-import { Table } from 'antd';
-import { fetchGames, selectAllGames } from "./gamesSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { Layout } from '../Layout';
+import { Layout } from "../Layout";
+import { Table } from "antd";
 
-export const Games = () =>
-{
-    const games = useSelector(selectAllGames);
-    const gamesStatus = useSelector(state => state.games.status);
-    const loading = useSelector(state => state.games.loading);
+export const Users = () => {
+    const users = useSelector(selectAllUsers);
+    const usersStatus = useSelector(state => state.users.status);
+    const loading = useSelector(state => state.users.loading);
     const dispatch = useDispatch();
 
     const columns = [
@@ -25,32 +23,39 @@ export const Games = () =>
             key: 'name'
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description'
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email'
         },
         {
-            title: 'Average Rating',
-            key: 'averageRating',
-            render: payload => {
-                return <p>{!payload.AverageRating && payload.averageRating != 0 ? "No users" : payload.averageRating}</p>
-            },
-            sorter: (a, b) => a.index - b.index
+            title: 'Games',
+            dataIndex: 'games',
+            key: 'games'
         },
         {
-            title: 'Genres',
-            dataIndex: 'genres',
-            key: 'genres'
+            title: 'Roles',
+            dataIndex: 'roles',
+            key: 'roles'
         },
         {
-            title: 'Companies',
-            dataIndex: 'companies',
-            key: 'companies'
+            title: 'Company',
+            dataIndex: 'company',
+            key: 'company'
         },
         {
-            title: 'Platforms',
-            dataIndex: 'platforms',
-            key: 'platforms'
+            title: 'Banned',
+            dataIndex: 'banned',
+            key: 'banned'
+        },
+        {
+            title: 'BannedAt',
+            dataIndex: 'bannedAt',
+            key: 'bannedAt'
+        },
+        {
+            title: 'BannedTo',
+            dataIndex: 'bannedTo',
+            key: 'bannedTo'
         },
     ];
 
@@ -87,32 +92,34 @@ export const Games = () =>
                 pageSize: tParams.pagination.pageSize,
                 showSizeChanger: true, 
                 pageSizeOptions: ['2', '5','10', '20', '30'],
-                total: games.TotalCount
+                total: users.TotalCount
             }
         });
     }
-    
+
     useEffect(() => {
-        if(gamesStatus === 'idle')
+        if(usersStatus === 'idle')
         {
-            dispatch(fetchGames(tableParams));
+            dispatch(fetchUsers(tableParams));
             fetchData();
         }
-    }, [gamesStatus, dispatch]);
+    }, [usersStatus, dispatch]);
 
-    if(gamesStatus === 'succeeded') 
+    if(usersStatus === 'succeeded') 
     return (
         <Layout>
-            <Table dataSource={games.Items.map((game, index) => {
+            <Table dataSource={users.Items.map((user, index) => {
                 return {
-                    key: game.Id,
+                    key: user.Id,
                     index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: game.Name,
-                    description: game.Description,
-                    averageRating: game.AverageRating,
-                    genres: game.Genres.length !== 0 ? game.Genres.join(' ') : 'There is no genres yet',
-                    companies: game.CompaniesNames,
-                    platforms: game.Platforms.length !== 0 ? game.Platforms.join(' ') : 'There is no genres yet'
+                    name: user.Name,
+                    email: user.Email,
+                    games: user.Games.length !== 0 ? user.Games.map(game => game.Name).join(' ') : "User has no games",
+                    roles: user.Roles.join(' '),
+                    company: user.Company,
+                    banned: user.Banned == true ? 'Banned' : 'Not Banned',
+                    bannedAt: user.BannedAt != null ? user.BannedAt : 'Not Banned',
+                    bannedTo: user.BannedTo != null ? user.BannedTo : 'Not Banned'
                 }})} 
                 pagination={tableParams.pagination}
                 loading={loading}
