@@ -22,12 +22,34 @@ export const deleteGame = createAsyncThunk(
             }).then(response => {
                 if(response.status !== 204)
                     throw new Error('Access Denied');
-    
-                return response.json();
-            }).then(() => {
-                message.success("Deleted!")
+
+                return true;
             }).catch(() => {
-                message.error("Access Denied!");
+                message.error('Access Denied');
+            });
+            
+        return response;
+    }
+)
+
+export const updateGame = createAsyncThunk(
+    '/api/Games/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.Id}`, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({Name:values.name, Description:values.description})
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch(() => {
+                message.error('Access Denied');
             });
 
         return response;

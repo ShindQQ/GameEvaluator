@@ -72,7 +72,7 @@ function RenderMenu(){
             }}
             style={{minWidth:'10%', fontSize:'18px'}}
             items={[
-                { label: "Home", key:'/home', icon:<HomeOutlined /> },
+                { label: "Home", key:'/', icon:<HomeOutlined /> },
                 { label: "Companies", key:'/companies', icon:<FundOutlined /> },
                 { label: "Games", key:'/games', icon:<BugOutlined /> },
                 { label: "Genres", key:'/genres', icon:<FireOutlined /> },

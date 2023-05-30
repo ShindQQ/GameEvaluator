@@ -30,18 +30,39 @@ export const deleteUser = createAsyncThunk(
             }).then(response => {
                 if(response.status !== 204)
                     throw new Error('Access Denied');
-    
-                return response.json();
-            }).then(() => {
-                message.success("Deleted!")
+
+                return true;
             }).catch(() => {
-                message.error("Access Denied!");
+                message.error('Access Denied');
             });
 
         return response;
     }
 )
 
+export const updateUser = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.Id}`, {
+            method: "PATCH",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({Name:values.name, Email:values.email})
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch(() => {
+                message.error('Access Denied');
+            });
+
+        return response;
+    }
+)
 
 export const usersSlice = createSlice({
     name: 'users',

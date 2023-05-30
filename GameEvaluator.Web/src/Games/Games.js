@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Button, Table } from 'antd';
-import { deleteGame, fetchGames, selectAllGames } from "./gamesSlice";
+import { Button, Form, Input, Table } from 'antd';
+import { deleteGame, fetchGames, selectAllGames, updateGame } from "./gamesSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Layout } from '../Layout';
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditFilled, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-export const Games = () =>
-{
+export const Games = () => {
+    const [editRow, setEditRow] = useState(null);
     const games = useSelector(selectAllGames);
     const gamesStatus = useSelector(state => state.games.status);
     const loading = useSelector(state => state.games.loading);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     const columns = [
         {
@@ -23,12 +26,54 @@ export const Games = () =>
         {
             title: 'Name',
             dataIndex: 'name',
-            key: 'name'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="name"
+                        rules={[{
+                            required:true,
+                            message:'Please enter name',
+                        },
+                        {
+                            min: 3,
+                            max: 20,
+                            message:'Name should have from 3 to 20 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Description',
             dataIndex: 'description',
-            key: 'description'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="description"
+                        rules={[{
+                            required:true,
+                            message:'Please enter description',
+                        },
+                        {
+                            min: 20,
+                            max: 200,
+                            message:'Description should have from 20 to 200 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Average Rating',
@@ -58,12 +103,29 @@ export const Games = () =>
             render: (_, record) => {
                 return (
                     <>
-                    <Button type='text' danger={true}
-                    onClick={() => { 
-                        dispatch(deleteGame(record.key));
-                        }}>
-                        <DeleteOutlined />
-                    </Button>
+                        <div>
+                            <Button type='text' 
+                            onClick={() => {
+                                setEditRow(record.key);
+                                form.setFieldsValue({
+                                    name: record.name,
+                                    description: record.description
+                                });
+                            }}>
+                                <EditOutlined />
+                            </Button>
+                            <Button type='text' htmlType="submit">
+                                <SaveOutlined />
+                            </Button>
+                        </div>
+                        <Button type='text' danger={true}
+                        onClick={async () => { 
+                            const response = await dispatch(deleteGame(record.key));
+                            if(response.payload === true)
+                                navigate(0);
+                            }}>
+                            <DeleteOutlined />
+                        </Button>
                     </>
                 )
             }
@@ -80,8 +142,6 @@ export const Games = () =>
     });
 
     const fetchData = (params) => {
-        dispatch(fetchGames(tableParams));
-
         var tParams;
         if(params != null)
         {
@@ -113,29 +173,39 @@ export const Games = () =>
     useEffect(() => {
         if(gamesStatus === 'idle')
         {
+            dispatch(fetchGames(tableParams));
             fetchData();
         }
     }, [gamesStatus, dispatch]);
 
+    const onFinish = async (values) => {
+        const response = await dispatch(updateGame({Id: editRow, name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+        setEditRow(null);
+    }
+    
     if(gamesStatus === 'succeeded') 
     return (
         <Layout>
-            <Table dataSource={games.Items.map((game, index) => {
-                return {
-                    key: game.Id,
-                    index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: game.Name,
-                    description: game.Description,
-                    averageRating: game.AverageRating,
-                    genres: game.Genres.length !== 0 ? game.Genres.join(' ') : 'There is no genres yet',
-                    companies: game.CompaniesNames,
-                    platforms: game.Platforms.length !== 0 ? game.Platforms.join(' ') : 'There is no genres yet'
-                }})} 
-                pagination={tableParams.pagination}
-                loading={loading}
-                columns={columns}
-                onChange={fetchData}> 
-            </Table>
+            <Form form={form} onFinish={onFinish}>
+                <Table dataSource={games.Items.map((game, index) => {
+                    return {
+                        key: game.Id,
+                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        name: game.Name,
+                        description: game.Description,
+                        averageRating: game.AverageRating,
+                        genres: game.Genres.length !== 0 ? game.Genres.join(' ') : 'There is no genres yet',
+                        companies: game.CompaniesNames,
+                        platforms: game.Platforms.length !== 0 ? game.Platforms.join(' ') : 'There is no genres yet'
+                    }})} 
+                    pagination={tableParams.pagination}
+                    loading={loading}
+                    columns={columns}
+                    onChange={fetchData}> 
+                </Table>
+            </Form>
         </Layout>
     ); 
 }

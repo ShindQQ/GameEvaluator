@@ -1,15 +1,19 @@
 import { useDispatch, useSelector } from "react-redux"
-import { deleteCompany, fetchCompanies, selectAllCompanies } from "./companiesSlice"
+import { deleteCompany, fetchCompanies, selectAllCompanies, updateCompany } from "./companiesSlice"
 import { useEffect, useState } from "react";
 import { Layout } from '../Layout';
-import { Button, Table } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Table } from "antd";
+import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export const Companies = () => {
+    const [editRow, setEditRow] = useState(null);
     const companies = useSelector(selectAllCompanies);
     const companiesStatus = useSelector(state => state.companies.status);
     const loading = useSelector(state => state.companies.loading);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     const columns = [
         {
@@ -21,12 +25,54 @@ export const Companies = () => {
         {
             title: 'Name',
             dataIndex: 'name',
-            key: 'name'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="name"
+                        rules={[{
+                            required:true,
+                            message:'Please enter name',
+                        },
+                        {
+                            min: 3,
+                            max: 20,
+                            message:'Name should have from 3 to 20 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Description',
             dataIndex: 'description',
-            key: 'description'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="description"
+                        rules={[{
+                            required:true,
+                            message:'Please enter description',
+                        },
+                        {
+                            min: 20,
+                            max: 200,
+                            message:'Description should have from 20 to 200 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Games',
@@ -43,12 +89,29 @@ export const Companies = () => {
             render: (_, record) => {
                 return (
                     <>
-                    <Button type='text' danger={true}
-                    onClick={() => { 
-                        dispatch(deleteCompany(record.key));
-                        }}>
-                        <DeleteOutlined />
-                    </Button>
+                        <div>
+                            <Button type='text' 
+                            onClick={() => {
+                                setEditRow(record.key);
+                                form.setFieldsValue({
+                                    name: record.name,
+                                    description: record.description
+                                });
+                            }}>
+                                <EditOutlined />
+                            </Button>
+                            <Button type='text' htmlType="submit">
+                                <SaveOutlined />
+                            </Button>
+                        </div>
+                        <Button type='text' danger={true}
+                        onClick={async () => { 
+                            const response = await dispatch(deleteCompany(record.key));
+                            if(response.payload === true)
+                                navigate(0);
+                            }}>
+                            <DeleteOutlined />
+                        </Button>
                     </>
                 )
             }
@@ -101,24 +164,33 @@ export const Companies = () => {
         }
     }, [companiesStatus, dispatch]);
 
+    const onFinish = async (values) => {
+        const response = await dispatch(updateCompany({Id: editRow, name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+        setEditRow(null);
+    }
+
     if(companiesStatus === 'succeeded')
     return (
         <Layout>
-            <Table dataSource={companies.Items.map((company, index) => {
-                return {
-                    key: company.Id,
-                    index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: company.Name, 
-                    description: company.Description,
-                    games: company.Games.length !== 0 ? company.Games.map(game => game.Name).join(" ") : "Company has no games",
-                    workers: company.Workers.length !== 0 ? company.Workers.map(worker => worker.Name).join(" ") : "Company has no workers",
-                }
+            <Form form={form} onFinish={onFinish}>
+                <Table dataSource={companies.Items.map((company, index) => {
+                    return {
+                        key: company.Id,
+                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        name: company.Name, 
+                        description: company.Description,
+                        games: company.Games.length !== 0 ? company.Games.map(game => game.Name).join(" ") : "Company has no games",
+                        workers: company.Workers.length !== 0 ? company.Workers.map(worker => worker.Name).join(" ") : "Company has no workers",
+                    }
                 })}
                 pagination={tableParams.pagination}
                 loading={loading}
                 columns={columns}
                 onChange={fetchData}>
-            </Table>
+                </Table>
+            </Form>
         </Layout>
     )
 }

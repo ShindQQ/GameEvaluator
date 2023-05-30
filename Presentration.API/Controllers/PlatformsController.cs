@@ -63,13 +63,13 @@ public sealed class PlatformsController : ControllerBase
 
     [HttpPatch("{platformId}")]
     public async Task<IActionResult> UpdateAsync(
-        [FromRoute] PlatformId genreId,
+        [FromRoute] PlatformId platformId,
         [FromBody] UpdatePlatformRequest request,
         CancellationToken cancellationToken)
     {
         await _mediator.Send(new UpdatePlatformCommand
         {
-            Id = genreId,
+            Id = platformId,
             Name = request.Name,
             Description = request.Description,
         }, cancellationToken);

@@ -1,15 +1,19 @@
 import { useDispatch, useSelector } from "react-redux"
-import { deletePlatform, fetchPlatforms, selectAllPlatofrms } from "./platformsSlice"
+import { deletePlatform, fetchPlatforms, selectAllPlatofrms, updatePlatform } from "./platformsSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, Table } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Table } from "antd";
+import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export const Platforms = () => {
+    const [editRow, setEditRow] = useState(null);
     const platforms = useSelector(selectAllPlatofrms);
     const platformsStatus = useSelector(state => state.platforms.status);
     const loading = useSelector(state => state.platforms.loading);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
 
     const columns = [
         {
@@ -21,24 +25,83 @@ export const Platforms = () => {
         {
             title: 'Name',
             dataIndex: 'name',
-            key: 'name'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="name"
+                        rules={[{
+                            required:true,
+                            message:'Please enter name',
+                        },
+                        {
+                            min: 3,
+                            max: 20,
+                            message:'Name should have from 3 to 20 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Description',
             dataIndex: 'description',
-            key: 'description'
+            render: (text, record)=>{
+                if(editRow === record.key){
+                    return (
+                        <Form.Item name="description"
+                        rules={[{
+                            required:true,
+                            message:'Please enter description',
+                        },
+                        {
+                            min: 20,
+                            max: 200,
+                            message:'Description should have from 20 to 200 characters'
+                        }
+                        ]}>
+                            <Input />
+                        </Form.Item>
+                    )
+                }
+                else{
+                    return <p>{text}</p>
+                }
+            }
         },
         {
             title: 'Actions',
             render: (_, record) => {
                 return (
                     <>
-                    <Button type='text' danger={true}
-                    onClick={() => { 
-                        dispatch(deletePlatform(record.key));
-                        }}>
-                        <DeleteOutlined />
-                    </Button>
+                        <div>
+                            <Button type='text' 
+                            onClick={() => {
+                                setEditRow(record.key);
+                                form.setFieldsValue({
+                                    name: record.name,
+                                    description: record.description
+                                });
+                            }}>
+                                <EditOutlined />
+                            </Button>
+                            <Button type='text' htmlType="submit">
+                                <SaveOutlined />
+                            </Button>
+                        </div>
+                        <Button type='text' danger={true}
+                        onClick={async () => { 
+                            const response = await dispatch(deletePlatform(record.key));
+                            if(response.payload === true)
+                                navigate(0);
+                            }}>
+                            <DeleteOutlined />
+                        </Button>
                     </>
                 )
             }
@@ -91,21 +154,30 @@ export const Platforms = () => {
         }
     }, [platformsStatus, dispatch]);
 
+    const onFinish = async (values) => {
+        const response = await dispatch(updatePlatform({Id: editRow, name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+        setEditRow(null);
+    }
+
     if(platformsStatus === 'succeeded') 
     return (
         <Layout>
-            <Table dataSource={platforms.Items.map((platform, index) => {
-                return {
-                    key: platform.Id,
-                    index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
-                    name: platform.Name,
-                    description: platform.Description,
-                }})} 
-                pagination={tableParams.pagination}
-                loading={loading}
-                columns={columns}
-                onChange={fetchData}> 
-            </Table>
+            <Form form={form} onFinish={onFinish}>
+                <Table dataSource={platforms.Items.map((platform, index) => {
+                    return {
+                        key: platform.Id,
+                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        name: platform.Name,
+                        description: platform.Description,
+                    }})} 
+                    pagination={tableParams.pagination}
+                    loading={loading}
+                    columns={columns}
+                    onChange={fetchData}> 
+                </Table>
+            </Form>
         </Layout>
     ); 
 }
