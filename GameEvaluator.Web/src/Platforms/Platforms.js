@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { fetchPlatforms, selectAllPlatofrms } from "./platformsSlice"
+import { deletePlatform, fetchPlatforms, selectAllPlatofrms } from "./platformsSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Table } from "antd";
+import { Button, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const Platforms = () => {
     const platforms = useSelector(selectAllPlatofrms);
@@ -27,6 +28,21 @@ export const Platforms = () => {
             dataIndex: 'description',
             key: 'description'
         },
+        {
+            title: 'Actions',
+            render: (_, record) => {
+                return (
+                    <>
+                    <Button type='text' danger={true}
+                    onClick={() => { 
+                        dispatch(deletePlatform(record.key));
+                        }}>
+                        <DeleteOutlined />
+                    </Button>
+                    </>
+                )
+            }
+        }
     ];
 
     const [tableParams, setTableParams] = useState({

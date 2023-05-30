@@ -1,10 +1,36 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { message } from "antd";
 
 export const fetchGames = createAsyncThunk(
     '/api/Games',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Games/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`);
         return await response.json();
+    }
+)
+
+export const deleteGame = createAsyncThunk(
+    '/api/Games/',
+    async (gameId, thunkAPI) => {
+        const response = await fetch(`/api/Games/${gameId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            }
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return response.json();
+            }).then(() => {
+                message.success("Deleted!")
+            }).catch(() => {
+                message.error("Access Denied!");
+            });
+
+        return response;
     }
 )
 

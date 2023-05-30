@@ -27,7 +27,7 @@ const App = () => {
 
     return (
         <Routes>
-            <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}/>
+            <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}/>
             <Route path="/login" element={<Login />}/>
             <Route path="/games" element={isAuthenticated ? <Games /> : <Navigate to="/login" replace />}/>
             <Route path="/companies" element={isAuthenticated ? <Companies /> : <Navigate to="/login" replace />}/>

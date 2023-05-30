@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { message } from "antd";
 
 export const fetchUsers = createAsyncThunk(
     '/api/Users',
@@ -15,6 +16,32 @@ export const fetchUsers = createAsyncThunk(
         return await response.json();
     }
 )
+
+export const deleteUser = createAsyncThunk(
+    '/api/Users/',
+    async (userId, thunkAPI) => {
+        const response = await fetch(`/api/Users/${userId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            }
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return response.json();
+            }).then(() => {
+                message.success("Deleted!")
+            }).catch(() => {
+                message.error("Access Denied!");
+            });
+
+        return response;
+    }
+)
+
 
 export const usersSlice = createSlice({
     name: 'users',

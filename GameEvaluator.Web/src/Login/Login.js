@@ -27,7 +27,7 @@ export function Login(){
         }).then(auth => {
             localStorage.setItem('auth', JSON.stringify(auth));
             message.success("Logined!")
-            navigate("/home", { replace: true });
+            navigate("/", { replace: true });
             navigate(0);
         }).catch(() => {
             message.error("Email or password are incorrect!");

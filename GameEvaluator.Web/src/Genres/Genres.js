@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { fetchGenres, selectAllGenres } from "./genresSlice"
+import { deleteGenre, fetchGenres, selectAllGenres } from "./genresSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Table } from "antd";
+import { Button, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 
 export const Genres = () => {
@@ -28,6 +29,21 @@ export const Genres = () => {
             dataIndex: 'description',
             key: 'description'
         },
+        {
+            title: 'Actions',
+            render: (_, record) => {
+                return (
+                    <>
+                    <Button type='text' danger={true}
+                    onClick={() => { 
+                        dispatch(deleteGenre(record.key));
+                        }}>
+                        <DeleteOutlined />
+                    </Button>
+                    </>
+                )
+            }
+        }
     ];
 
     const [tableParams, setTableParams] = useState({

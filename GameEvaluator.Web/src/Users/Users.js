@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { fetchUsers, selectAllUsers } from "./usersSlice"
+import { deleteUser, fetchUsers, selectAllUsers } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Table } from "antd";
+import { Button, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const Users = () => {
     const users = useSelector(selectAllUsers);
@@ -57,6 +58,21 @@ export const Users = () => {
             dataIndex: 'bannedTo',
             key: 'bannedTo'
         },
+        {
+            title: 'Actions',
+            render: (_, record) => {
+                return (
+                    <>
+                    <Button type='text' danger={true}
+                    onClick={() => { 
+                        dispatch(deleteUser(record.key));
+                        }}>
+                        <DeleteOutlined />
+                    </Button>
+                    </>
+                )
+            }
+        }
     ];
 
     const [tableParams, setTableParams] = useState({

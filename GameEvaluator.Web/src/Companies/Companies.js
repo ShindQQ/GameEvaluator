@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { fetchCompanies, selectAllCompanies } from "./companiesSlice"
+import { deleteCompany, fetchCompanies, selectAllCompanies } from "./companiesSlice"
 import { useEffect, useState } from "react";
 import { Layout } from '../Layout';
-import { Table } from "antd";
+import { Button, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const Companies = () => {
     const companies = useSelector(selectAllCompanies);
@@ -37,6 +38,21 @@ export const Companies = () => {
             dataIndex: 'workers',
             key: 'workers'
         },
+        {
+            title: 'Actions',
+            render: (_, record) => {
+                return (
+                    <>
+                    <Button type='text' danger={true}
+                    onClick={() => { 
+                        dispatch(deleteCompany(record.key));
+                        }}>
+                        <DeleteOutlined />
+                    </Button>
+                    </>
+                )
+            }
+        }
     ];
 
     const [tableParams, setTableParams] = useState({

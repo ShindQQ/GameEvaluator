@@ -15,11 +15,11 @@ internal class UserGameConfiguration : IEntityTypeConfiguration<UserGame>
         builder.HasOne(userGame => userGame.User)
             .WithMany(user => user.UserGames)
             .HasForeignKey(userGame => userGame.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(userGame => userGame.Game)
             .WithMany(user => user.GameUsers)
             .HasForeignKey(userGame => userGame.GameId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

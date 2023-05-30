@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Table } from 'antd';
-import { fetchGames, selectAllGames } from "./gamesSlice";
+import { Button, Table } from 'antd';
+import { deleteGame, fetchGames, selectAllGames } from "./gamesSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Layout } from '../Layout';
+import { DeleteOutlined } from "@ant-design/icons";
 
 export const Games = () =>
 {
@@ -52,6 +53,21 @@ export const Games = () =>
             dataIndex: 'platforms',
             key: 'platforms'
         },
+        {
+            title: 'Actions',
+            render: (_, record) => {
+                return (
+                    <>
+                    <Button type='text' danger={true}
+                    onClick={() => { 
+                        dispatch(deleteGame(record.key));
+                        }}>
+                        <DeleteOutlined />
+                    </Button>
+                    </>
+                )
+            }
+        }
     ];
 
     const [tableParams, setTableParams] = useState({
@@ -64,6 +80,8 @@ export const Games = () =>
     });
 
     const fetchData = (params) => {
+        dispatch(fetchGames(tableParams));
+
         var tParams;
         if(params != null)
         {
@@ -95,7 +113,6 @@ export const Games = () =>
     useEffect(() => {
         if(gamesStatus === 'idle')
         {
-            dispatch(fetchGames(tableParams));
             fetchData();
         }
     }, [gamesStatus, dispatch]);
