@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { deleteGenre, fetchGenres, selectAllGenres, updateGenre } from "./genresSlice"
+import { addGenre, deleteGenre, fetchGenres, selectAllGenres, updateGenre } from "./genresSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, Form, Input, Table, message } from "antd";
-import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Table, message } from "antd";
+import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 export const Genres = () => {
     const [editRow, setEditRow] = useState(null);
+    const [addRow, setAddRow] = useState(false);
     const genres = useSelector(selectAllGenres);
     const genresStatus = useSelector(state => state.genres.status);
     const loading = useSelector(state => state.genres.loading);
@@ -21,6 +22,11 @@ export const Genres = () => {
             dataIndex: 'index',
             key: 'number',
             sorter: (a, b) => a.index - b.index
+        },
+        {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Name',
@@ -161,14 +167,28 @@ export const Genres = () => {
         setEditRow(null);
     }
 
+    const onAdd = () =>{
+        setAddRow(true);
+    }
+
+    const handleAdd = async (values) =>{
+        const response = await dispatch(addGenre({name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
     if(genresStatus === 'succeeded') 
     return (
         <Layout>
+            <Button onClick={onAdd} type="primary" htmlType="submit">
+                <AppstoreAddOutlined /> Add Genre
+            </Button>
             <Form form={form} onFinish={onFinish}>
                 <Table
                 dataSource={genres.Items.map((genre, index) => {
                     return {
                         key: genre.Id,
+                        id: genre.Id,
                         index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: genre.Name,
                         description: genre.Description,
@@ -179,6 +199,56 @@ export const Genres = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
+            <Modal
+            open={addRow}
+            title="Add Genre"
+            okText="Add"
+            footer={[]}
+            onCancel={() => {
+                setAddRow(false);
+            }}
+            onOk={() => {
+                setAddRow(false);
+            }}
+            >
+                <Form onFinish={handleAdd}>
+                    <Form.Item name="name"
+                            rules={[{
+                                required:true,
+                                message:'Please enter name',
+                            },
+                            {
+                                min: 3,
+                                max: 20,
+                                message:'Name should have from 3 to 20 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Name <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item name="description"
+                            rules={[{
+                                required:true,
+                                message:'Please enter description',
+                            },
+                            {
+                                min: 20,
+                                max: 200,
+                                message:'Description should have from 20 to 200 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Description <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
         </Layout>
     ); 
 }

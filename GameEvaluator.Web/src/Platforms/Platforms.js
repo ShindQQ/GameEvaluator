@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { deletePlatform, fetchPlatforms, selectAllPlatofrms, updatePlatform } from "./platformsSlice"
+import { addPlatform, deletePlatform, fetchPlatforms, selectAllPlatofrms, updatePlatform } from "./platformsSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, Form, Input, Table } from "antd";
-import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Table } from "antd";
+import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 export const Platforms = () => {
     const [editRow, setEditRow] = useState(null);
+    const [addRow, setAddRow] = useState(false);
     const platforms = useSelector(selectAllPlatofrms);
     const platformsStatus = useSelector(state => state.platforms.status);
     const loading = useSelector(state => state.platforms.loading);
@@ -21,6 +22,11 @@ export const Platforms = () => {
             dataIndex: 'index',
             key: 'number',
             sorter: (a, b) => a.index - b.index
+        },
+        {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Name',
@@ -161,13 +167,27 @@ export const Platforms = () => {
         setEditRow(null);
     }
 
+    const onAdd = () =>{
+        setAddRow(true);
+    }
+
+    const handleAdd = async (values) =>{
+        const response = await dispatch(addPlatform({name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
     if(platformsStatus === 'succeeded') 
     return (
         <Layout>
+            <Button onClick={onAdd} type="primary" htmlType="submit">
+                <AppstoreAddOutlined /> Add Platform
+            </Button>
             <Form form={form} onFinish={onFinish}>
                 <Table dataSource={platforms.Items.map((platform, index) => {
                     return {
                         key: platform.Id,
+                        id: platform.Id,
                         index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: platform.Name,
                         description: platform.Description,
@@ -178,6 +198,56 @@ export const Platforms = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
+            <Modal
+            open={addRow}
+            title="Add Platform"
+            okText="Add"
+            footer={[]}
+            onCancel={() => {
+                setAddRow(false);
+            }}
+            onOk={() => {
+                setAddRow(false);
+            }}
+            >
+                <Form onFinish={handleAdd}>
+                    <Form.Item name="name"
+                            rules={[{
+                                required:true,
+                                message:'Please enter name',
+                            },
+                            {
+                                min: 3,
+                                max: 20,
+                                message:'Name should have from 3 to 20 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Name <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item name="description"
+                            rules={[{
+                                required:true,
+                                message:'Please enter description',
+                            },
+                            {
+                                min: 20,
+                                max: 200,
+                                message:'Description should have from 20 to 200 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Description <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
         </Layout>
     ); 
 }

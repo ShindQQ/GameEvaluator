@@ -105,7 +105,7 @@ public sealed class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("/recomended/{userId}/{ammountOfGames}")]
+    [HttpGet("recomended/{userId}/{ammountOfGames}")]
     public async Task<IActionResult> GetRecomendedGamesAsync(
         UserId userId,
         int ammountOfGames,
@@ -150,7 +150,7 @@ public sealed class UsersController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("/{userId}/games/{gameId}")]
+    [HttpPut("{userId}/games/{gameId}")]
     [Authorize(Roles = "SuperAdmin, Admin, User")]
     public async Task<IActionResult> AddGameAsync(
         [FromRoute] UserId userId,
@@ -170,7 +170,7 @@ public sealed class UsersController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin, Admin, User")]
-    [HttpPut("/{userId}/games/{gameId}/ratings/{rating}")]
+    [HttpPut("{userId}/games/{gameId}/ratings/{rating}")]
     public async Task<IActionResult> SetRatingAsync(
         [FromRoute] UserId userId,
         [FromRoute] GameId gameId,
@@ -191,7 +191,7 @@ public sealed class UsersController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin, Admin, User")]
-    [HttpPut("/{userId}/games/{gameId}/favorites")]
+    [HttpPut("{userId}/games/{gameId}/favorites")]
     public async Task<IActionResult> SetFavoriteAsync(
         [FromRoute] UserId userId,
         [FromRoute] GameId gameId,
@@ -209,7 +209,7 @@ public sealed class UsersController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("/ban")]
+    [HttpPut("ban")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> BanUserAsync(
         BanCommand banCommand,
@@ -223,7 +223,7 @@ public sealed class UsersController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("/{userId}/unban")]
+    [HttpPut("{userId}/unban")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> UnbanUserAsync(
         [FromRoute] UserId userId,

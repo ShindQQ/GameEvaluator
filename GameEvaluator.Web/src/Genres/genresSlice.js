@@ -64,6 +64,30 @@ export const updateGenre = createAsyncThunk(
     }
 )
 
+export const addGenre = createAsyncThunk(
+    '/api/Genres/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Genres/`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({Name:values.name, Description:values.description})
+            }).then(response => {
+                if(response.status !== 200)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch(() => {
+                message.error('Access Denied');
+            });
+
+        return response;
+    }
+)
+
 export const genresSlice = createSlice({
     name: 'genres',
     initialState: {

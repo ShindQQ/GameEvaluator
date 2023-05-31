@@ -64,6 +64,30 @@ export const updatePlatform = createAsyncThunk(
     }
 )
 
+export const addPlatform = createAsyncThunk(
+    '/api/Platforms/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Platforms/`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({Name:values.name, Description:values.description})
+            }).then(response => {
+                if(response.status !== 200)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch(() => {
+                message.error('Access Denied');
+            });
+
+        return response;
+    }
+)
+
 export const platformsSlice = createSlice({
     name: 'platforms',
     initialState: {

@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
-import { deleteUser, fetchUsers, selectAllUsers, updateUser } from "./usersSlice"
+import { addUser, deleteUser, fetchUsers, selectAllUsers, updateUser } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, Form, Input, Table } from "antd";
-import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Table } from "antd";
+import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 export const Users = () => {
     const [editRow, setEditRow] = useState(null);
+    const [addRow, setAddRow] = useState(false);
     const users = useSelector(selectAllUsers);
     const usersStatus = useSelector(state => state.users.status);
     const loading = useSelector(state => state.users.loading);
@@ -21,6 +22,11 @@ export const Users = () => {
             dataIndex: 'index',
             key: 'number',
             sorter: (a, b) => a.index - b.index
+        },
+        {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Name',
@@ -195,13 +201,27 @@ export const Users = () => {
         setEditRow(null);
     }
 
+    const onAdd = () =>{
+        setAddRow(true);
+    }
+
+    const handleAdd = async (values) =>{
+        const response = await dispatch(addUser({name: values.name, email: values.email, password: values.password}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
     if(usersStatus === 'succeeded') 
     return (
         <Layout>
+            <Button onClick={onAdd} type="primary" htmlType="submit">
+                <AppstoreAddOutlined /> Add User
+            </Button>
             <Form form={form} onFinish={onFinish}>
                 <Table dataSource={users.Items.map((user, index) => {
                     return {
                         key: user.Id,
+                        id: user.Id,
                         index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: user.Name,
                         email: user.Email,
@@ -218,6 +238,75 @@ export const Users = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
+            <Modal
+            open={addRow}
+            title="Add User"
+            okText="Add"
+            footer={[]}
+            onCancel={() => {
+                setAddRow(false);
+            }}
+            onOk={() => {
+                setAddRow(false);
+            }}
+            >
+                <Form onFinish={handleAdd}>
+                    <Form.Item name="name"
+                            rules={[{
+                                required:true,
+                                message:'Please enter name',
+                            },
+                            {
+                                min: 3,
+                                max: 20,
+                                message:'Name should have from 3 to 20 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Name <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item name="email"
+                        rules={[
+                            {
+                                type: 'email',
+                                message: 'The input is not valid E-mail!',
+                            },{
+                                required:true,
+                                message:'Please enter email',
+                            },
+                            {
+                                min: 10,
+                                max: 20,
+                                message:'Email should have from 10 to 20 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Email <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item name="password"
+                            rules={[{
+                                required:true,
+                                message:'Please enter password',
+                            },
+                            {
+                                min: 6,
+                                max: 10,
+                                message:'Password should have from 6 to 10 characters'
+                            }
+                            ]}>
+                                <div>
+                                    Password <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
         </Layout>
     ); 
 }

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Menu } from 'antd';
 import { HomeOutlined, FundOutlined, TeamOutlined, BugOutlined, FireOutlined, GlobalOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export class Layout extends Component {
     static displayName = Layout.name;
@@ -57,27 +57,42 @@ function Footer(){
 
 function RenderMenu(){
     const navigate = useNavigate();
-    
+    const location = useLocation();
+    const [current, setCurrent] = useState(location.pathname === '/' ? '/' : location.pathname);
+
+    useEffect(() => {
+        if(location){
+            if(current !== location.pathname){
+                setCurrent(location.pathname)
+            }
+        }
+    }, [location, current])
+
+    const onClick = (e) => {
+        console.log(current);
+        if(e.key=='signout') {
+            localStorage.removeItem("auth");
+            localStorage.removeItem("isAuthenticated");
+            navigate('/login');
+        }
+        else {
+            console.log(e.key);
+            setCurrent(e.key);
+        }
+    }
+
     return (
         <Menu
-            onClick={({key})=>{
-                if(key=='signout') {
-                    localStorage.removeItem("auth");
-                    localStorage.removeItem("isAuthenticated");
-                    navigate('/login');
-                }
-                else {
-                    navigate(key);
-                }
-            }}
+        onClick={onClick}
+            selectedKeys={[current]}
             style={{minWidth:'10%', fontSize:'18px'}}
             items={[
-                { label: "Home", key:'/', icon:<HomeOutlined /> },
-                { label: "Companies", key:'/companies', icon:<FundOutlined /> },
-                { label: "Games", key:'/games', icon:<BugOutlined /> },
-                { label: "Genres", key:'/genres', icon:<FireOutlined /> },
-                { label: "Platforms", key:'/platforms', icon:<GlobalOutlined /> },
-                { label: "Users", key:'/users', icon:<TeamOutlined /> },
+                { label: <Link to='/'>Home</Link>, key:'/', icon:<HomeOutlined /> },
+                { label: <Link to='/companies'>Companies</Link>, key:'/companies', icon:<FundOutlined /> },
+                { label: <Link to='/games'>Games</Link>, key:'/games', icon:<BugOutlined /> },
+                { label: <Link to='/genres'>Genres</Link>, key:'/genres', icon:<FireOutlined /> },
+                { label: <Link to='/platforms'>Platforms</Link>, key:'/platforms', icon:<GlobalOutlined /> },
+                { label: <Link to='/users'>Users</Link>, key:'/users', icon:<TeamOutlined /> },
                 { label: "Signout", key: 'signout', danger:true, icon:<PoweroffOutlined /> }
             ]}>
         </Menu>

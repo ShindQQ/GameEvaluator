@@ -45,7 +45,7 @@ public sealed class CompaniesController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("/games")]
+    [HttpPost("games")]
     [Authorize(Roles = "Company")]
     public async Task<IActionResult> CreateGameAsync(
         [FromBody] CreateGameRequest request,
@@ -63,7 +63,7 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("/{companyId}/games")]
+    [HttpPost("{companyId}/games")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> CreateGameAsync(
         [FromBody] CreateGameRequest request,
@@ -99,8 +99,7 @@ public sealed class CompaniesController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/{companyId}/games/{gameId}")]
-
+    [HttpDelete("{companyId}/games/{gameId}")]
     [Authorize(Roles = "SuperAdmin, Admin")]
     public async Task<IActionResult> RemoveGameAsync(
         [FromRoute] GameId gameId,
@@ -169,7 +168,7 @@ public sealed class CompaniesController : ControllerBase
     }
 
     [Authorize(Roles = "SuperAdmin, Admin")]
-    [HttpDelete("/{companyId}/workers/{workerId}")]
+    [HttpDelete("{companyId}/workers/{workerId}")]
     public async Task<IActionResult> RemoveWorkerAsync(
         [FromRoute] UserId workerId,
         [FromRoute] CompanyId companyId,
