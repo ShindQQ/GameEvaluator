@@ -193,6 +193,9 @@ export const Genres = () => {
                         name: genre.Name,
                         description: genre.Description,
                     }})} 
+                    scroll={{
+                        x: 1500,
+                      }}
                     pagination={tableParams.pagination}
                     loading={loading}
                     columns={columns}

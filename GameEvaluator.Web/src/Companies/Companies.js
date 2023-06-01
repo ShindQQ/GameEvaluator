@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addCompany, deleteCompany, fetchCompanies, selectAllCompanies, updateCompany } from "./companiesSlice"
+import { addCompany, addWorker, deleteCompany, fetchCompanies, removeGameFromCompany, removeWorker, selectAllCompanies, updateCompany } from "./companiesSlice"
 import { useEffect, useState } from "react";
 import { Layout } from '../Layout';
 import { Button, Form, Input, Modal, Table } from "antd";
@@ -10,8 +10,11 @@ import { addGame } from "../Games/gamesSlice";
 export const Companies = () => {
     const [editRow, setEditRow] = useState(null);
     const [addRow, setAddRow] = useState(false);
-    const [addGameKey, setAddGameKey] = useState(null);
+    const [companyKey, setCompanyKey] = useState(null);
     const [addGameState, setAddGameState] = useState(false);
+    const [removeGameState, setRemoveGameState] = useState(false);
+    const [addWorkerState, setAddWorkerState] = useState(false);
+    const [removeWorkerState, setRemoveWorkerState] = useState(false);
     const companies = useSelector(selectAllCompanies);
     const companiesStatus = useSelector(state => state.companies.status);
     const loading = useSelector(state => state.companies.loading);
@@ -98,7 +101,7 @@ export const Companies = () => {
             render: (_, record) => {
                 return (
                     <>
-                        <div>
+                        <div style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' 
                             onClick={() => {
                                 setEditRow(record.key);
@@ -113,21 +116,48 @@ export const Companies = () => {
                                 <SaveOutlined />
                             </Button>
                         </div>
-                        <Button type='text' danger={true}
-                        onClick={async () => { 
-                            const response = await dispatch(deleteCompany(record.key));
-                            if(response.payload === true)
+                        <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='text' danger={true}
+                            onClick={async () => { 
+                                const response = await dispatch(deleteCompany(record.key));
+                                if(response.payload === true)
                                 navigate(0);
                             }}>
-                            <DeleteOutlined />
-                        </Button>
-                        <Button type='text' 
-                        onClick={() => { 
-                            setAddGameKey(record.key);
-                            setAddGameState(true);
+                                <DeleteOutlined />
+                            </Button>
+                        </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px'}}>
+                            <Button type='default'
+                            onClick={() => { 
+                                setCompanyKey(record.key);
+                                setAddGameState(true);
                             }}>
-                            Add Game
-                        </Button>
+                                Add Game
+                            </Button>
+                            <Button type='default' danger={true}
+                            onClick={() => { 
+                                setCompanyKey(record.key);
+                                setRemoveGameState(true);
+                            }}>
+                                Remove Game
+                            </Button>
+                        </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px'}}>
+                            <Button type='default' 
+                            onClick={() => { 
+                                setCompanyKey(record.key);
+                                setAddWorkerState(true);
+                            }}>
+                                Add Worker
+                            </Button>
+                            <Button type='default' danger={true}
+                            onClick={() => { 
+                                setCompanyKey(record.key);
+                                setRemoveWorkerState(true);
+                            }}>
+                                Remove Worker
+                            </Button>
+                        </div>
                     </>
                 )
             }
@@ -198,7 +228,25 @@ export const Companies = () => {
     }
 
     const handleAddGame = async (values) =>{
-        const response = await dispatch(addGame({companyId: addGameKey, name: values.name, description: values.description}));
+        const response = await dispatch(addGame({companyId: companyKey, name: values.name, description: values.description}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleRemoveGame = async (values) =>{
+        const response = await dispatch(removeGameFromCompany({companyId: companyKey, gameId: values.gameId}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleAddWorker = async (values) =>{
+        const response = await dispatch(addWorker({companyId: companyKey, workerId: values.workerId}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleRemoveWorker = async (values) =>{
+        const response = await dispatch(removeWorker({companyId: companyKey, workerId: values.workerId}));
         if(response.payload === true)
             navigate(0);
     }
@@ -221,6 +269,9 @@ export const Companies = () => {
                         workers: company.Workers.length !== 0 ? company.Workers.map(worker => worker.Name).join(" ") : "Company has no workers",
                     }
                 })}
+                scroll={{
+                    x: 1500,
+                  }}
                 pagination={tableParams.pagination}
                 loading={loading}
                 columns={columns}
@@ -323,6 +374,108 @@ export const Companies = () => {
                     <Form.Item>
                         <Button key="submit" htmlType="submit" type="primary" block >
                             Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={removeGameState}
+            title="Remove Game"
+            okText="Remove"
+            footer={[]}
+            onCancel={() => {
+                setRemoveGameState(false);
+            }}
+            onOk={() => {
+                setRemoveGameState(false);
+            }}
+            >
+                <Form onFinish={handleRemoveGame}>
+                    <Form.Item name="gameId"
+                            rules={[{
+                                required:true,
+                                message:'Game ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Game ID',
+                            }
+                            ]}>
+                                <div>
+                                    Game Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Remove
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={addWorkerState}
+            title="Add Worker"
+            okText="Add"
+            footer={[]}
+            onCancel={() => {
+                setAddWorkerState(false);
+            }}
+            onOk={() => {
+                setAddWorkerState(false);
+            }}
+            >
+                <Form onFinish={handleAddWorker}>
+                    <Form.Item name="workerId"
+                            rules={[{
+                                required:true,
+                                message:'Worker ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Worker ID',
+                            }
+                            ]}>
+                                <div>
+                                    Worker Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={removeWorkerState}
+            title="Remove Worker"
+            okText="Remove"
+            footer={[]}
+            onCancel={() => {
+                setRemoveWorkerState(false);
+            }}
+            onOk={() => {
+                setRemoveWorkerState(false);
+            }}
+            >
+                <Form onFinish={handleRemoveWorker}>
+                    <Form.Item name="workerId"
+                            rules={[{
+                                required:true,
+                                message:'Worker ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Worker ID',
+                            }
+                            ]}>
+                                <div>
+                                Worker Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Remove
                         </Button> 
                     </Form.Item>
                 </Form>

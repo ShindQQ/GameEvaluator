@@ -21,5 +21,9 @@ public sealed class CompanyRepository
     public override async Task<Company?> GetByIdAsync(CompanyId id, CancellationToken cancellationToken)
         => await Context.Companies
             .Include(company => company.Games)
+                .ThenInclude(game => game.Genres)
+            .Include(company => company.Games)
+                .ThenInclude(game => game.Platforms)
+            .Include(company => company.Workers)
             .FirstOrDefaultAsync(company => company.Id == id, cancellationToken);
 }

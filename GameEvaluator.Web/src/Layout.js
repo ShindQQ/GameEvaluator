@@ -17,7 +17,7 @@ export class Layout extends Component {
                 <Header />
                 <div style={{display: "flex", flexDirection: "row", flex:1, margin:'10px 0px'}}>
                     <RenderMenu />
-                    <div style={{width:'100%', padding: '0px 10px'}}>
+                    <div style={{width:'90vw', padding: '0px 10px'}}>
                         {this.props.children}
                     </div>
                 </div>
@@ -69,14 +69,12 @@ function RenderMenu(){
     }, [location, current])
 
     const onClick = (e) => {
-        console.log(current);
         if(e.key=='signout') {
             localStorage.removeItem("auth");
             localStorage.removeItem("isAuthenticated");
             navigate('/login');
         }
         else {
-            console.log(e.key);
             setCurrent(e.key);
         }
     }

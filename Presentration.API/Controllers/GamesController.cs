@@ -172,6 +172,27 @@ public sealed class GamesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    [HttpDelete("{gameId}/companies/{companyId}/genres/{genreId}")]
+    public async Task<IActionResult> RemoveGenreAsync(
+        [FromRoute] GameId gameId,
+        [FromRoute] CompanyId companyId,
+        [FromRoute] GenreId genreId,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new RemoveGenreFromGameCommand
+        {
+            GameId = gameId,
+            GenreId = genreId,
+            CompanyId = companyId,
+        }, cancellationToken);
+
+        await _cache.EvictByTagAsync("games", cancellationToken);
+        await _cache.EvictByTagAsync("companies", cancellationToken);
+
+        return NoContent();
+    }
+
     [HttpGet("{pageNumber}/{pageSize}")]
     [HttpGet("{gameId?}/{pageNumber}/{pageSize}")]
     [OutputCache(PolicyName = "Games")]

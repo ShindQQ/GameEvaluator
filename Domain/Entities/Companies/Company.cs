@@ -41,7 +41,7 @@ public sealed class Company
         var game = Games.FirstOrDefault(game => game.Id == id);
 
         if (game is null)
-            throw new NullReferenceException(nameof(game));
+            return false;
 
         Games.Remove(game);
 

@@ -1,14 +1,19 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addUser, deleteUser, fetchUsers, selectAllUsers, updateUser } from "./usersSlice"
+import { addGame, addUser, banUser, deleteUser, fetchUsers, rateGame, selectAllUsers, updateUser } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, Form, Input, Modal, Table } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 export const Users = () => {
     const [editRow, setEditRow] = useState(null);
     const [addRow, setAddRow] = useState(false);
+    const [rating, setRating] = useState(5);
+    const [banState, setBanState] = useState(false);
+    const [userKey, setUserKey] = useState(null);
+    const [addGameState, setAddGameState] = useState(false);
+    const [ratingState, setRatingState] = useState(false);
     const users = useSelector(selectAllUsers);
     const usersStatus = useSelector(state => state.users.status);
     const loading = useSelector(state => state.users.loading);
@@ -119,7 +124,7 @@ export const Users = () => {
             render: (_, record) => {
                 return (
                     <>
-                        <div>
+                        <div style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' 
                             onClick={() => {
                                 setEditRow(record.key);
@@ -134,14 +139,41 @@ export const Users = () => {
                                 <SaveOutlined />
                             </Button>
                         </div>
-                        <Button type='text' danger={true}
-                        onClick={async () => { 
-                            const response = await dispatch(deleteUser(record.key));
-                            if(response.payload === true)
-                                navigate(0);
-                            }}>
-                            <DeleteOutlined />
-                        </Button>
+                        <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='text' danger={true}
+                            onClick={async () => { 
+                                const response = await dispatch(deleteUser(record.key));
+                                if(response.payload === true)
+                                    navigate(0);
+                                }}>
+                                <DeleteOutlined />
+                            </Button>
+                        </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default' 
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setAddGameState(true);
+                                }}>
+                                    Add Game
+                            </Button>
+                            <Button type='default' 
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setRatingState(true);
+                                }}>
+                                    Rate game
+                            </Button>
+                        </div>
+                        <div  style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default' danger={true}
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setBanState(true);
+                                }}>
+                                    Ban
+                            </Button>
+                        </div>
                     </>
                 )
             }
@@ -211,6 +243,26 @@ export const Users = () => {
             navigate(0);
     }
 
+    const handleAddGame = async (values) =>{
+        const response = await dispatch(addGame({userId: userKey, gameId: values.gameId}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleRating = async (values) =>{
+        console.log(values)
+        const response = await dispatch(rateGame({userId: userKey, gameId: values.gameId, rating: rating}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleBan = async (values) =>{
+        console.log(values)
+        const response = await dispatch(banUser({userId: userKey, date: values.date}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
     if(usersStatus === 'succeeded') 
     return (
         <Layout>
@@ -232,6 +284,9 @@ export const Users = () => {
                         bannedAt: user.BannedAt != null ? user.BannedAt : 'Not Banned',
                         bannedTo: user.BannedTo != null ? user.BannedTo : 'Not Banned'
                     }})} 
+                    scroll={{
+                        x: 1500,
+                      }}
                     pagination={tableParams.pagination}
                     loading={loading}
                     columns={columns}
@@ -303,6 +358,104 @@ export const Users = () => {
                     <Form.Item>
                         <Button key="submit" htmlType="submit" type="primary" block >
                             Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={addGameState}
+            title="Add Game"
+            okText="Add"
+            footer={[]}
+            onCancel={() => {
+                setAddGameState(false);
+            }}
+            onOk={() => {
+                setAddGameState(false);
+            }}
+            >
+                <Form onFinish={handleAddGame}>
+                    <Form.Item name="gameId"
+                            rules={[{
+                                required:true,
+                                message:'Game ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Game ID',
+                            }
+                            ]}>
+                                <div>
+                                    Game Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={ratingState}
+            title="Rate Game"
+            okText="Rate"
+            footer={[]}
+            onCancel={() => {
+                setRatingState(false);
+            }}
+            onOk={() => {
+                setRatingState(false);
+            }}
+            >
+                <Form onFinish={handleRating}>
+                    <Form.Item name="gameId"
+                            rules={[{
+                                required:true,
+                                message:'Game ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Game ID',
+                            }
+                            ]}>
+                                <div>
+                                    Game Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item name="rating">
+                                <div>
+                                    Rating <InputNumber min={1} max={10} defaultValue={5} onChange={(value) => setRating(value)}/>
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Rate
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={banState}
+            title="Ban"
+            okText="Ban"
+            footer={[]}
+            onCancel={() => {
+                setBanState(false);
+            }}
+            onOk={() => {
+                setBanState(false);
+            }}
+            >
+                <Form onFinish={handleBan}>
+                    <Form.Item name="date">
+                                <div>
+                                    Game Id <DatePicker format="YYYY-MM-DDTHH:mm:ss.SSSZ" />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Ban
                         </Button> 
                     </Form.Item>
                 </Form>

@@ -80,6 +80,83 @@ export const addCompany = createAsyncThunk(
     }
 )
 
+export const removeGameFromCompany = createAsyncThunk(
+    '/api/Companies/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Companies/${values.companyId}/games/${values.gameId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this game');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const addWorker = createAsyncThunk(
+    '/api/Companies/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Companies/${values.companyId}/workers/${values.workerId}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const removeWorker = createAsyncThunk(
+    '/api/Companies/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Companies/${values.companyId}/workers/${values.workerId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
 
 export const companiesSlice = createSlice({
     name: 'companies',

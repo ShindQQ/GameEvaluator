@@ -88,6 +88,85 @@ export const addUser = createAsyncThunk(
     }
 )
 
+export const addGame = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const rateGame = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}/ratings/${values.rating}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const banUser = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/ban`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({UserId: values.userId, BanTo: values.date})
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
 export const usersSlice = createSlice({
     name: 'users',
     initialState: {

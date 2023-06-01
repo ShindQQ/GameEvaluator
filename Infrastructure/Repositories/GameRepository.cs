@@ -20,5 +20,7 @@ public sealed class GameRepository
 
     public override async Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken)
         => await Context.Games
+            .Include(game => game.Genres)
+            .Include(game => game.Platforms)
             .FirstOrDefaultAsync(game => game.Id == id, cancellationToken);
 }

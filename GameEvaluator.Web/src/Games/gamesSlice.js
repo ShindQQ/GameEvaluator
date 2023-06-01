@@ -80,6 +80,111 @@ export const updateGame = createAsyncThunk(
     }
 )
 
+export const addGenre = createAsyncThunk(
+    '/api/Games/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/genres/${values.genreId}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const removeGenre = createAsyncThunk(
+    '/api/Games/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/genres/${values.genreId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const addPlatform = createAsyncThunk(
+    '/api/Games/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/platforms/${values.platformId}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const removePlatform = createAsyncThunk(
+    '/api/Games/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/platforms/${values.platformId}`, {
+            method: "DELETE",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+
 export const gamesSlice = createSlice({
     name: 'games',
     initialState: {

@@ -192,6 +192,9 @@ export const Platforms = () => {
                         name: platform.Name,
                         description: platform.Description,
                     }})} 
+                    scroll={{
+                        x: 1500,
+                      }}
                     pagination={tableParams.pagination}
                     loading={loading}
                     columns={columns}
