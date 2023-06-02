@@ -90,7 +90,6 @@ export const Games = () => {
             title: 'Average Rating',
             key: 'averageRating',
             render: payload => {
-                console.log(payload);
                 return <p>{payload.AverageRating && payload.averageRating != 0 ? "No users" : payload.averageRating.toPrecision(2)}</p>
             },
             sorter: (a, b) => a.index - b.index

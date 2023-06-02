@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addGame, addUser, banUser, deleteUser, fetchUsers, rateGame, selectAllUsers, updateUser } from "./usersSlice"
+import { addGame, addRole, addUser, banUser, deleteUser, favorGame, fetchUsers, rateGame, removeRole, selectAllUsers, updateUser } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Table } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,10 @@ export const Users = () => {
     const [addRow, setAddRow] = useState(false);
     const [rating, setRating] = useState(5);
     const [banState, setBanState] = useState(false);
+    const [favorState, setFavorState] = useState(false);
+    const [addRoleState, setAddRoleState] = useState(false);
+    const [removeRoleState, setRemoveRoleState] = useState(false);
+    const [role, setRole] = useState(null);
     const [userKey, setUserKey] = useState(null);
     const [addGameState, setAddGameState] = useState(false);
     const [ratingState, setRatingState] = useState(false);
@@ -166,12 +170,36 @@ export const Users = () => {
                             </Button>
                         </div>
                         <div  style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default'
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setFavorState(true);
+                                }}>
+                                    Favor Game
+                            </Button>
                             <Button type='default' danger={true}
                                 onClick={() => { 
                                     setUserKey(record.key);
                                     setBanState(true);
                                 }}>
                                     Ban
+                            </Button>
+                            
+                        </div>
+                        <div  style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default'
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setAddRoleState(true);
+                                }}>
+                                    Add Role
+                            </Button>
+                            <Button type='default' danger={true}
+                                onClick={() => { 
+                                    setUserKey(record.key);
+                                    setAddRoleState(true);
+                                }}>
+                                    Remove Role
                             </Button>
                         </div>
                     </>
@@ -250,18 +278,35 @@ export const Users = () => {
     }
 
     const handleRating = async (values) =>{
-        console.log(values)
         const response = await dispatch(rateGame({userId: userKey, gameId: values.gameId, rating: rating}));
         if(response.payload === true)
             navigate(0);
     }
 
     const handleBan = async (values) =>{
-        console.log(values)
         const response = await dispatch(banUser({userId: userKey, date: values.date}));
         if(response.payload === true)
             navigate(0);
     }
+
+    const handleFavor = async (values) =>{
+        const response = await dispatch(favorGame({userId: userKey, gameId: values.gameId}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleAddRole = async (values) =>{
+        const response = await dispatch(addRole({userId: userKey, role: values.role}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
+    const handleRemoveRole = async (values) =>{
+        const response = await dispatch(removeRole({userId: userKey, role: values.role}));
+        if(response.payload === true)
+            navigate(0);
+    }
+
 
     if(usersStatus === 'succeeded') 
     return (
@@ -456,6 +501,126 @@ export const Users = () => {
                     <Form.Item>
                         <Button key="submit" htmlType="submit" type="primary" block >
                             Ban
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={favorState}
+            title="Favor Game"
+            okText="Favor"
+            footer={[]}
+            onCancel={() => {
+                setFavorState(false);
+            }}
+            onOk={() => {
+                setFavorState(false);
+            }}
+            >
+                <Form onFinish={handleFavor}>
+                    <Form.Item name="gameId"
+                            rules={[{
+                                required:true,
+                                message:'Game ID is required',
+                            },
+                            {
+                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
+                                message: 'Please enter a valid Game ID',
+                            }
+                            ]}>
+                                <div>
+                                    Game Id <Input />
+                                </div>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Favor
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={addRoleState}
+            title="Add Role"
+            okText="Role"
+            footer={[]}
+            onCancel={() => {
+                setAddRoleState(false);
+            }}
+            onOk={() => {
+                setAddRoleState(false);
+            }}
+            >
+                <Form onFinish={handleAddRole}>
+                    <Form.Item name="role">
+                        <Select 
+                        onChange={(value) => setRole(value)}
+                        options = {[
+                            {
+                                label: 'User',
+                                value: 'User'
+                            },
+                            {
+                                label: 'Admin',
+                                value: 'Admin'
+                            },
+                            {
+                                label: 'Company',
+                                value: 'Company'
+                            },
+                            {
+                                label: 'SuperAdmin',
+                                value: 'SuperAdmin'
+                            },
+                        ]}
+                         />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Add
+                        </Button> 
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+            open={removeRoleState}
+            title="Remove Role"
+            okText="Role"
+            footer={[]}
+            onCancel={() => {
+                setRemoveRoleState(false);
+            }}
+            onOk={() => {
+                setRemoveRoleState(false);
+            }}
+            >
+                <Form onFinish={handleRemoveRole}>
+                    <Form.Item name="role">
+                        <Select 
+                        onChange={(value) => setRole(value)}
+                        options = {[
+                            {
+                                label: 'User',
+                                value: 'User'
+                            },
+                            {
+                                label: 'Admin',
+                                value: 'Admin'
+                            },
+                            {
+                                label: 'Company',
+                                value: 'Company'
+                            },
+                            {
+                                label: 'SuperAdmin',
+                                value: 'SuperAdmin'
+                            },
+                        ]}
+                         />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button key="submit" htmlType="submit" type="primary" block >
+                            Remove
                         </Button> 
                     </Form.Item>
                 </Form>

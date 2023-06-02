@@ -98,7 +98,6 @@ export const removeGameFromCompany = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -124,7 +123,6 @@ export const addWorker = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -150,7 +148,6 @@ export const removeWorker = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 

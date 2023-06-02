@@ -106,13 +106,38 @@ export const addGame = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
         return response;
     }
 )
+
+export const favorGame = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}/favorites`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status === 500)
+                    throw new Error('Company does not have this worker');
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
 
 export const rateGame = createAsyncThunk(
     '/api/Users/',
@@ -132,7 +157,6 @@ export const rateGame = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -152,14 +176,57 @@ export const banUser = createAsyncThunk(
             },
             body: JSON.stringify({UserId: values.userId, BanTo: values.date})
             }).then(response => {
-                if(response.status === 500)
-                    throw new Error('Company does not have this worker');
                 if(response.status !== 204)
                     throw new Error('Access Denied');
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const addRole = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/roles/${values.role}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
+export const removeRole = createAsyncThunk(
+    '/api/Users/',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/roles/${values.role}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            }).then(response => {
+                if(response.status !== 204)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
                 message.error(error.message);
             });
 

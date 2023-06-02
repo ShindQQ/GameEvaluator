@@ -98,7 +98,6 @@ export const addGenre = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -124,7 +123,6 @@ export const removeGenre = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -150,7 +148,6 @@ export const addPlatform = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
@@ -176,14 +173,12 @@ export const removePlatform = createAsyncThunk(
     
                 return true;
             }).catch((error) => {
-                console.log(error.message)
                 message.error(error.message);
             });
 
         return response;
     }
 )
-
 
 export const gamesSlice = createSlice({
     name: 'games',
