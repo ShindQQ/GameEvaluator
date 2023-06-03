@@ -3,7 +3,7 @@ using Application.Common.Interfaces.Repositories;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Common.Behaivour;
+namespace Application.Common.Behaviour;
 
 public sealed class LoggingBehaviour<TRequest>
     : IRequestPreProcessor<TRequest>
