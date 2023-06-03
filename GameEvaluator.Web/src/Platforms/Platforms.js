@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
 import { Button, Form, Input, Modal, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { AddPlatform } from "./AddPlatform";
 
 export const Platforms = () => {
     const [editRow, setEditRow] = useState(null);
@@ -13,7 +13,6 @@ export const Platforms = () => {
     const platformsStatus = useSelector(state => state.platforms.status);
     const loading = useSelector(state => state.platforms.loading);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const columns = [
@@ -101,10 +100,8 @@ export const Platforms = () => {
                             </Button>
                         </div>
                         <Button type='text' danger={true}
-                        onClick={async () => { 
-                            const response = await dispatch(deletePlatform(record.key));
-                            if(response.payload === true)
-                                navigate(0);
+                        onClick={() => { 
+                            dispatch(deletePlatform(record.key));
                             }}>
                             <DeleteOutlined />
                         </Button>
@@ -160,10 +157,8 @@ export const Platforms = () => {
         }
     }, [platformsStatus, dispatch]);
 
-    const onFinish = async (values) => {
-        const response = await dispatch(updatePlatform({Id: editRow, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const onFinish = (values) => {
+        dispatch(updatePlatform({Id: editRow, name: values.name, description: values.description}));
         setEditRow(null);
     }
 
@@ -171,10 +166,8 @@ export const Platforms = () => {
         setAddRow(true);
     }
 
-    const handleAdd = async (values) =>{
-        const response = await dispatch(addPlatform({name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAdd = (values) =>{
+        dispatch(addPlatform({name: values.name, description: values.description}));
     }
 
     if(platformsStatus === 'succeeded') 
@@ -201,56 +194,7 @@ export const Platforms = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
-            <Modal
-            open={addRow}
-            title="Add Platform"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddRow(false);
-            }}
-            onOk={() => {
-                setAddRow(false);
-            }}
-            >
-                <Form onFinish={handleAdd}>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="description"
-                            rules={[{
-                                required:true,
-                                message:'Please enter description',
-                            },
-                            {
-                                min: 20,
-                                max: 200,
-                                message:'Description should have from 20 to 200 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Description <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <AddPlatform addRow={addRow} setAddRow={setAddRow} handleAdd={handleAdd}/>
         </Layout>
     ); 
 }

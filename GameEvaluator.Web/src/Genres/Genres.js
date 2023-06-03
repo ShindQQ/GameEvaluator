@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
 import { Button, Form, Input, Modal, Table, message } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { AddGenre } from "./AddGenre";
 
 export const Genres = () => {
     const [editRow, setEditRow] = useState(null);
@@ -13,7 +13,6 @@ export const Genres = () => {
     const genresStatus = useSelector(state => state.genres.status);
     const loading = useSelector(state => state.genres.loading);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const columns = [
@@ -101,10 +100,8 @@ export const Genres = () => {
                             </Button>
                         </div>
                         <Button type='text' danger={true}
-                        onClick={async () => { 
-                            const response = await dispatch(deleteGenre(record.key));
-                            if(response.payload === true)
-                                navigate(0);
+                        onClick={() => { 
+                                dispatch(deleteGenre(record.key));
                             }}>
                             <DeleteOutlined />
                         </Button>
@@ -160,10 +157,8 @@ export const Genres = () => {
         }
     }, [genresStatus, dispatch]);
 
-    const onFinish = async (values) => {
-        const response = await dispatch(updateGenre({Id: editRow, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const onFinish = (values) => {
+        dispatch(updateGenre({Id: editRow, name: values.name, description: values.description}));
         setEditRow(null);
     }
 
@@ -171,10 +166,8 @@ export const Genres = () => {
         setAddRow(true);
     }
 
-    const handleAdd = async (values) =>{
-        const response = await dispatch(addGenre({name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAdd = (values) =>{
+        dispatch(addGenre({name: values.name, description: values.description}));
     }
 
     if(genresStatus === 'succeeded') 
@@ -202,56 +195,7 @@ export const Genres = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
-            <Modal
-            open={addRow}
-            title="Add Genre"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddRow(false);
-            }}
-            onOk={() => {
-                setAddRow(false);
-            }}
-            >
-                <Form onFinish={handleAdd}>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="description"
-                            rules={[{
-                                required:true,
-                                message:'Please enter description',
-                            },
-                            {
-                                min: 20,
-                                max: 200,
-                                message:'Description should have from 20 to 200 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Description <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <AddGenre addRow={addRow} setAddRow={setAddRow} handleAdd={handleAdd}/>
         </Layout>
     ); 
 }

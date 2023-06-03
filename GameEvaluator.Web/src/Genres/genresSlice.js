@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export const fetchGenres = createAsyncThunk(
-    '/api/Genres',
+    'fetchGenres',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Genres/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`, {
             method: "GET",
@@ -18,7 +18,7 @@ export const fetchGenres = createAsyncThunk(
 )
 
 export const deleteGenre = createAsyncThunk(
-    '/api/Genres/',
+    'deleteGenre',
     async (genreId, thunkAPI) => {
         const response = await fetch(`/api/Genres/${genreId}`, {
             method: "DELETE",
@@ -41,7 +41,7 @@ export const deleteGenre = createAsyncThunk(
 )
 
 export const updateGenre = createAsyncThunk(
-    '/api/Genres/',
+    'updateGenre',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Genres/${values.Id}`, {
             method: "PATCH",
@@ -65,7 +65,7 @@ export const updateGenre = createAsyncThunk(
 )
 
 export const addGenre = createAsyncThunk(
-    '/api/Genres/',
+    'addGenre',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Genres/`, {
             method: "POST",
@@ -107,6 +107,36 @@ export const genresSlice = createSlice({
             state.status = 'succeeded'
             state.data = action.payload
         }).addCase(fetchGenres.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(deleteGenre.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(deleteGenre.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(deleteGenre.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(updateGenre.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(updateGenre.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(updateGenre.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addGenre.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addGenre.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addGenre.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
         })

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export const fetchCompanies = createAsyncThunk(
-    '/api/Companies',
+    'getCompanies',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Companies/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`);
         return await response.json();
@@ -10,7 +10,7 @@ export const fetchCompanies = createAsyncThunk(
 )
 
 export const deleteCompany = createAsyncThunk(
-    '/api/Companies/',
+    'deleteCompany',
     async (companyId, thunkAPI) => {
         const response = await fetch(`/api/Companies/${companyId}`, {
             method: "DELETE",
@@ -33,7 +33,7 @@ export const deleteCompany = createAsyncThunk(
 )
 
 export const updateCompany = createAsyncThunk(
-    '/api/Companies/',
+    'updateCompany',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/${values.Id}`, {
             method: "PATCH",
@@ -57,7 +57,7 @@ export const updateCompany = createAsyncThunk(
 )
 
 export const addCompany = createAsyncThunk(
-    '/api/Companies/',
+    'addCompany',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/`, {
             method: "POST",
@@ -81,7 +81,7 @@ export const addCompany = createAsyncThunk(
 )
 
 export const removeGameFromCompany = createAsyncThunk(
-    '/api/Companies/',
+    'removeGameFromCompany',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/${values.companyId}/games/${values.gameId}`, {
             method: "DELETE",
@@ -106,7 +106,7 @@ export const removeGameFromCompany = createAsyncThunk(
 )
 
 export const addWorker = createAsyncThunk(
-    '/api/Companies/',
+    'addWorker',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/${values.companyId}/workers/${values.workerId}`, {
             method: "PUT",
@@ -131,7 +131,7 @@ export const addWorker = createAsyncThunk(
 )
 
 export const removeWorker = createAsyncThunk(
-    '/api/Companies/',
+    'removeWorker',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/${values.companyId}/workers/${values.workerId}`, {
             method: "DELETE",
@@ -174,6 +174,66 @@ export const companiesSlice = createSlice({
             state.status = 'succeeded'
             state.data = action.payload
         }).addCase(fetchCompanies.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(updateCompany.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(updateCompany.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(updateCompany.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(deleteCompany.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(deleteCompany.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(deleteCompany.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addCompany.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addCompany.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addCompany.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(removeGameFromCompany.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(removeGameFromCompany.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(removeGameFromCompany.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addWorker.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addWorker.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addWorker.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(removeWorker.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(removeWorker.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(removeWorker.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
         })

@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { AddUser } from "./AddUser";
+import { AddGame } from "./AddGame";
+import { RateGame } from "./RateGame";
+import { Ban } from "./Ban";
+import { FavorGame } from "./FavorGame";
+import { AddRole } from "./AddRole";
+import { RemoveRole } from "./RemoveRole";
 
 export const Users = () => {
     const [editRow, setEditRow] = useState(null);
@@ -22,7 +28,6 @@ export const Users = () => {
     const usersStatus = useSelector(state => state.users.status);
     const loading = useSelector(state => state.users.loading);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const columns = [
@@ -145,10 +150,8 @@ export const Users = () => {
                         </div>
                         <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' danger={true}
-                            onClick={async () => { 
-                                const response = await dispatch(deleteUser(record.key));
-                                if(response.payload === true)
-                                    navigate(0);
+                            onClick={() => { 
+                                    dispatch(deleteUser(record.key));
                                 }}>
                                 <DeleteOutlined />
                             </Button>
@@ -254,10 +257,8 @@ export const Users = () => {
         }
     }, [usersStatus, dispatch]);
 
-    const onFinish = async (values) => {
-        const response = await dispatch(updateUser({Id: editRow, name: values.name, email: values.email}));
-        if(response.payload === true)
-            navigate(0);
+    const onFinish = (values) => {
+        dispatch(updateUser({Id: editRow, name: values.name, email: values.email}));
         setEditRow(null);
     }
 
@@ -265,46 +266,32 @@ export const Users = () => {
         setAddRow(true);
     }
 
-    const handleAdd = async (values) =>{
-        const response = await dispatch(addUser({name: values.name, email: values.email, password: values.password}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAdd = (values) =>{
+        dispatch(addUser({name: values.name, email: values.email, password: values.password}));
     }
 
-    const handleAddGame = async (values) =>{
-        const response = await dispatch(addGame({userId: userKey, gameId: values.gameId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddGame = (values) =>{
+        dispatch(addGame({userId: userKey, gameId: values.gameId}));
     }
 
-    const handleRating = async (values) =>{
-        const response = await dispatch(rateGame({userId: userKey, gameId: values.gameId, rating: rating}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRating = (values) =>{
+        dispatch(rateGame({userId: userKey, gameId: values.gameId, rating: rating}));
     }
 
-    const handleBan = async (values) =>{
-        const response = await dispatch(banUser({userId: userKey, date: values.date}));
-        if(response.payload === true)
-            navigate(0);
+    const handleBan = (values) =>{
+        dispatch(banUser({userId: userKey, date: values.date}));
     }
 
-    const handleFavor = async (values) =>{
-        const response = await dispatch(favorGame({userId: userKey, gameId: values.gameId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleFavor = (values) =>{
+        dispatch(favorGame({userId: userKey, gameId: values.gameId}));
     }
 
-    const handleAddRole = async (values) =>{
-        const response = await dispatch(addRole({userId: userKey, role: values.role}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddRole = (values) =>{
+        dispatch(addRole({userId: userKey, role: values.role}));
     }
 
-    const handleRemoveRole = async (values) =>{
-        const response = await dispatch(removeRole({userId: userKey, role: values.role}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRemoveRole = (values) =>{
+        dispatch(removeRole({userId: userKey, role: values.role}));
     }
 
 
@@ -338,293 +325,13 @@ export const Users = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
-            <Modal
-            open={addRow}
-            title="Add User"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddRow(false);
-            }}
-            onOk={() => {
-                setAddRow(false);
-            }}
-            >
-                <Form onFinish={handleAdd}>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="email"
-                        rules={[
-                            {
-                                type: 'email',
-                                message: 'The input is not valid E-mail!',
-                            },{
-                                required:true,
-                                message:'Please enter email',
-                            },
-                            {
-                                min: 10,
-                                max: 20,
-                                message:'Email should have from 10 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Email <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="password"
-                            rules={[{
-                                required:true,
-                                message:'Please enter password',
-                            },
-                            {
-                                min: 6,
-                                max: 10,
-                                message:'Password should have from 6 to 10 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Password <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addGameState}
-            title="Add Game"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddGameState(false);
-            }}
-            onOk={() => {
-                setAddGameState(false);
-            }}
-            >
-                <Form onFinish={handleAddGame}>
-                    <Form.Item name="gameId"
-                            rules={[{
-                                required:true,
-                                message:'Game ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Game ID',
-                            }
-                            ]}>
-                                <div>
-                                    Game Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={ratingState}
-            title="Rate Game"
-            okText="Rate"
-            footer={[]}
-            onCancel={() => {
-                setRatingState(false);
-            }}
-            onOk={() => {
-                setRatingState(false);
-            }}
-            >
-                <Form onFinish={handleRating}>
-                    <Form.Item name="gameId"
-                            rules={[{
-                                required:true,
-                                message:'Game ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Game ID',
-                            }
-                            ]}>
-                                <div>
-                                    Game Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="rating">
-                                <div>
-                                    Rating <InputNumber min={1} max={10} defaultValue={5} onChange={(value) => setRating(value)}/>
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Rate
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={banState}
-            title="Ban"
-            okText="Ban"
-            footer={[]}
-            onCancel={() => {
-                setBanState(false);
-            }}
-            onOk={() => {
-                setBanState(false);
-            }}
-            >
-                <Form onFinish={handleBan}>
-                    <Form.Item name="date">
-                                <div>
-                                    Game Id <DatePicker format="YYYY-MM-DDTHH:mm:ss.SSSZ" />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Ban
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={favorState}
-            title="Favor Game"
-            okText="Favor"
-            footer={[]}
-            onCancel={() => {
-                setFavorState(false);
-            }}
-            onOk={() => {
-                setFavorState(false);
-            }}
-            >
-                <Form onFinish={handleFavor}>
-                    <Form.Item name="gameId"
-                            rules={[{
-                                required:true,
-                                message:'Game ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Game ID',
-                            }
-                            ]}>
-                                <div>
-                                    Game Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Favor
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addRoleState}
-            title="Add Role"
-            okText="Role"
-            footer={[]}
-            onCancel={() => {
-                setAddRoleState(false);
-            }}
-            onOk={() => {
-                setAddRoleState(false);
-            }}
-            >
-                <Form onFinish={handleAddRole}>
-                    <Form.Item name="role">
-                        <Select 
-                        onChange={(value) => setRole(value)}
-                        options = {[
-                            {
-                                label: 'User',
-                                value: 'User'
-                            },
-                            {
-                                label: 'Admin',
-                                value: 'Admin'
-                            },
-                            {
-                                label: 'Company',
-                                value: 'Company'
-                            },
-                            {
-                                label: 'SuperAdmin',
-                                value: 'SuperAdmin'
-                            },
-                        ]}
-                         />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={removeRoleState}
-            title="Remove Role"
-            okText="Role"
-            footer={[]}
-            onCancel={() => {
-                setRemoveRoleState(false);
-            }}
-            onOk={() => {
-                setRemoveRoleState(false);
-            }}
-            >
-                <Form onFinish={handleRemoveRole}>
-                    <Form.Item name="role">
-                        <Select 
-                        onChange={(value) => setRole(value)}
-                        options = {[
-                            {
-                                label: 'User',
-                                value: 'User'
-                            },
-                            {
-                                label: 'Admin',
-                                value: 'Admin'
-                            },
-                            {
-                                label: 'Company',
-                                value: 'Company'
-                            },
-                            {
-                                label: 'SuperAdmin',
-                                value: 'SuperAdmin'
-                            },
-                        ]}
-                         />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Remove
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <AddUser addRow={addRow} setAddRow={setAddRow} handleAdd={handleAdd} />
+            <AddGame addGameState={addGameState} setAddGameState={setAddGameState} handleAddGame={handleAddGame} />
+            <RateGame ratingState={ratingState} setRatingState={setRatingState} handleRating={handleRating} setRating={setRating} />
+            <Ban banState={banState} setBanState={setBanState} handleBan={handleBan} />
+            <FavorGame favorState={favorState} setFavorState={setFavorState} handleFavor={handleFavor} />
+            <AddRole addRoleState={addRoleState} setAddRoleState={setAddRoleState} handleAddRole={handleAddRole} setRole={setRole} />
+            <RemoveRole removeRoleState={removeRoleState} setRemoveRoleState={setRemoveRoleState} handleRemoveRole={handleRemoveRole} setRole={setRole} />
         </Layout>
     ); 
 }

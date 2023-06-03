@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export const fetchUsers = createAsyncThunk(
-    '/api/Users',
+    'fetchUsers',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Users/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`, {
             method: "GET",
@@ -18,7 +18,7 @@ export const fetchUsers = createAsyncThunk(
 )
 
 export const deleteUser = createAsyncThunk(
-    '/api/Users/',
+    'deleteUser',
     async (userId, thunkAPI) => {
         const response = await fetch(`/api/Users/${userId}`, {
             method: "DELETE",
@@ -41,7 +41,7 @@ export const deleteUser = createAsyncThunk(
 )
 
 export const updateUser = createAsyncThunk(
-    '/api/Users/',
+    'updateUser',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.Id}`, {
             method: "PATCH",
@@ -65,7 +65,7 @@ export const updateUser = createAsyncThunk(
 )
 
 export const addUser = createAsyncThunk(
-    '/api/Users/',
+    'addUser',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/`, {
             method: "POST",
@@ -89,7 +89,7 @@ export const addUser = createAsyncThunk(
 )
 
 export const addGame = createAsyncThunk(
-    '/api/Users/',
+    'addGame',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}`, {
             method: "PUT",
@@ -114,7 +114,7 @@ export const addGame = createAsyncThunk(
 )
 
 export const favorGame = createAsyncThunk(
-    '/api/Users/',
+    'favorGame',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}/favorites`, {
             method: "PUT",
@@ -140,7 +140,7 @@ export const favorGame = createAsyncThunk(
 
 
 export const rateGame = createAsyncThunk(
-    '/api/Users/',
+    'rateGame',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.userId}/games/${values.gameId}/ratings/${values.rating}`, {
             method: "PUT",
@@ -165,7 +165,7 @@ export const rateGame = createAsyncThunk(
 )
 
 export const banUser = createAsyncThunk(
-    '/api/Users/',
+    'banUser',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/ban`, {
             method: "PUT",
@@ -189,7 +189,7 @@ export const banUser = createAsyncThunk(
 )
 
 export const addRole = createAsyncThunk(
-    '/api/Users/',
+    'addRole',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.userId}/roles/${values.role}`, {
             method: "PUT",
@@ -212,7 +212,7 @@ export const addRole = createAsyncThunk(
 )
 
 export const removeRole = createAsyncThunk(
-    '/api/Users/',
+    'removeRole',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Users/${values.userId}/roles/${values.role}`, {
             method: "PUT",
@@ -253,6 +253,96 @@ export const usersSlice = createSlice({
             state.status = 'succeeded'
             state.data = action.payload
         }).addCase(fetchUsers.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(deleteUser.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(deleteUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(deleteUser.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(updateUser.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(updateUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(updateUser.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addUser.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addUser.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(favorGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(favorGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(favorGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(rateGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(rateGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(rateGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(banUser.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(banUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(banUser.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addRole.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addRole.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addRole.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(removeRole.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(removeRole.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(removeRole.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
         })

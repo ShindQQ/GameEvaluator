@@ -4,8 +4,12 @@ import { useEffect, useState } from "react";
 import { Layout } from '../Layout';
 import { Button, Form, Input, Modal, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { addGame } from "../Games/gamesSlice";
+import { AddCompany } from "./AddCompany";
+import { AddGame } from "./AddGame";
+import { RemoveGame } from "./RemoveGame";
+import { AddWorker } from "./AddWorker";
+import { RemoveWorker } from "./RemoveWorker";
 
 export const Companies = () => {
     const [editRow, setEditRow] = useState(null);
@@ -19,7 +23,6 @@ export const Companies = () => {
     const companiesStatus = useSelector(state => state.companies.status);
     const loading = useSelector(state => state.companies.loading);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const columns = [
@@ -118,10 +121,8 @@ export const Companies = () => {
                         </div>
                         <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' danger={true}
-                            onClick={async () => { 
-                                const response = await dispatch(deleteCompany(record.key));
-                                if(response.payload === true)
-                                navigate(0);
+                            onClick={() => { 
+                                dispatch(deleteCompany(record.key));
                             }}>
                                 <DeleteOutlined />
                             </Button>
@@ -210,10 +211,8 @@ export const Companies = () => {
         }
     }, [companiesStatus, dispatch]);
 
-    const onFinish = async (values) => {
-        const response = await dispatch(updateCompany({Id: editRow, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const onFinish = (values) => {
+        dispatch(updateCompany({Id: editRow, name: values.name, description: values.description}));
         setEditRow(null);
     }
 
@@ -221,34 +220,24 @@ export const Companies = () => {
         setAddRow(true);
     }
 
-    const handleAdd = async (values) =>{
-        const response = await dispatch(addCompany({name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAdd = (values) =>{
+        dispatch(addCompany({name: values.name, description: values.description}));
     }
 
-    const handleAddGame = async (values) =>{
-        const response = await dispatch(addGame({companyId: companyKey, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddGame = (values) =>{
+        dispatch(addGame({companyId: companyKey, name: values.name, description: values.description}));
     }
 
-    const handleRemoveGame = async (values) =>{
-        const response = await dispatch(removeGameFromCompany({companyId: companyKey, gameId: values.gameId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRemoveGame = (values) =>{
+        dispatch(removeGameFromCompany({companyId: companyKey, gameId: values.gameId}));
     }
 
-    const handleAddWorker = async (values) =>{
-        const response = await dispatch(addWorker({companyId: companyKey, workerId: values.workerId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddWorker = (values) =>{
+        dispatch(addWorker({companyId: companyKey, workerId: values.workerId}));
     }
 
-    const handleRemoveWorker = async (values) =>{
-        const response = await dispatch(removeWorker({companyId: companyKey, workerId: values.workerId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRemoveWorker = (values) =>{
+        dispatch(removeWorker({companyId: companyKey, workerId: values.workerId}));
     }
 
     if(companiesStatus === 'succeeded')
@@ -278,208 +267,11 @@ export const Companies = () => {
                 onChange={fetchData}>
                 </Table>
             </Form>
-            <Modal
-            open={addRow}
-            title="Add Company"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddRow(false);
-            }}
-            onOk={() => {
-                setAddRow(false);
-            }}
-            >
-                <Form onFinish={handleAdd}>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="description"
-                            rules={[{
-                                required:true,
-                                message:'Please enter description',
-                            },
-                            {
-                                min: 20,
-                                max: 200,
-                                message:'Description should have from 20 to 200 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Description <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addGameState}
-            title="Add Game"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddGameState(false);
-            }}
-            onOk={() => {
-                setAddGameState(false);
-            }}
-            >
-                <Form onFinish={handleAddGame}>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="description"
-                            rules={[{
-                                required:true,
-                                message:'Please enter description',
-                            },
-                            {
-                                min: 20,
-                                max: 200,
-                                message:'Description should have from 20 to 200 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Description <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={removeGameState}
-            title="Remove Game"
-            okText="Remove"
-            footer={[]}
-            onCancel={() => {
-                setRemoveGameState(false);
-            }}
-            onOk={() => {
-                setRemoveGameState(false);
-            }}
-            >
-                <Form onFinish={handleRemoveGame}>
-                    <Form.Item name="gameId"
-                            rules={[{
-                                required:true,
-                                message:'Game ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Game ID',
-                            }
-                            ]}>
-                                <div>
-                                    Game Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Remove
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addWorkerState}
-            title="Add Worker"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddWorkerState(false);
-            }}
-            onOk={() => {
-                setAddWorkerState(false);
-            }}
-            >
-                <Form onFinish={handleAddWorker}>
-                    <Form.Item name="workerId"
-                            rules={[{
-                                required:true,
-                                message:'Worker ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Worker ID',
-                            }
-                            ]}>
-                                <div>
-                                    Worker Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={removeWorkerState}
-            title="Remove Worker"
-            okText="Remove"
-            footer={[]}
-            onCancel={() => {
-                setRemoveWorkerState(false);
-            }}
-            onOk={() => {
-                setRemoveWorkerState(false);
-            }}
-            >
-                <Form onFinish={handleRemoveWorker}>
-                    <Form.Item name="workerId"
-                            rules={[{
-                                required:true,
-                                message:'Worker ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Worker ID',
-                            }
-                            ]}>
-                                <div>
-                                Worker Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Remove
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <AddCompany addRow={addRow} setAddRow={setAddRow} handleAdd={handleAdd} />
+            <AddGame addGameState={addGameState} setAddGameState={setAddGameState} handleAddGame={handleAddGame} />
+            <RemoveGame removeGameState={removeGameState} setRemoveGameState={setRemoveGameState} handleRemoveGame={handleRemoveGame} />
+            <AddWorker addWorkerState={addWorkerState} setAddWorkerState={setAddWorkerState} handleAddWorker={handleAddWorker} />
+            <RemoveWorker removeWorkerState={removeWorkerState} setRemoveWorkerState={setRemoveWorkerState} handleRemoveWorker={handleRemoveWorker} />
         </Layout>
     )
 }

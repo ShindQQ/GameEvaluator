@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export const fetchPlatforms = createAsyncThunk(
-    '/api/Platforms',
+    'fetchPlatforms',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Platforms/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`, {
             method: "GET",
@@ -18,7 +18,7 @@ export const fetchPlatforms = createAsyncThunk(
 )
 
 export const deletePlatform = createAsyncThunk(
-    '/api/Platforms/',
+    'deletePlatform',
     async (platformId, thunkAPI) => {
         const response = await fetch(`/api/Platforms/${platformId}`, {
             method: "DELETE",
@@ -41,7 +41,7 @@ export const deletePlatform = createAsyncThunk(
 )
 
 export const updatePlatform = createAsyncThunk(
-    '/api/Platforms/',
+    'updatePlatform',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Platforms/${values.Id}`, {
             method: "PATCH",
@@ -65,7 +65,7 @@ export const updatePlatform = createAsyncThunk(
 )
 
 export const addPlatform = createAsyncThunk(
-    '/api/Platforms/',
+    'addPlatform',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Platforms/`, {
             method: "POST",
@@ -107,6 +107,36 @@ export const platformsSlice = createSlice({
             state.status = 'succeeded'
             state.data = action.payload
         }).addCase(fetchPlatforms.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(deletePlatform.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(deletePlatform.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(deletePlatform.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(updatePlatform.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(updatePlatform.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(updatePlatform.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addPlatform.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addPlatform.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addPlatform.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
         })

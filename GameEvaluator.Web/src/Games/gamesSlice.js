@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export const fetchGames = createAsyncThunk(
-    '/api/Games',
+    'fetchGames',
     async (tableParams, thunkAPI) => {
         const response = await fetch(`/api/Games/${tableParams.pagination.current}/${tableParams.pagination.pageSize}`);
         return await response.json();
@@ -10,7 +10,7 @@ export const fetchGames = createAsyncThunk(
 )
 
 export const deleteGame = createAsyncThunk(
-    '/api/Games/',
+    'deleteGame',
     async (gameId, thunkAPI) => {
         const response = await fetch(`/api/Games/${gameId}`, {
             method: "DELETE",
@@ -33,7 +33,7 @@ export const deleteGame = createAsyncThunk(
 )
 
 export const addGame = createAsyncThunk(
-    '/api/Companies/',
+    'addGame',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Companies/${values.companyId}/games`, {
             method: "POST",
@@ -57,7 +57,7 @@ export const addGame = createAsyncThunk(
 )
 
 export const updateGame = createAsyncThunk(
-    '/api/Games/',
+    'updateGame',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Games/${values.Id}`, {
             method: "PATCH",
@@ -81,7 +81,7 @@ export const updateGame = createAsyncThunk(
 )
 
 export const addGenre = createAsyncThunk(
-    '/api/Games/',
+    'addGenre',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/genres/${values.genreId}`, {
             method: "PUT",
@@ -106,7 +106,7 @@ export const addGenre = createAsyncThunk(
 )
 
 export const removeGenre = createAsyncThunk(
-    '/api/Games/',
+    'removeGenre',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/genres/${values.genreId}`, {
             method: "DELETE",
@@ -131,7 +131,7 @@ export const removeGenre = createAsyncThunk(
 )
 
 export const addPlatform = createAsyncThunk(
-    '/api/Games/',
+    'addPlatform',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/platforms/${values.platformId}`, {
             method: "PUT",
@@ -156,7 +156,7 @@ export const addPlatform = createAsyncThunk(
 )
 
 export const removePlatform = createAsyncThunk(
-    '/api/Games/',
+    'removePlatform',
     async (values, thunkAPI) => {
         const response = await fetch(`/api/Games/${values.gameId}/companies/${values.companyId}/platforms/${values.platformId}`, {
             method: "DELETE",
@@ -199,6 +199,76 @@ export const gamesSlice = createSlice({
             state.status = 'succeeded'
             state.data = action.payload
         }).addCase(fetchGames.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(deleteGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(deleteGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(deleteGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(updateGame.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(updateGame.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(updateGame.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addGenre.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addGenre.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addGenre.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(removeGenre.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(removeGenre.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(removeGenre.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addPlatform.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addPlatform.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addPlatform.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(removePlatform.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(removePlatform.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(removePlatform.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
         })

@@ -4,8 +4,12 @@ import { addGame, addGenre, addPlatform, deleteGame, fetchGames, removeGenre, re
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Layout } from '../Layout';
-import { AppstoreAddOutlined, DeleteOutlined, EditFilled, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { AddGame } from "./AddGame";
+import { AddGenre } from "./AddGenre";
+import { RemoveGenre } from "./RemoveGenre";
+import { AddPlatform } from "./AddPlatform";
+import { RemovePlatform } from "./RemovePlatform";
 
 export const Games = () => {
     const [editRow, setEditRow] = useState(null);
@@ -19,7 +23,6 @@ export const Games = () => {
     const gamesStatus = useSelector(state => state.games.status);
     const loading = useSelector(state => state.games.loading);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [form] = Form.useForm();
 
     const columns = [
@@ -131,10 +134,8 @@ export const Games = () => {
                         </div>
                         <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' danger={true}
-                            onClick={async () => { 
-                                const response = await dispatch(deleteGame(record.key));
-                                if(response.payload === true)
-                                navigate(0);
+                            onClick={() => { 
+                                dispatch(deleteGame(record.key));
                             }}>
                                 <DeleteOutlined />
                             </Button>
@@ -223,10 +224,8 @@ export const Games = () => {
         }
     }, [gamesStatus, dispatch]);
 
-    const onFinish = async (values) => {
-        const response = await dispatch(updateGame({Id: editRow, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const onFinish = (values) => {
+        dispatch(updateGame({Id: editRow, name: values.name, description: values.description}));
         setEditRow(null);
     }
     
@@ -234,34 +233,24 @@ export const Games = () => {
         setAddRow(true);
     }
 
-    const handleAdd = async (values) =>{
-        const response = await dispatch(addGame({companyId:values.companyId, name: values.name, description: values.description}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAdd = (values) =>{
+       dispatch(addGame({companyId:values.companyId, name: values.name, description: values.description}));
     }
     
-    const handleAddGenre = async (values) =>{
-        const response = await dispatch(addGenre({gameId: gameKey, companyId: values.companyId, genreId: values.genreId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddGenre = (values) =>{
+        dispatch(addGenre({gameId: gameKey, companyId: values.companyId, genreId: values.genreId}));
     }
 
-    const handleRemoveGenre = async (values) =>{
-        const response = await dispatch(removeGenre({gameId: gameKey, companyId: values.companyId, genreId: values.genreId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRemoveGenre = (values) =>{
+        dispatch(removeGenre({gameId: gameKey, companyId: values.companyId, genreId: values.genreId}));
     }
 
-    const handleAddPlatform = async (values) =>{
-        const response = await dispatch(addPlatform({gameId: gameKey, companyId: values.companyId, platformId: values.platformId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleAddPlatform = (values) =>{
+        dispatch(addPlatform({gameId: gameKey, companyId: values.companyId, platformId: values.platformId}));
     }
 
-    const handleRemovePlatform = async (values) =>{
-        const response = await dispatch(removePlatform({gameId: gameKey, companyId: values.companyId, platformId: values.platformId}));
-        if(response.payload === true)
-            navigate(0);
+    const handleRemovePlatform = (values) =>{
+        dispatch(removePlatform({gameId: gameKey, companyId: values.companyId, platformId: values.platformId}));
     }
 
     if(gamesStatus === 'succeeded') 
@@ -292,262 +281,11 @@ export const Games = () => {
                     onChange={fetchData}> 
                 </Table>
             </Form>
-            <Modal
-            open={addRow}
-            title="Add Game"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddRow(false);
-            }}
-            onOk={() => {
-                setAddRow(false);
-            }}
-            >
-                <Form onFinish={handleAdd}>
-                    <Form.Item name="companyId"
-                            rules={[{
-                                required:true,
-                                message:'Company ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Company ID',
-                            }
-                            ]}>
-                                <div>
-                                    Company Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="name"
-                            rules={[{
-                                required:true,
-                                message:'Please enter name',
-                            },
-                            {
-                                min: 3,
-                                max: 20,
-                                message:'Name should have from 3 to 20 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Name <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="description"
-                            rules={[{
-                                required:true,
-                                message:'Please enter description',
-                            },
-                            {
-                                min: 20,
-                                max: 200,
-                                message:'Description should have from 20 to 200 characters'
-                            }
-                            ]}>
-                                <div>
-                                    Description <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addGenreState}
-            title="Add Genre"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddGenreState(false);
-            }}
-            onOk={() => {
-                setAddGenreState(false);
-            }}
-            >
-                <Form onFinish={handleAddGenre}>
-                    <Form.Item name="genreId"
-                            rules={[{
-                                required:true,
-                                message:'Genre ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Genre ID',
-                            }
-                            ]}>
-                                <div>
-                                    Genre Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="companyId"
-                            rules={[{
-                                required:true,
-                                message:'Company ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Company ID',
-                            }
-                            ]}>
-                                <div>
-                                    Company Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={removeGenreState}
-            title="Remove Genre"
-            okText="Remove"
-            footer={[]}
-            onCancel={() => {
-                setRemoveGenreState(false);
-            }}
-            onOk={() => {
-                setRemoveGenreState(false);
-            }}
-            >
-                <Form onFinish={handleRemoveGenre}>
-                    <Form.Item name="genreId"
-                            rules={[{
-                                required:true,
-                                message:'Genre ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Genre ID',
-                            }
-                            ]}>
-                                <div>
-                                    Genre Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="companyId"
-                            rules={[{
-                                required:true,
-                                message:'Company ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Company ID',
-                            }
-                            ]}>
-                                <div>
-                                    Company Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Remove
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={addPlatformState}
-            title="Add Platform"
-            okText="Add"
-            footer={[]}
-            onCancel={() => {
-                setAddPlatformState(false);
-            }}
-            onOk={() => {
-                setAddPlatformState(false);
-            }}
-            >
-                <Form onFinish={handleAddPlatform}>
-                    <Form.Item name="platformId"
-                            rules={[{
-                                required:true,
-                                message:'Platform ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Platform ID',
-                            }
-                            ]}>
-                                <div>
-                                    Platform Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="companyId"
-                            rules={[{
-                                required:true,
-                                message:'Company ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Company ID',
-                            }
-                            ]}>
-                                <div>
-                                    Company Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Add
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Modal
-            open={removePlatformState}
-            title="Remove Platform"
-            okText="Remove"
-            footer={[]}
-            onCancel={() => {
-                setRemovePlatformState(false);
-            }}
-            onOk={() => {
-                setRemovePlatformState(false);
-            }}
-            >
-                <Form onFinish={handleRemovePlatform}>
-                    <Form.Item name="platformId"
-                            rules={[{
-                                required:true,
-                                message:'Platform ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Platform ID',
-                            }
-                            ]}>
-                                <div>
-                                    Platform Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item name="companyId"
-                            rules={[{
-                                required:true,
-                                message:'Company ID is required',
-                            },
-                            {
-                                pattern: /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
-                                message: 'Please enter a valid Company ID',
-                            }
-                            ]}>
-                                <div>
-                                    Company Id <Input />
-                                </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button key="submit" htmlType="submit" type="primary" block >
-                            Remove
-                        </Button> 
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <AddGame addRow={addRow} setAddRow={setAddRow} handleAdd={handleAdd}/>
+            <AddGenre addGenreState={addGenreState} setAddGenreState={setAddGenreState} handleAddGenre={handleAddGenre}/>
+            <RemoveGenre removeGenreState={removeGenreState} setRemoveGenreState={setRemoveGenreState} handleAddGenre={handleRemoveGenre}/>
+            <AddPlatform addPlatformState={addPlatformState} setAddPlatformState={setAddPlatformState} handleAddPlatform={handleAddPlatform} />
+            <RemovePlatform removePlatformState={removePlatformState} setRemovePlatformState={setRemovePlatformState} handleRemovePlatform={handleRemovePlatform} />
         </Layout>
     ); 
 }
