@@ -190,7 +190,7 @@ export const Companies = () => {
         {
             tParams = tableParams;
         }
-
+        
         setTableParams({
             ...tableParams,
             pagination: {
@@ -201,12 +201,13 @@ export const Companies = () => {
                 total: companies.TotalCount
             }
         });
+
+        dispatch(fetchCompanies(tableParams));
     }
 
     useEffect(() => {
         if(companiesStatus === 'idle')
         {
-            dispatch(fetchCompanies(tableParams));
             fetchData();
         }
     }, [companiesStatus, dispatch]);
@@ -251,7 +252,7 @@ export const Companies = () => {
                     return {
                         key: company.Id,
                         id: company.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: company.Name, 
                         description: company.Description,
                         games: company.Games.length !== 0 ? company.Games.map(game => game.Name).join(" ") : "Company has no games",

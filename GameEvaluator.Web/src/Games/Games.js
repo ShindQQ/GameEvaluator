@@ -10,6 +10,7 @@ import { AddGenre } from "./AddGenre";
 import { RemoveGenre } from "./RemoveGenre";
 import { AddPlatform } from "./AddPlatform";
 import { RemovePlatform } from "./RemovePlatform";
+import { GameComments } from "./GameComments";
 
 export const Games = () => {
     const [editRow, setEditRow] = useState(null);
@@ -19,6 +20,7 @@ export const Games = () => {
     const [removeGenreState, setRemoveGenreState] = useState(false);
     const [addPlatformState, setAddPlatformState] = useState(false);
     const [removePlatformState, setRemovePlatformState] = useState(false);
+    const [commentsState, setCommentsState] = useState(false);
     const games = useSelector(selectAllGames);
     const gamesStatus = useSelector(state => state.games.status);
     const loading = useSelector(state => state.games.loading);
@@ -172,6 +174,15 @@ export const Games = () => {
                                 Remove Platform
                             </Button>
                         </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default' 
+                            onClick={() => { 
+                                setGameKey(record.key);
+                                setCommentsState(true);
+                            }}>
+                                Show Comments
+                            </Button>
+                        </div>
                     </>
                 )
             }
@@ -214,12 +225,13 @@ export const Games = () => {
                 total: games.TotalCount
             }
         });
+
+        dispatch(fetchGames(tParams));
     }
     
     useEffect(() => {
         if(gamesStatus === 'idle')
         {
-            dispatch(fetchGames(tableParams));
             fetchData();
         }
     }, [gamesStatus, dispatch]);
@@ -264,7 +276,7 @@ export const Games = () => {
                     return {
                         key: game.Id,
                         id: game.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: game.Name,
                         description: game.Description,
                         averageRating: game.AverageRating,
@@ -286,6 +298,8 @@ export const Games = () => {
             <RemoveGenre removeGenreState={removeGenreState} setRemoveGenreState={setRemoveGenreState} handleAddGenre={handleRemoveGenre}/>
             <AddPlatform addPlatformState={addPlatformState} setAddPlatformState={setAddPlatformState} handleAddPlatform={handleAddPlatform} />
             <RemovePlatform removePlatformState={removePlatformState} setRemovePlatformState={setRemovePlatformState} handleRemovePlatform={handleRemovePlatform} />
+            {commentsState == true ?
+             <GameComments gameKey={gameKey} commentsState={commentsState} setCommentsState={setCommentsState}/> : ''}
         </Layout>
     ); 
 }

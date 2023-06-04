@@ -147,12 +147,13 @@ export const Genres = () => {
                 total: genres.TotalCount
             }
         });
+
+        dispatch(fetchGenres(tableParams));
     }
 
     useEffect(() => {
         if(genresStatus === 'idle')
         {
-            dispatch(fetchGenres(tableParams));
             fetchData();
         }
     }, [genresStatus, dispatch]);
@@ -182,7 +183,7 @@ export const Genres = () => {
                     return {
                         key: genre.Id,
                         id: genre.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: genre.Name,
                         description: genre.Description,
                     }})} 

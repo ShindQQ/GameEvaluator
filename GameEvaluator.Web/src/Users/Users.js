@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addGame, addRole, addUser, banUser, deleteUser, favorGame, fetchUsers, rateGame, removeRole, selectAllUsers, updateUser } from "./usersSlice"
+import { addComment, addGame, addRole, addUser, banUser, deleteUser, favorGame, fetchUsers, rateGame, removeRole, selectAllUsers, updateUser } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table } from "antd";
@@ -11,6 +11,8 @@ import { Ban } from "./Ban";
 import { FavorGame } from "./FavorGame";
 import { AddRole } from "./AddRole";
 import { RemoveRole } from "./RemoveRole";
+import { UserComments } from "./UserComments";
+import { AddComment } from "./AddComment";
 
 export const Users = () => {
     const [editRow, setEditRow] = useState(null);
@@ -24,6 +26,8 @@ export const Users = () => {
     const [userKey, setUserKey] = useState(null);
     const [addGameState, setAddGameState] = useState(false);
     const [ratingState, setRatingState] = useState(false);
+    const [commentsState, setCommentsState] = useState(false);
+    const [addCommentState, setAddCommentState] = useState(false);
     const users = useSelector(selectAllUsers);
     const usersStatus = useSelector(state => state.users.status);
     const loading = useSelector(state => state.users.loading);
@@ -205,6 +209,22 @@ export const Users = () => {
                                     Remove Role
                             </Button>
                         </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default' 
+                            onClick={() => { 
+                                setUserKey(record.key);
+                                setCommentsState(true);
+                            }}>
+                                Show Comments
+                            </Button>
+                            <Button type='default' 
+                            onClick={() => { 
+                                setUserKey(record.key);
+                                setAddCommentState(true);
+                            }}>
+                                Add Comment
+                            </Button>
+                        </div>
                     </>
                 )
             }
@@ -247,12 +267,13 @@ export const Users = () => {
                 total: users.TotalCount
             }
         });
+
+        dispatch(fetchUsers(tParams));
     }
 
     useEffect(() => {
         if(usersStatus === 'idle')
         {
-            dispatch(fetchUsers(tableParams));
             fetchData();
         }
     }, [usersStatus, dispatch]);
@@ -294,6 +315,9 @@ export const Users = () => {
         dispatch(removeRole({userId: userKey, role: values.role}));
     }
 
+    const handleAddComment = (values) =>{
+        dispatch(addComment({userId: userKey, gameId: values.gameId, text: values.text}));
+    }
 
     if(usersStatus === 'succeeded') 
     return (
@@ -306,7 +330,7 @@ export const Users = () => {
                     return {
                         key: user.Id,
                         id: user.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: user.Name,
                         email: user.Email,
                         games: user.Games.length !== 0 ? user.Games.map(game => game.Name).join(' ') : "User has no games",
@@ -332,6 +356,9 @@ export const Users = () => {
             <FavorGame favorState={favorState} setFavorState={setFavorState} handleFavor={handleFavor} />
             <AddRole addRoleState={addRoleState} setAddRoleState={setAddRoleState} handleAddRole={handleAddRole} setRole={setRole} />
             <RemoveRole removeRoleState={removeRoleState} setRemoveRoleState={setRemoveRoleState} handleRemoveRole={handleRemoveRole} setRole={setRole} />
+            <AddComment addCommentState={addCommentState} setAddCommentState={setAddCommentState} handleAddComment={handleAddComment} />
+            {commentsState == true ?
+             <UserComments userKey={userKey} commentsState={commentsState} setCommentsState={setCommentsState}/> : ''}
         </Layout>
     ); 
 }

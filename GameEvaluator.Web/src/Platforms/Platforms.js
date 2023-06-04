@@ -147,12 +147,13 @@ export const Platforms = () => {
                 total: platforms.TotalCount
             }
         });
+        
+        dispatch(fetchPlatforms(tParams));
     }
 
     useEffect(() => {
         if(platformsStatus === 'idle')
         {
-            dispatch(fetchPlatforms(tableParams));
             fetchData();
         }
     }, [platformsStatus, dispatch]);
@@ -181,7 +182,7 @@ export const Platforms = () => {
                     return {
                         key: platform.Id,
                         id: platform.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: platform.Name,
                         description: platform.Description,
                     }})} 

@@ -17,6 +17,20 @@ export const fetchUsers = createAsyncThunk(
     }
 )
 
+export const fetchComments = createAsyncThunk(
+    'fetchComments',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Users/${values.userId}/Comments/${values.tableParams.pagination.current}/${values.tableParams.pagination.pageSize}`, {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            }});
+        return await response.json();
+    }
+)
+
 export const deleteUser = createAsyncThunk(
     'deleteUser',
     async (userId, thunkAPI) => {
@@ -234,15 +248,42 @@ export const removeRole = createAsyncThunk(
     }
 )
 
+export const addComment = createAsyncThunk(
+    'addComment',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Comments`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({UserId:values.userId, GameId:values.gameId, Text:values.text})
+            }).then(response => {
+                if(response.status !== 200)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
 export const usersSlice = createSlice({
     name: 'users',
     initialState: {
         status: 'idle',
         loading: false,
-        data: {}
+        data: {},
+        commentsStatus: 'idle',
+        loading: false,
+        comments: {} 
     },
     reducers: {
-
+        setIdleComments: (state) => { state.commentsStatus = 'idle' }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUsers.pending, (state, action) => {
@@ -255,6 +296,17 @@ export const usersSlice = createSlice({
         }).addCase(fetchUsers.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
+        })
+        builder.addCase(fetchComments.pending, (state, action) => {
+            state.loading = true;
+            state.commentsStatus = 'loading'
+        }).addCase(fetchComments.fulfilled, (state, action) => {
+            state.loading = false;
+            state.commentsStatus = 'succeeded'
+            state.comments = action.payload
+        }).addCase(fetchComments.rejected, (state, action) => {
+           state.loading = false;
+           state.commentsStatus = 'failed'
         })
         builder.addCase(deleteUser.pending, (state, action) => {
             state.loading = true;
@@ -350,4 +402,5 @@ export const usersSlice = createSlice({
 })
 
 export const selectAllUsers = state => state.users.data
+export const selectAllComments = state => state.users.comments
 export default usersSlice.reducer;

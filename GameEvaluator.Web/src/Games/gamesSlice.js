@@ -9,6 +9,20 @@ export const fetchGames = createAsyncThunk(
     }
 )
 
+export const fetchComments = createAsyncThunk(
+    'fetchComments',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Games/${values.gameId}/Comments/${values.tableParams.pagination.current}/${values.tableParams.pagination.pageSize}`, {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            }});
+        return await response.json();
+    }
+)
+
 export const deleteGame = createAsyncThunk(
     'deleteGame',
     async (gameId, thunkAPI) => {
@@ -185,7 +199,10 @@ export const gamesSlice = createSlice({
     initialState: {
         status: 'idle',
         loading: false,
-        data: {} 
+        data: {},
+        commentsStatus: 'idle',
+        loading: false,
+        comments: {} 
     },
     reducers: {
        
@@ -201,6 +218,17 @@ export const gamesSlice = createSlice({
         }).addCase(fetchGames.rejected, (state, action) => {
            state.loading = false;
            state.status = 'failed'
+        })
+        builder.addCase(fetchComments.pending, (state, action) => {
+            state.loading = true;
+            state.commentsStatus = 'loading'
+        }).addCase(fetchComments.fulfilled, (state, action) => {
+            state.loading = false;
+            state.commentsStatus = 'succeeded'
+            state.comments = action.payload
+        }).addCase(fetchComments.rejected, (state, action) => {
+           state.loading = false;
+           state.commentsStatus = 'failed'
         })
         builder.addCase(deleteGame.pending, (state, action) => {
             state.loading = true;
@@ -276,4 +304,5 @@ export const gamesSlice = createSlice({
 })
 
 export const selectAllGames = state => state.games.data
+export const selectAllComments = state => state.games.comments
 export default gamesSlice.reducer;
