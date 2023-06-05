@@ -10,6 +10,40 @@ export const GameComments = ({gameKey, commentsState, setCommentsState}) => {
     const loading = useSelector(state => state.games.loading);
     const dispatch = useDispatch();
 
+    const columns= [
+        {
+            title: 'Number',
+            dataIndex: 'index',
+            key: 'number',
+            sorter: (a, b) => a.index - b.index
+        },
+        {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Text',
+            dataIndex: 'text',
+            key: 'text',
+        },
+        {
+            title: 'GameId',
+            dataIndex: 'gameId',
+            key: 'gameId',
+        },
+        {
+            title: 'ParentCommentId',
+            dataIndex: 'parentCommentId',
+            key: 'parentCommentId',
+        },
+        {
+            title: 'LeftBy',
+            dataIndex: 'leftBy',
+            key: 'leftBy',
+        },
+    ];
+
     const [tableParams, setTableParams] = useState({
         pagination:{
             current: 1,
@@ -59,6 +93,26 @@ export const GameComments = ({gameKey, commentsState, setCommentsState}) => {
         }
     }, [commentsStatus, dispatch, setTableParams, gameId]);
 
+    const expandedRowRender = (record) => {
+        return <Table columns={columns} 
+        expandable={{
+            expandedRowRender,
+            defaultExpandedRowKeys: ['0'],
+          }}
+        dataSource={record.childrenComments.map((comment, index) => {
+            return {
+                key: comment.Id,
+                id: comment.Id,
+                index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                name: comment.Name,
+                text: comment.Text,
+                gameId: comment.GameId,
+                parentCommentId: comment.ParentCommentId,
+                leftBy: comment.LeftBy,
+                childrenComments: comment.ChildrenComments
+            }})} pagination={false} />;
+      };
+
     if(commentsStatus === 'succeeded') 
     return (
         <Modal
@@ -72,16 +126,22 @@ export const GameComments = ({gameKey, commentsState, setCommentsState}) => {
             }}
             >
             <Form>
-                <Table dataSource={comments.Items.map((comment, index) => {
+                <Table 
+                expandable={{
+                    expandedRowRender,
+                    defaultExpandedRowKeys: ['0'],
+                  }}
+                dataSource={comments.Items.map((comment, index) => {
                     return {
                         key: comment.Id,
                         id: comment.Id,
-                        index: index - (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
+                        index: index + (tableParams.pagination.current - 1) * tableParams.pagination.pageSize  + 1,
                         name: comment.Name,
                         text: comment.Text,
                         gameId: comment.GameId,
                         parentCommentId: comment.ParentCommentId,
                         leftBy: comment.LeftBy,
+                        childrenComments: comment.ChildrenComments
                     }})} 
                     scroll={{
                         x: 1500,

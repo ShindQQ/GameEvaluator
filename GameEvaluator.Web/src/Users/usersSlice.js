@@ -272,6 +272,30 @@ export const addComment = createAsyncThunk(
     }
 )
 
+export const addCommentToComment = createAsyncThunk(
+    'addCommentToComment',
+    async (values, thunkAPI) => {
+        const response = await fetch(`/api/Comments/${values.commentId}`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('auth')).AccessToken
+            },
+            body: JSON.stringify({UserId:values.userId, GameId:values.gameId, Text:values.text})
+            }).then(response => {
+                if(response.status !== 200)
+                    throw new Error('Access Denied');
+    
+                return true;
+            }).catch((error) => {
+                message.error(error.message);
+            });
+
+        return response;
+    }
+)
+
 export const usersSlice = createSlice({
     name: 'users',
     initialState: {
@@ -283,7 +307,6 @@ export const usersSlice = createSlice({
         comments: {} 
     },
     reducers: {
-        setIdleComments: (state) => { state.commentsStatus = 'idle' }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUsers.pending, (state, action) => {

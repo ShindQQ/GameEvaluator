@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addComment, addGame, addRole, addUser, banUser, deleteUser, favorGame, fetchUsers, rateGame, removeRole, selectAllUsers, updateUser } from "./usersSlice"
+import { addComment, addCommentToComment, addGame, addRole, addUser, banUser, deleteUser, favorGame, fetchUsers, rateGame, removeRole, selectAllUsers, updateUser } from "./usersSlice"
 import { useEffect, useState } from "react";
 import { Layout } from "../Layout";
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Table } from "antd";
+import { Button, Form, Input, Table } from "antd";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { AddUser } from "./AddUser";
 import { AddGame } from "./AddGame";
@@ -13,6 +13,7 @@ import { AddRole } from "./AddRole";
 import { RemoveRole } from "./RemoveRole";
 import { UserComments } from "./UserComments";
 import { AddComment } from "./AddComment";
+import { AddCommentToComment } from "./AddCommentToComment";
 
 export const Users = () => {
     const [editRow, setEditRow] = useState(null);
@@ -28,6 +29,7 @@ export const Users = () => {
     const [ratingState, setRatingState] = useState(false);
     const [commentsState, setCommentsState] = useState(false);
     const [addCommentState, setAddCommentState] = useState(false);
+    const [addCommentToCommentState, setAddCommentToCommentState] = useState(false);
     const users = useSelector(selectAllUsers);
     const usersStatus = useSelector(state => state.users.status);
     const loading = useSelector(state => state.users.loading);
@@ -225,6 +227,15 @@ export const Users = () => {
                                 Add Comment
                             </Button>
                         </div>
+                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                            <Button type='default' 
+                            onClick={() => { 
+                                setUserKey(record.key);
+                                setAddCommentToCommentState(true);
+                            }}>
+                                Add Comment to Comment
+                            </Button>
+                        </div>
                     </>
                 )
             }
@@ -319,6 +330,10 @@ export const Users = () => {
         dispatch(addComment({userId: userKey, gameId: values.gameId, text: values.text}));
     }
 
+    const handleAddCommentToComment = (values) =>{
+        dispatch(addCommentToComment({commentId: values.commentId, userId: userKey, gameId: values.gameId, text: values.text}));
+    }
+
     if(usersStatus === 'succeeded') 
     return (
         <Layout>
@@ -357,6 +372,7 @@ export const Users = () => {
             <AddRole addRoleState={addRoleState} setAddRoleState={setAddRoleState} handleAddRole={handleAddRole} setRole={setRole} />
             <RemoveRole removeRoleState={removeRoleState} setRemoveRoleState={setRemoveRoleState} handleRemoveRole={handleRemoveRole} setRole={setRole} />
             <AddComment addCommentState={addCommentState} setAddCommentState={setAddCommentState} handleAddComment={handleAddComment} />
+            <AddCommentToComment addCommentToCommentState={addCommentToCommentState} setAddCommentToCommentState={setAddCommentToCommentState} handleAddCommentToComment={handleAddCommentToComment} />
             {commentsState == true ?
              <UserComments userKey={userKey} commentsState={commentsState} setCommentsState={setCommentsState}/> : ''}
         </Layout>
