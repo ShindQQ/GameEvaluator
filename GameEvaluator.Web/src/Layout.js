@@ -59,6 +59,17 @@ function RenderMenu(){
     const navigate = useNavigate();
     const location = useLocation();
     const [current, setCurrent] = useState(location.pathname === '/' ? '/' : location.pathname);
+    const [rights, setRights] = useState(
+        () => {
+            var auth =  JSON.parse(localStorage.getItem('auth'));
+            if(auth != null && auth.Roles.find(role => role == "SuperAdmin" || role == "Admin") != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    );
 
     useEffect(() => {
         if(location){
@@ -88,9 +99,9 @@ function RenderMenu(){
                 { label: <Link to='/'>Home</Link>, key:'/', icon:<HomeOutlined /> },
                 { label: <Link to='/companies'>Companies</Link>, key:'/companies', icon:<FundOutlined /> },
                 { label: <Link to='/games'>Games</Link>, key:'/games', icon:<BugOutlined /> },
-                { label: <Link to='/genres'>Genres</Link>, key:'/genres', icon:<FireOutlined /> },
-                { label: <Link to='/platforms'>Platforms</Link>, key:'/platforms', icon:<GlobalOutlined /> },
-                { label: <Link to='/users'>Users</Link>, key:'/users', icon:<TeamOutlined /> },
+                rights ? { label: <Link to='/genres'>Genres</Link>, key:'/genres', icon:<FireOutlined /> } : '',
+                rights ? { label: <Link to='/platforms'>Platforms</Link>, key:'/platforms', icon:<GlobalOutlined /> } : '',
+                rights ? { label: <Link to='/users'>Users</Link>, key:'/users', icon:<TeamOutlined /> } : '',
                 { label: "Signout", key: 'signout', danger:true, icon:<PoweroffOutlined /> }
             ]}>
         </Menu>

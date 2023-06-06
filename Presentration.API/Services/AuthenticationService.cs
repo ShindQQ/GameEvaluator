@@ -40,19 +40,18 @@ public sealed class AuthenticationService : IAuthService
             if (user.BanState is not null)
                 return null;
 
-            var userRoles = user.Roles;
-
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.Value.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Expiration, DateTime.Now.AddHours(1).ToString())
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddHours(1).ToString()),
+                new Claim(ClaimTypes.Role, string.Join(',', user.Roles.Select(role => role.Name))),
             };
 
             if (user.CompanyId is not null)
                 authClaims.Add(new Claim("CompanyId", user.CompanyId!.Value.ToString()));
 
-            foreach (var userRole in userRoles)
+            foreach (var userRole in user.Roles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole.Name));
             }
@@ -67,7 +66,8 @@ public sealed class AuthenticationService : IAuthService
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken,
-                Expiration = token.ValidTo
+                Expiration = token.ValidTo,
+                Roles = user.Roles.Select(role => role.Name).ToList(),
             };
         }
 

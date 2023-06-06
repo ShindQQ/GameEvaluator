@@ -24,6 +24,17 @@ export const Companies = () => {
     const loading = useSelector(state => state.companies.loading);
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const [rights, setRights] = useState(
+        () => {
+            var auth =  JSON.parse(localStorage.getItem('auth'));
+            if(auth != null && auth.Roles.find(role => role == "SuperAdmin" || role == "Admin") != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    );
 
     const columns = [
         {
@@ -32,11 +43,12 @@ export const Companies = () => {
             key: 'number',
             sorter: (a, b) => a.index - b.index
         },
+        rights ?
         {
             title: 'Id',
             dataIndex: 'id',
             key: 'id',
-        },
+        } : {},
         {
             title: 'Name',
             dataIndex: 'name',
@@ -99,10 +111,11 @@ export const Companies = () => {
             dataIndex: 'workers',
             key: 'workers'
         },
-        {
+        rights ? {
             title: 'Actions',
             render: (_, record) => {
                 return (
+                    
                     <>
                         <div style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' 
@@ -159,10 +172,10 @@ export const Companies = () => {
                                 Remove Worker
                             </Button>
                         </div>
-                    </>
+                    </> 
                 )
             }
-        }
+        }: {}
     ];
 
     const [tableParams, setTableParams] = useState({
@@ -244,9 +257,9 @@ export const Companies = () => {
     if(companiesStatus === 'succeeded')
     return (
         <Layout>
-            <Button onClick={onAdd} type="primary" htmlType="submit">
+            {rights ? <Button onClick={onAdd} type="primary" htmlType="submit">
                 <AppstoreAddOutlined /> Add Company
-            </Button>
+            </Button> : ''}
             <Form form={form} onFinish={onFinish}>
                 <Table dataSource={companies.Items.map((company, index) => {
                     return {

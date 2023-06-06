@@ -28,7 +28,7 @@ public sealed class CommentsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "SuperAdmin, Admin, User")]
     public async Task<IActionResult> AddCommentAsync(
-    [FromBody] CreateCommentRequest request,
+    [FromBody] CommentRequest request,
     CancellationToken cancellationToken)
     {
         var id = await _mediator.Send(new AddCommentCommand
@@ -49,7 +49,7 @@ public sealed class CommentsController : ControllerBase
     [Authorize(Roles = "SuperAdmin, Admin, User")]
     public async Task<IActionResult> AddCommentToCommentAsync(
         [FromRoute] CommentId commentId,
-        [FromBody] CreateCommentRequest request,
+        [FromBody] CommentRequest request,
         CancellationToken cancellationToken)
     {
         var id = await _mediator.Send(new AddCommentToCommentCommand
@@ -71,7 +71,7 @@ public sealed class CommentsController : ControllerBase
     [Authorize(Roles = "SuperAdmin, Admin, User")]
     public async Task<IActionResult> UpdateCommentAsync(
         [FromRoute] CommentId commentId,
-        [FromBody] CreateCommentRequest request,
+        [FromBody] CommentRequest request,
         CancellationToken cancellationToken)
     {
         await _mediator.Send(new UpdateCommentCommand

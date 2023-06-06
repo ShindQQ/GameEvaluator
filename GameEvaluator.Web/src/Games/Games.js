@@ -26,6 +26,17 @@ export const Games = () => {
     const loading = useSelector(state => state.games.loading);
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const [rights, setRights] = useState(
+        () => {
+            var auth =  JSON.parse(localStorage.getItem('auth'));
+            if(auth != null && auth.Roles.find(role => role == "SuperAdmin" || role == "Admin") != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    );
 
     const columns = [
         {
@@ -34,11 +45,12 @@ export const Games = () => {
             key: 'number',
             sorter: (a, b) => a.index - b.index
         },
+        rights ?
         {
             title: 'Id',
             dataIndex: 'id',
             key: 'id',
-        },
+        } : {},
         {
             title: 'Name',
             dataIndex: 'name',
@@ -119,7 +131,7 @@ export const Games = () => {
             render: (_, record) => {
                 return (
                     <>
-                        <div style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
+                        {rights ? <div style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' 
                             onClick={() => {
                                 setEditRow(record.key);
@@ -133,16 +145,16 @@ export const Games = () => {
                             <Button type='text' htmlType="submit">
                                 <SaveOutlined />
                             </Button>
-                        </div>
-                        <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
+                        </div> : '' }
+                        {rights ? <div  style={{display:'flex', gap: '0px', flexDirection:'row', padding: '5px' }}>
                             <Button type='text' danger={true}
                             onClick={() => { 
                                 dispatch(deleteGame(record.key));
                             }}>
                                 <DeleteOutlined />
                             </Button>
-                        </div>
-                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                        </div> : '' }
+                        {rights ? <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
                             <Button type='default' 
                             onClick={() => { 
                                 setGameKey(record.key);
@@ -157,8 +169,8 @@ export const Games = () => {
                             }}>
                                 Remove Genre
                             </Button>
-                        </div>
-                        <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
+                        </div> : '' }
+                        {rights ? <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
                             <Button type='default' 
                             onClick={() => { 
                                 setGameKey(record.key);
@@ -173,7 +185,8 @@ export const Games = () => {
                             }}>
                                 Remove Platform
                             </Button>
-                        </div>
+                        </div> : '' }
+
                         <div style={{display:'flex', gap: '10px', flexDirection:'row', padding: '5px' }}>
                             <Button type='default' 
                             onClick={() => { 
@@ -268,9 +281,9 @@ export const Games = () => {
     if(gamesStatus === 'succeeded') 
     return (
         <Layout>
-            <Button onClick={onAdd} type="primary" htmlType="submit">
+            {rights ? <Button onClick={onAdd} type="primary" htmlType="submit">
                 <AppstoreAddOutlined /> Add Game
-            </Button>
+            </Button> : '' }
             <Form form={form} onFinish={onFinish}>
                 <Table dataSource={games.Items.map((game, index) => {
                     return {

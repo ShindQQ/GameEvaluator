@@ -7,4 +7,6 @@ public record TokenModel
     public string RefreshToken { get; init; } = string.Empty;
 
     public DateTime Expiration { get; init; }
+
+    public List<string> Roles { get; init; } = new();
 }
