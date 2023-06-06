@@ -1,8 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.Bans.Unban;
 
@@ -21,10 +21,10 @@ public sealed class UnbanCommandHandler : IRequestHandler<UnbanCommand>
     public async Task Handle(UnbanCommand request, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         if (user.BanState is null)
-            throw new BanException($"User {request.UserId} is not banned!");
+            throw new StatusCodeException(HttpStatusCode.BadRequest, $"User {request.UserId} is not banned!");
 
         user.UnBan();
 

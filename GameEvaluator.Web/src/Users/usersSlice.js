@@ -421,6 +421,26 @@ export const usersSlice = createSlice({
            state.loading = false;
            state.status = 'failed'
         })
+        builder.addCase(addComment.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addComment.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addComment.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
+        builder.addCase(addCommentToComment.pending, (state, action) => {
+            state.loading = true;
+            state.status = 'loading'
+        }).addCase(addCommentToComment.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = 'idle'
+        }).addCase(addCommentToComment.rejected, (state, action) => {
+           state.loading = false;
+           state.status = 'failed'
+        })
     }
 })
 

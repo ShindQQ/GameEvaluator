@@ -28,15 +28,10 @@ public sealed class CommentsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "SuperAdmin, Admin, User")]
     public async Task<IActionResult> AddCommentAsync(
-    [FromBody] CommentRequest request,
+    [FromBody] AddCommentCommand command,
     CancellationToken cancellationToken)
     {
-        var id = await _mediator.Send(new AddCommentCommand
-        {
-            GameId = request.GameId,
-            UserId = request.UserId,
-            Text = request.Text,
-        }, cancellationToken);
+        var id = await _mediator.Send(command, cancellationToken);
 
         await _cache.EvictByTagAsync("games", cancellationToken);
         await _cache.EvictByTagAsync("companies", cancellationToken);
@@ -54,7 +49,6 @@ public sealed class CommentsController : ControllerBase
     {
         var id = await _mediator.Send(new AddCommentToCommentCommand
         {
-            GameId = request.GameId,
             ParrentCommentId = commentId,
             UserId = request.UserId,
             Text = request.Text,

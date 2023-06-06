@@ -1,10 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Comments;
-using Domain.Entities.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Application.Comments.Commands.UpdateComment;
 
@@ -33,10 +32,10 @@ public sealed class UpdateCommentCommandhandler : IRequestHandler<UpdateCommentC
         var user = await (await _userRepository.GetAsync())
             .Include(user => user.Comments.Where(comment => comment.Id == request.Id))
             .FirstOrDefaultAsync(user => user.Id == userId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), userId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {userId} was not found!");
 
         var comment = user.Comments.FirstOrDefault()
-            ?? throw new NotFoundException(nameof(Comment), userId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Comment with id {request.Id} was not found!");
 
         comment.Update(request.Text);
 

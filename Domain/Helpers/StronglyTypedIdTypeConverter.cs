@@ -7,15 +7,15 @@ public sealed class StronglyTypedIdTypeConverter<T> : TypeConverter
     where T : IStronglyTypedId
 {
     public override bool CanConvertFrom(
-        ITypeDescriptorContext? context, 
+        ITypeDescriptorContext? context,
         Type sourceType)
     {
         return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
     }
 
     public override object ConvertFrom(
-        ITypeDescriptorContext? context, 
-        CultureInfo? culture, 
+        ITypeDescriptorContext? context,
+        CultureInfo? culture,
         object value)
     {
         var stringValue = value as string;

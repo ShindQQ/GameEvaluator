@@ -2,9 +2,8 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Comments;
-using Domain.Entities.Games;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Comments.Commands.AddComment;
 
@@ -38,10 +37,10 @@ public sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand
         var userId = request.UserId is null ? _userService.UserId : request.UserId;
 
         var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken)
-            ?? throw new NotFoundException(nameof(Game), request.GameId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Game with id {request.GameId} was not found!");
 
         var user = await _userRepository.GetByIdAsync(userId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), userId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {userId} was not found!");
 
         var comment = Comment.Create(request.Text, game, user);
 

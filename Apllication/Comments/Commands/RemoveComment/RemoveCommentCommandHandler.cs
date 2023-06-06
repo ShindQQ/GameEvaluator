@@ -1,9 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Comments;
-using Domain.Entities.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Application.Comments.Commands.RemoveComment;
 
@@ -26,10 +25,10 @@ public sealed class RemoveCommentCommandHandler : IRequestHandler<RemoveCommentC
         var user = await (await _userRepository.GetAsync())
             .Include(user => user.Comments.Where(comment => comment.Id == request.Id))
             .FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         var comment = user.Comments.FirstOrDefault()
-            ?? throw new NotFoundException(nameof(Comment), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Comment with id {request.Id} was not found!");
 
         await _commentRepository.DeleteAsync(comment, cancellationToken);
     }

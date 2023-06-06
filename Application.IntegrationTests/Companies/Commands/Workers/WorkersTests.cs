@@ -42,7 +42,7 @@ public sealed class WorkersTests : BaseTestFixture
 
         await FluentActions
             .Invoking(() => mediator!.Send(command, CancellationToken.None))
-            .Should().ThrowAsync<NotFoundException>();
+            .Should().ThrowAsync<StatusCodeException>();
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public sealed class WorkersTests : BaseTestFixture
 
         await FluentActions
             .Invoking(() => mediator!.Send(command, CancellationToken.None))
-            .Should().ThrowAsync<NotFoundException>();
+            .Should().ThrowAsync<StatusCodeException>();
     }
 
     [Theory]

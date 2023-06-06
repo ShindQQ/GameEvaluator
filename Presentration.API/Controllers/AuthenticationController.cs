@@ -21,9 +21,6 @@ public sealed class AuthenticationController : ControllerBase
     {
         var tokenModel = await _authService.LoginAsync(authModel);
 
-        if (tokenModel is null)
-            return Unauthorized($"User with email {authModel.Email} wasn`t found!");
-
         return Ok(tokenModel);
     }
 
@@ -31,9 +28,6 @@ public sealed class AuthenticationController : ControllerBase
     public async Task<IActionResult> RefreshTokenAsync(RefreshTokenModel refreshTokenModel)
     {
         var tokenModel = await _authService.LoginWithRefreshTokenAsync(refreshTokenModel);
-
-        if (tokenModel is null)
-            return BadRequest("Invalid access or refresh token!");
 
         return Ok(tokenModel);
     }

@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
 using MediatR;
+using System.Net;
 
 namespace Application.Companies.Commands.UpdateCommand;
 
@@ -17,7 +17,7 @@ public sealed class UpdateCompanyCommandHandler : IRequestHandler<UpdateCompanyC
     public async Task Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
     {
         var company = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {request.Id} was not found!");
 
         company.Update(request.Name, request.Description);
 

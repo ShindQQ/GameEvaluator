@@ -3,13 +3,13 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Requests;
 using Domain.Entities.Comments;
-using Domain.Entities.Games;
 using Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using System.Net;
 
 namespace Presentration.API.Hubs;
 
@@ -38,12 +38,11 @@ public sealed class CommentsHub : Hub
             .FirstOrDefaultAsync();
 
         if (userWithParentComment is null || userWithParentComment.Comments.Count == 0)
-            throw new NotFoundException($"Comment with id {request.CommentId} was not found!");
+            throw new StatusCodeException(HttpStatusCode.NotFound, $"Comment with id {request.CommentId} was not found!");
 
         await _mediator.Send(new AddCommentToCommentCommand
         {
             ParrentCommentId = new CommentId(request.CommentId),
-            GameId = new GameId(request.GameId),
             Text = request.Text,
         });
 

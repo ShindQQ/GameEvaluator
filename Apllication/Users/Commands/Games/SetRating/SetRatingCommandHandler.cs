@@ -1,9 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Games;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.Games.SetRating;
 
@@ -24,12 +23,12 @@ public sealed class SetRatingCommandHandler : IRequestHandler<SetRatingCommand>
     public async Task Handle(SetRatingCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         var requestStatus = user.SetRatingToTheGame(request.GameId, request.Rating);
 
         if (!requestStatus)
-            throw new NotFoundException(nameof(Game), request.GameId);
+            throw new StatusCodeException(HttpStatusCode.NotFound, $"Game with id {request.GameId} was not found!");
 
         await _context.SaveChangesAsync(cancellationToken);
     }

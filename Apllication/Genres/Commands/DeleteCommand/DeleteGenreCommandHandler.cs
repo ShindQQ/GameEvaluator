@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Genres;
 using MediatR;
+using System.Net;
 
 namespace Application.Genres.Commands.DeleteCommand;
 
@@ -17,7 +17,7 @@ public sealed class DeleteGenreCommandHandler : IRequestHandler<DeleteGenreComma
     public async Task Handle(DeleteGenreCommand request, CancellationToken cancellationToken)
     {
         var genre = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(Genre), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Genre with id {request.Id} was not found!");
 
         await _repository.DeleteAsync(genre, cancellationToken);
     }

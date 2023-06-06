@@ -5,10 +5,10 @@ using Infrastructre;
 using Presentration.API;
 using Presentration.API.BackgroundJobs;
 using Presentration.API.Hubs;
+using Presentration.API.Middlewares;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -19,6 +19,8 @@ builder.Services
     .AddAPI(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {

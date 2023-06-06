@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
 using MediatR;
+using System.Net;
 
 namespace Application.Companies.Commands.DeleteCommand;
 
@@ -17,7 +17,7 @@ public sealed class DeleteCompanyCommandHandler : IRequestHandler<DeleteCompanyC
     public async Task Handle(DeleteCompanyCommand request, CancellationToken cancellationToken)
     {
         var company = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {request.Id} was not found!");
 
         await _repository.DeleteAsync(company, cancellationToken);
     }

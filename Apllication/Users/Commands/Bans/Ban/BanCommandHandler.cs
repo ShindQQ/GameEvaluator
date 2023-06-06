@@ -1,9 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.Bans.Ban;
 
@@ -22,7 +22,7 @@ public sealed class BanCommandHandler : IRequestHandler<BanCommand>
     public async Task Handle(BanCommand request, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         var roles = user.Roles.Where(role => role.Name.Equals(RoleType.SuperAdmin) || role.Name.Equals(RoleType.Admin));
 

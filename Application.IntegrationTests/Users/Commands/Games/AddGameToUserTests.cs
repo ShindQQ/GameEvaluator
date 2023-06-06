@@ -42,7 +42,7 @@ public sealed class AddGameToUserTests : BaseTestFixture
 
         await FluentActions
             .Invoking(() => mediator!.Send(command, CancellationToken.None))
-            .Should().ThrowAsync<NotFoundException>();
+            .Should().ThrowAsync<StatusCodeException>();
     }
 
     [Theory]
@@ -56,12 +56,10 @@ public sealed class AddGameToUserTests : BaseTestFixture
         var mediator = scope.ServiceProvider.GetService<IMediator>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var companyRepository = scope.ServiceProvider.GetRequiredService<ICompanyRepository>();
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         _userService = new Mock<IUserService>();
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
         var handler = new CreateGameCommandHandler(
-            gameRepository,
             companyRepository,
             dbContext,
             _userService.Object);

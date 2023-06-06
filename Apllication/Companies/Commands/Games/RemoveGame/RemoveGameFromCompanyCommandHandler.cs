@@ -1,9 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
 using Domain.Enums;
 using MediatR;
+using System.Net;
 
 namespace Application.Companies.Commands.Games.RemoveGame;
 
@@ -33,7 +33,7 @@ public sealed class RemoveGameFromCompanyCommandHandler : IRequestHandler<Remove
             companyId = request.CompanyId;
 
         var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), companyId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {companyId} was not found!");
 
         company.RemoveGame(request.GameId);
 

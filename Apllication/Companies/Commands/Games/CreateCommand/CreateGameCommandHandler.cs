@@ -1,17 +1,15 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
 using Domain.Entities.Games;
 using Domain.Enums;
 using MediatR;
+using System.Net;
 
 namespace Application.Companies.Commands.Games.CreateCommand;
 
 public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand, GameId>
 {
-    private readonly IGameRepository _gameRepository;
-
     private readonly ICompanyRepository _companyRepository;
 
     private readonly IApplicationDbContext _context;
@@ -19,12 +17,10 @@ public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand
     private readonly IUserService _userService;
 
     public CreateGameCommandHandler(
-        IGameRepository gameRepository,
         ICompanyRepository companyRepository,
         IApplicationDbContext context,
         IUserService userService)
     {
-        _gameRepository = gameRepository;
         _companyRepository = companyRepository;
         _context = context;
         _userService = userService;
@@ -38,7 +34,7 @@ public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand
             companyId = request.CompanyId;
 
         var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), companyId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {companyId} was not found!");
 
         var game = Game.Create(request.Name!, request.Description!);
 

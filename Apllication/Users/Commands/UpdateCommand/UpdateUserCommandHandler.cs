@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.UpdateCommand;
 
@@ -17,7 +17,7 @@ public sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.Id);
+           ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.Id} was not found!");
 
         user.Update(request.Name, request.Email);
 

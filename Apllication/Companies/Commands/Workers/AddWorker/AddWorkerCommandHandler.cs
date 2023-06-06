@@ -1,10 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
-using Domain.Entities.Users;
 using Domain.Enums;
 using MediatR;
+using System.Net;
 
 namespace Application.Companies.Commands.Workers.AddWorker;
 
@@ -38,10 +37,10 @@ public sealed class AddWorkerCommandHandler : IRequestHandler<AddWorkerCommand>
             companyId = request.CompanyId;
 
         var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), companyId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {companyId} was not found!");
 
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         company.AddWorker(user);
 

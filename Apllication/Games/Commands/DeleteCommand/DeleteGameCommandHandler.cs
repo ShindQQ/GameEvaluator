@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Games;
 using MediatR;
+using System.Net;
 
 namespace Application.Games.Commands.DeleteCommand;
 
@@ -17,7 +17,7 @@ public sealed class DeleteGameCommandHandler : IRequestHandler<DeleteGameCommand
     public async Task Handle(DeleteGameCommand request, CancellationToken cancellationToken)
     {
         var game = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(Game), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Game with id {request.Id} was not found!");
 
         await _repository.DeleteAsync(game, cancellationToken);
     }

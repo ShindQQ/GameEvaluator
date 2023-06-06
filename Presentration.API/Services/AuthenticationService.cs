@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Presentration.API.Options;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -36,9 +37,9 @@ public sealed class AuthenticationService : IAuthService
         if (user is not null)
         {
             if (!user.VerifyPassword(authModel.Password))
-                return null;
+                throw new StatusCodeException(HttpStatusCode.BadRequest, "User entered wrong password!");
             if (user.BanState is not null)
-                return null;
+                throw new StatusCodeException(HttpStatusCode.BadRequest, "User is banned!");
 
             var authClaims = new List<Claim>
             {
@@ -71,24 +72,22 @@ public sealed class AuthenticationService : IAuthService
             };
         }
 
-        return null;
+        throw new StatusCodeException(HttpStatusCode.BadRequest, "User was not found!");
     }
 
     public async Task<RefreshTokenModel?> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel)
     {
-        var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken);
-
-        if (principal is null)
-            return null;
+        var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken) 
+            ?? throw new StatusCodeException(HttpStatusCode.BadRequest, "Wrong refresh token!");
 
         var username = principal?.Identity!.Name;
         var user = await (await _userRepository.GetAsync())
-            .FirstOrDefaultAsync(user => user.Name.Equals(username));
+            .FirstOrDefaultAsync(user => user.Name.Equals(username)) 
+            ?? throw new StatusCodeException(HttpStatusCode.BadRequest, "User was not found!");
 
-        if (user == null ||
-            user.RefreshToken != tokenModel.RefreshToken ||
+        if (user.RefreshToken != tokenModel.RefreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.Now)
-            return null;
+            throw new StatusCodeException(HttpStatusCode.BadRequest, "Refresh token has expired!");
 
         var newRefreshToken = CreateRefreshToken();
 

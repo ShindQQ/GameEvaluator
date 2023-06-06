@@ -1,8 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.Roles.AddRole;
 
@@ -21,7 +21,7 @@ public sealed class AddRoleCommandHandler : IRequestHandler<AddRoleCommand>
     public async Task Handle(AddRoleCommand request, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(request.UserId, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.UserId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.UserId} was not found!");
 
         user.AddRole(request.RoleType);
 

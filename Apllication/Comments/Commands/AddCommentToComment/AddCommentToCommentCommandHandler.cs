@@ -2,16 +2,13 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities.Comments;
-using Domain.Entities.Games;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Comments.Commands.AddCommentToComment;
 
 public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddCommentToCommentCommand, CommentId>
 {
-    private readonly IGameRepository _gameRepository;
-
     private readonly IUserRepository _userRepository;
 
     private readonly ICommentRepository _commentRepository;
@@ -20,13 +17,12 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
 
     private readonly IUserService _userService;
 
-    public AddCommentToCommentCommandHandler(IGameRepository gameRepository,
+    public AddCommentToCommentCommandHandler(
         ICommentRepository commentRepository,
         IApplicationDbContext dbContext,
         IUserRepository userRepository,
         IUserService userService)
     {
-        _gameRepository = gameRepository;
         _commentRepository = commentRepository;
         _dbContext = dbContext;
         _userRepository = userRepository;
@@ -38,13 +34,10 @@ public sealed class AddCommentToCommentCommandHandler : IRequestHandler<AddComme
         var userId = request.UserId is null ? _userService.UserId : request.UserId;
 
         var comment = await _commentRepository.GetByIdAsync(request.ParrentCommentId, cancellationToken)
-            ?? throw new NotFoundException(nameof(Comment), request.ParrentCommentId);
-
-        var game = await _gameRepository.GetByIdAsync(request.GameId, cancellationToken)
-            ?? throw new NotFoundException(nameof(Game), request.GameId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Comment with id {request.ParrentCommentId} was not found!");
 
         var user = await _userRepository.GetByIdAsync(userId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), userId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {userId} was not found!");
 
         var child = comment.CreateChild(request.Text, user);
 

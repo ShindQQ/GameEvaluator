@@ -1,11 +1,9 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Companies;
-using Domain.Entities.Games;
-using Domain.Entities.Platforms;
 using Domain.Enums;
 using MediatR;
+using System.Net;
 
 namespace Application.Games.Commands.Platforms.RemovePlatform;
 
@@ -39,13 +37,13 @@ public sealed class RemovePlatformFromGameCommandHandler : IRequestHandler<Remov
             companyId = request.CompanyId;
 
         var company = await _companyRepository.GetByIdAsync(companyId!, cancellationToken)
-            ?? throw new NotFoundException(nameof(Company), companyId!);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Company with id {companyId} was not found!");
 
         var game = company!.Games.FirstOrDefault(game => game.Id == request.GameId)
-            ?? throw new NotFoundException(nameof(Game), request.GameId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Game with id {request.GameId} was not found!");
 
         var platform = await _platformRepository.GetByIdAsync(request.PlatformId, cancellationToken)
-            ?? throw new NotFoundException(nameof(Platform), request.PlatformId);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"Platform with id {request.PlatformId} was not found!");
 
         game.RemovePlatform(platform);
 

@@ -52,7 +52,7 @@ public sealed class PlatformTests : BaseTestFixture
 
         await FluentActions
             .Invoking(() => handler!.Handle(command, CancellationToken.None))
-            .Should().ThrowAsync<NotFoundException>();
+            .Should().ThrowAsync<StatusCodeException>();
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public sealed class PlatformTests : BaseTestFixture
 
         await FluentActions
             .Invoking(() => handler!.Handle(command, CancellationToken.None))
-            .Should().ThrowAsync<NotFoundException>();
+            .Should().ThrowAsync<StatusCodeException>();
     }
 
     [Theory]
@@ -89,13 +89,11 @@ public sealed class PlatformTests : BaseTestFixture
         var mediator = scope.ServiceProvider.GetService<IMediator>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var companyRepository = scope.ServiceProvider.GetRequiredService<ICompanyRepository>();
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var platformRepository = scope.ServiceProvider.GetRequiredService<IPlatformRepository>();
         _userService = new Mock<IUserService>();
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
         var createHandler = new CreateGameCommandHandler(
-            gameRepository,
             companyRepository,
             dbContext,
         _userService.Object);
@@ -144,13 +142,11 @@ public sealed class PlatformTests : BaseTestFixture
         var mediator = scope.ServiceProvider.GetService<IMediator>();
         var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
         var companyRepository = scope.ServiceProvider.GetRequiredService<ICompanyRepository>();
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var platformRepository = scope.ServiceProvider.GetRequiredService<IPlatformRepository>();
         _userService = new Mock<IUserService>();
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
         var createHandler = new CreateGameCommandHandler(
-            gameRepository,
             companyRepository,
             dbContext,
         _userService.Object);

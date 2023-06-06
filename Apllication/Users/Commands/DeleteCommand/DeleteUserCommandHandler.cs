@@ -1,7 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities.Users;
 using MediatR;
+using System.Net;
 
 namespace Application.Users.Commands.DeleteCommand;
 
@@ -17,7 +17,7 @@ public sealed class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand
     public async Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new NotFoundException(nameof(User), request.Id);
+            ?? throw new StatusCodeException(HttpStatusCode.NotFound, $"User with id {request.Id} was not found!");
 
         await _repository.DeleteAsync(user, cancellationToken);
     }
