@@ -14,6 +14,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using OpenTelemetry.Instrumentation.AspNetCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Presentration.API.BackgroundJobs;
 using Presentration.API.Options;
 using Presentration.API.Services;
@@ -142,6 +146,7 @@ public static class DependencyInjection
 
         services.AddHangfire((provider, config) =>
         {
+            Console.WriteLine(configuration.GetConnectionString("HangfireConnection"));
             config.UseSimpleAssemblyNameTypeSerializer();
             config.UseRecommendedSerializerSettings();
             config.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"));
@@ -157,6 +162,50 @@ public static class DependencyInjection
 
         return services;
     }
+
+    public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
+    {
+        const string SourceName = "GameEvaluator";
+        const string MeterName = "MeterName";
+
+        services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>
+            tracerProviderBuilder
+                .AddSource(SourceName)
+                .ConfigureResource(resource => resource.AddService(SourceName))
+                .AddAspNetCoreInstrumentation(options =>
+                {
+                    options.Filter = (req) => !req.Request.Path.ToUriComponent().Contains("index.html", StringComparison.OrdinalIgnoreCase)
+                        && !req.Request.Path.ToUriComponent().Contains("swagger", StringComparison.OrdinalIgnoreCase);
+                })
+                .AddOtlpExporter(otlpOptions =>
+                {
+                    otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("AppSettings:OtelEndpoint")!);
+                })
+                .AddSqlClientInstrumentation(options =>
+                {
+                    options.SetDbStatementForText = true;
+                    options.RecordException = true;
+                })
+        ).WithMetrics(metricsProviderBuilder =>
+            metricsProviderBuilder
+               .ConfigureResource(resource => resource.AddService(SourceName))
+               .AddMeter(MeterName)
+               .AddOtlpExporter(otlpOptions =>
+               {
+                   otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("AppSettings:OtelEndpoint")!);
+               })
+        );
+
+        services.Configure<AspNetCoreInstrumentationOptions>(options =>
+        {
+            options.RecordException = true;
+        });
+
+        services.AddSingleton<GameEvaluatorMetricsService>();
+
+        return services;
+    }
+
 
     public static async Task AddSuperAdminRole(this IServiceScope scope)
     {

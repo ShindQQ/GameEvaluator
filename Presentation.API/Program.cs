@@ -41,11 +41,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseOutputCache();
 
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
 app.UseSerilogRequestLogging();
 

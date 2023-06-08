@@ -18,6 +18,12 @@ public static class DependencyInjection
             options.EnableSensitiveDataLogging();
         });
 
+        services.AddDbContext<HangfireContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("HangfireConnection"));
+            options.EnableSensitiveDataLogging();
+        });
+
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<IUserRepository, UserRepository>();
@@ -26,6 +32,12 @@ public static class DependencyInjection
         services.AddScoped<IPlatformRepository, PlatformRepository>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
+
+        using var scope = services.BuildServiceProvider().CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var hangfireDbContext = scope.ServiceProvider.GetRequiredService<HangfireContext>();
+        dbContext.Database.Migrate();
+        hangfireDbContext.Database.Migrate();
 
         return services;
     }
