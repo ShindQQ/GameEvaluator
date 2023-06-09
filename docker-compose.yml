@@ -13,7 +13,7 @@ services:
   - game_net
   volumes:
   - game_evaluator_db_container:/var/lib/mssql/data
- api:
+ backend:
   image: shinqq/game_evaluator
   hostname: game_evaluator_container
   restart: unless-stopped
@@ -22,7 +22,6 @@ services:
    context: .
    dockerfile: ./Presentation.API/Dockerfile
   ports:
-   - "3000:80" 
    - "5283:5283" 
    - "7078:80"
   depends_on:
@@ -31,7 +30,20 @@ services:
    - game_net
   environment:
    - ASPNETCORE_ENVIRONMENT=Release
-   - ASPNETCORE_URLS:http://*:5283;https://*:7078;http://*:3000
+ frontend:
+  image: shinqq/game_evaluator_client
+  hostname: game_evaluator_container_client
+  restart: unless-stopped
+  container_name: game_evaluator_container_client
+  build:
+   context: .
+   dockerfile: ./GameEvaluator.Web/Dockerfile
+  ports:
+   - "3000:80" 
+  depends_on:
+   - db
+  networks:
+   - game_net
  nginx:
   restart: unless-stopped
   hostname: nginx
@@ -40,10 +52,10 @@ services:
    context: .
    dockerfile: ./nginx.Dockerfile
   depends_on:
-   - api
+   - backend
+   - frontend
   ports:
-   - "8080:80"
-   - "443:4430"
+   - "80:80"
   volumes:
    - ./nginx/conf/:/etc/nginx/conf.d/:ro
   networks:
