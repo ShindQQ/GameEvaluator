@@ -27,7 +27,7 @@ public sealed class AuthenticationService : IAuthService
         _authOptions = authOptions.Value;
     }
 
-    public async Task<TokenModel?> LoginAsync(AuthModel authModel)
+    public async Task<TokenModel> LoginAsync(AuthModel authModel)
     {
         var user = await (await _userRepository.GetAsync())
             .Include(user => user.Company)
@@ -75,7 +75,7 @@ public sealed class AuthenticationService : IAuthService
         throw new StatusCodeException(HttpStatusCode.BadRequest, "User was not found!");
     }
 
-    public async Task<RefreshTokenModel?> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel)
+    public async Task<RefreshTokenModel> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel)
     {
         var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken) 
             ?? throw new StatusCodeException(HttpStatusCode.BadRequest, "Wrong refresh token!");

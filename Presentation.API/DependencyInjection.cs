@@ -166,12 +166,12 @@ public static class DependencyInjection
     public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
     {
         const string SourceName = "GameEvaluator";
-        const string MeterName = "MeterName";
 
         services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>
             tracerProviderBuilder
                 .AddSource(SourceName)
-                .ConfigureResource(resource => resource.AddService(SourceName))
+                .AddHttpClientInstrumentation()
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
                 .AddAspNetCoreInstrumentation(options =>
                 {
                     options.Filter = (req) => !req.Request.Path.ToUriComponent().Contains("index.html", StringComparison.OrdinalIgnoreCase)
@@ -179,7 +179,7 @@ public static class DependencyInjection
                 })
                 .AddOtlpExporter(otlpOptions =>
                 {
-                    otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("AppSettings:OtelEndpoint")!);
+                    otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("OpenTelemetry:OtelEndpoint")!);
                 })
                 .AddSqlClientInstrumentation(options =>
                 {
@@ -188,11 +188,13 @@ public static class DependencyInjection
                 })
         ).WithMetrics(metricsProviderBuilder =>
             metricsProviderBuilder
+               .AddHttpClientInstrumentation()
+               .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
                .ConfigureResource(resource => resource.AddService(SourceName))
-               .AddMeter(MeterName)
+               .AddMeter(GameEvaluatorMetricsService.Meter.Name)
                .AddOtlpExporter(otlpOptions =>
                {
-                   otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("AppSettings:OtelEndpoint")!);
+                   otlpOptions.Endpoint = new Uri(configuration.GetValue<string>("OpenTelemetry:OtelEndpoint")!);
                })
         );
 
@@ -200,8 +202,6 @@ public static class DependencyInjection
         {
             options.RecordException = true;
         });
-
-        services.AddSingleton<GameEvaluatorMetricsService>();
 
         return services;
     }

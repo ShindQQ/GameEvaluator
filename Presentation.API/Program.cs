@@ -23,7 +23,8 @@ builder.Services.AddHealthChecks()
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
-    .AddAPI(builder.Configuration);
+    .AddAPI(builder.Configuration)
+    .AddOpenTelemetry(builder.Configuration);
 
 var app = builder.Build();
 
