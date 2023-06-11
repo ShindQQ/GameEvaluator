@@ -5,6 +5,7 @@ using HealthChecks.UI.Client;
 using Infrastructre;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Presentation.API.Middlewares;
 using Presentration.API;
 using Presentration.API.BackgroundJobs;
 using Presentration.API.Health;
@@ -42,8 +43,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseOutputCache();
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseSerilogRequestLogging();
 
@@ -51,6 +52,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<RequestsMiddleware>();
 
 app.MapControllers();
 

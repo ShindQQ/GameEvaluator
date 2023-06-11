@@ -37,9 +37,9 @@ public sealed class AuthenticationService : IAuthService
         if (user is not null)
         {
             if (!user.VerifyPassword(authModel.Password))
-                throw new StatusCodeException(HttpStatusCode.BadRequest, "User entered wrong password!");
+                throw new StatusCodeException(HttpStatusCode.BadRequest, $"User {user.Id.Value} entered wrong password!");
             if (user.BanState is not null)
-                throw new StatusCodeException(HttpStatusCode.BadRequest, "User is banned!");
+                throw new StatusCodeException(HttpStatusCode.BadRequest, $"User {user.Id.Value} is banned!");
 
             var authClaims = new List<Claim>
             {
@@ -77,17 +77,17 @@ public sealed class AuthenticationService : IAuthService
 
     public async Task<RefreshTokenModel> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel)
     {
-        var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken) 
+        var principal = GetPrincipalFromExpiredToken(tokenModel.AccessToken)
             ?? throw new StatusCodeException(HttpStatusCode.BadRequest, "Wrong refresh token!");
 
         var username = principal?.Identity!.Name;
         var user = await (await _userRepository.GetAsync())
-            .FirstOrDefaultAsync(user => user.Name.Equals(username)) 
+            .FirstOrDefaultAsync(user => user.Name.Equals(username))
             ?? throw new StatusCodeException(HttpStatusCode.BadRequest, "User was not found!");
 
         if (user.RefreshToken != tokenModel.RefreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.Now)
-            throw new StatusCodeException(HttpStatusCode.BadRequest, "Refresh token has expired!");
+            throw new StatusCodeException(HttpStatusCode.BadRequest, $"Refresh token for user {user.Id.Value} has expired!");
 
         var newRefreshToken = CreateRefreshToken();
 

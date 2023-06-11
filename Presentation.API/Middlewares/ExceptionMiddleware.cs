@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Presentration.API.Services;
+using System.Diagnostics;
 
 namespace Presentration.API.Middlewares;
 
@@ -8,11 +10,16 @@ public sealed class ExceptionMiddleware
 
     private readonly ILogger<ExceptionMiddleware> _logger;
 
+    private const string SourceName = "GameEvaluator";
+
+    private readonly ActivitySource _source;
+
     public ExceptionMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
     {
         _next = next;
         _logger = loggerFactory?.CreateLogger<ExceptionMiddleware>()
             ?? throw new ArgumentNullException(nameof(loggerFactory));
+        _source = new ActivitySource(SourceName);
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -37,13 +44,29 @@ public sealed class ExceptionMiddleware
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, StatusCodeException exception)
+    private async Task HandleExceptionAsync(HttpContext context, StatusCodeException exception)
     {
+        using var activity = _source.StartActivity(SourceName, ActivityKind.Internal)!;
+
         context.Response.Clear();
         context.Response.StatusCode = (int)exception.StatusCode;
         context.Response.ContentType = exception.Message;
 
-        await context.Response.WriteAsJsonAsync(new StatusCodeErrorDetails((int)exception.StatusCode,
-            exception.Message).Serialize());
+        var details = new StatusCodeErrorDetails((int)exception.StatusCode,
+            exception.Message).Serialize();
+
+        await context.Response.WriteAsJsonAsync(details);
+
+        GameEvaluatorMetricsService.RequestCounter.Add(1,
+            new("Action", nameof(HandleExceptionAsync)),
+            new("ExceptionMiddleware", nameof(ExceptionMiddleware)));
+
+        activity.AddEvent(new ActivityEvent("Thrown exception", tags: new ActivityTagsCollection(new[]
+        {
+            KeyValuePair.Create<string, object?>("Exception", details)
+        })));
+
+        activity.SetTag("otel.status_code", (int)exception.StatusCode);
+        activity.SetTag("otel.status_description", "Exception handled");
     }
 }

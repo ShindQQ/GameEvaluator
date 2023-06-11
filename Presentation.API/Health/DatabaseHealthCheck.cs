@@ -13,7 +13,7 @@ public sealed class DatabaseHealthCheck : IHealthCheck
     }
 
     public async Task<HealthCheckResult> CheckHealthAsync(
-        HealthCheckContext context, 
+        HealthCheckContext context,
         CancellationToken cancellationToken = new())
     {
         using var connection = new SqlConnection(ConnectionString);
