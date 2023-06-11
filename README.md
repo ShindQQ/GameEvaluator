@@ -1,3 +1,3 @@
 # GameEvaluator
-VReal-Soft Internship project 2
-Using DDD approach with Hangfire, Mediator and other stuff
+VReal-Soft Internship project 2 </br>
+Using DDD approach with Hangfire, Mediator and OpenTelemetry
