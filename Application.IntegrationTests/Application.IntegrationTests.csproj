@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Presentration.API\Presentration.API.csproj" />
+    <ProjectReference Include="..\Presentation.API\Presentation.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

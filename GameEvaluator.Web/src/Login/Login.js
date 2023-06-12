@@ -20,13 +20,13 @@ export function Login(){
             },
             body: JSON.stringify({Email:formValues.email, Password:formValues.password})
         }).then(response => {
-            if(response.status === 401)
+            if(response.status !== 200)
                 throw new Error('Access Denied');
 
             return response.json();
         }).then(auth => {
-            localStorage.setItem('auth', JSON.stringify(auth));
             message.success("Logined!")
+            localStorage.setItem('auth', JSON.stringify(auth));
             navigate("/", { replace: true });
             navigate(0);
         }).catch(() => {

@@ -61,7 +61,6 @@ public sealed class UpdateGameTests : BaseTestFixture
         _userService.Setup(e => e.RoleType).Returns(RoleType.SuperAdmin);
 
         var createHandler = new CreateGameCommandHandler(
-            gameRepository,
             companyRepository,
             dbContext,
             _userService.Object);

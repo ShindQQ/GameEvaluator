@@ -24,6 +24,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="MimeKit" Version="4.0.0" />
+    <PackageReference Include="OpenTelemetry" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.5.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.5.0-beta.1" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.5.0-beta.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
@@ -31,10 +39,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
     <PackageReference Include="ZymLabs.NSwag.FluentValidation.AspNetCore" Version="0.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,6 +49,11 @@
   
   <ItemGroup>
     <Folder Include="logs\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

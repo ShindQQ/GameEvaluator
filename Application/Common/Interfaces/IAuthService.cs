@@ -5,7 +5,7 @@ namespace Application.Common.Interfaces;
 
 public interface IAuthService
 {
-    Task<TokenModel?> LoginAsync(AuthModel authModel);
+    Task<TokenModel> LoginAsync(AuthModel authModel);
 
-    Task<RefreshTokenModel?> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel);
+    Task<RefreshTokenModel> LoginWithRefreshTokenAsync(RefreshTokenModel tokenModel);
 }

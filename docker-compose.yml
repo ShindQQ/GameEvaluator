@@ -1,37 +1,107 @@
 version: "3.8"
 
 services:
- api:
-  image: shinqq/game_evaluator
-  restart: unless-stopped
-  container_name: game_evaluator_container
-  build:
-   context: .
-   dockerfile: GameEvaluator/Dockerfile
-  ports:
-  - "8080:80" 
-  depends_on:
-  - db
-  networks:
-  - campus_net
-  environment:
-   - ASPNETCORE_ENVIRONMENT=Release
  db:
   image: mcr.microsoft.com/mssql/server:2019-latest
   container_name: game_evaluator_db_container
+  restart: unless-stopped
   ports: 
   - "1450:1433"
   environment:
   - SA_PASSWORD=Pass@word
   - ACCEPT_EULA=Y
   networks:
-  - campus_net
+  - game_net
   volumes:
   - game_evaluator_db_container:/var/lib/mssql/data
+ backend:
+  image: shinqq/game_evaluator
+  hostname: game_evaluator_container
+  restart: unless-stopped
+  container_name: game_evaluator_container
+  build:
+   context: .
+   dockerfile: ./Presentation.API/Dockerfile
+  ports:
+   - "5283:5283" 
+   - "7078:80"
+  depends_on:
+   - db
+  networks:
+   - game_net
+  environment:
+   - ASPNETCORE_ENVIRONMENT=Release
+ frontend:
+  image: shinqq/game_evaluator_client
+  hostname: game_evaluator_container_client
+  restart: unless-stopped
+  container_name: game_evaluator_container_client
+  build:
+   context: .
+   dockerfile: ./GameEvaluator.Web/Dockerfile
+  ports:
+   - "3000:80" 
+  depends_on:
+   - db
+  networks:
+   - game_net
+ nginx:
+  restart: unless-stopped
+  hostname: nginx
+  container_name: nginx_compose_container
+  build:
+   context: .
+   dockerfile: ./nginx.Dockerfile
+  depends_on:
+   - backend
+   - frontend
+  ports:
+   - "80:80"
+  volumes:
+   - ./nginx/conf/:/etc/nginx/conf.d/:ro
+  networks:
+   - game_net
+ zipkin:
+  restart: unless-stopped
+  image: openzipkin/zipkin
+  container_name: zipkin
+  ports:
+    - 9411:9411
+  networks:
+    - game_net
+ prometheus:
+  restart: unless-stopped
+  container_name: prometheus
+  image: prom/prometheus:latest
+  volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  ports:
+    - "9090:9090"
+  networks:
+    - game_net
+ otel:
+  restart: unless-stopped
+  image: otel/opentelemetry-collector-contrib
+  container_name: otel
+  command: ["--config=/etc/otel-collector-config.yaml"]
+  volumes:
+    - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  ports:
+    - "1888:1888"   # pprof extension
+    - "8888:8888"   # Prometheus metrics exposed by the collector
+    - "8889:8889"   # Prometheus exporter metrics
+    - "13133:13133" # health_check extension
+    - "4317"        # OTLP gRPC receiver
+    - "55670:55679" # zpages extension
+  depends_on:
+    - zipkin
+    - prometheus
+  networks:
+  - game_net
 
 volumes:
   game_evaluator_db_container:
 
 networks:
- campus_net:
+ game_net:
   driver: bridge
