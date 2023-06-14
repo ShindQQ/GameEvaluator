@@ -18,6 +18,7 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Presentation.API.Services;
 using Presentration.API.BackgroundJobs;
 using Presentration.API.Options;
 using Presentration.API.Services;
@@ -139,6 +140,7 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAuthService, AuthenticationService>();
         services.AddScoped<IScheduler, Scheduler>();
+        services.AddScoped<IVideoService, VideoService>();
 
         services.AddHttpContextAccessor();
 
@@ -165,13 +167,11 @@ public static class DependencyInjection
 
     public static IServiceCollection AddOpenTelemetry(this IServiceCollection services, IConfiguration configuration)
     {
-        const string SourceName = "GameEvaluator";
-
         services.AddOpenTelemetry().WithTracing(tracerProviderBuilder =>
             tracerProviderBuilder
-                .AddSource(SourceName)
+                .AddSource(GameEvaluatorMetricsService.SourceName)
                 .AddHttpClientInstrumentation()
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(GameEvaluatorMetricsService.SourceName).AddTelemetrySdk())
                 .AddAspNetCoreInstrumentation(options =>
                 {
                     options.Filter = (req) => !req.Request.Path.ToUriComponent().Contains("index.html", StringComparison.OrdinalIgnoreCase)
@@ -189,8 +189,8 @@ public static class DependencyInjection
         ).WithMetrics(metricsProviderBuilder =>
             metricsProviderBuilder
                .AddHttpClientInstrumentation()
-               .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(SourceName).AddTelemetrySdk())
-               .ConfigureResource(resource => resource.AddService(SourceName))
+               .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(GameEvaluatorMetricsService.SourceName).AddTelemetrySdk())
+               .ConfigureResource(resource => resource.AddService(GameEvaluatorMetricsService.SourceName))
                .AddMeter(GameEvaluatorMetricsService.Meter.Name)
                .AddOtlpExporter(otlpOptions =>
                {

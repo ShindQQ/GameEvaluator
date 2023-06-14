@@ -10,8 +10,6 @@ public sealed class ExceptionMiddleware
 
     private readonly ILogger<ExceptionMiddleware> _logger;
 
-    private const string SourceName = "GameEvaluator";
-
     private readonly ActivitySource _source;
 
     public ExceptionMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
@@ -19,7 +17,7 @@ public sealed class ExceptionMiddleware
         _next = next;
         _logger = loggerFactory?.CreateLogger<ExceptionMiddleware>()
             ?? throw new ArgumentNullException(nameof(loggerFactory));
-        _source = new ActivitySource(SourceName);
+        _source = new ActivitySource(GameEvaluatorMetricsService.SourceName);
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -46,7 +44,7 @@ public sealed class ExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, StatusCodeException exception)
     {
-        using var activity = _source.StartActivity(SourceName, ActivityKind.Internal)!;
+        using var activity = _source.StartActivity(GameEvaluatorMetricsService.SourceName, ActivityKind.Internal)!;
 
         context.Response.Clear();
         context.Response.StatusCode = (int)exception.StatusCode;

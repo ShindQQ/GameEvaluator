@@ -7,19 +7,17 @@ public sealed class RequestsMiddleware
 {
     private readonly RequestDelegate _next;
 
-    private const string SourceName = "GameEvaluator";
-
     private readonly ActivitySource _source;
 
     public RequestsMiddleware(RequestDelegate next)
     {
         _next = next;
-        _source = new ActivitySource(SourceName);
+        _source = new ActivitySource(GameEvaluatorMetricsService.SourceName);
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        using var activity = _source.StartActivity(SourceName, ActivityKind.Internal)!;
+        using var activity = _source.StartActivity(GameEvaluatorMetricsService.SourceName, ActivityKind.Internal)!;
 
         var originalBodyStream = context.Response.Body;
         using var responseBodyStream = new MemoryStream();
