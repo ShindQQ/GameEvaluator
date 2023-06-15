@@ -8,23 +8,15 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Presentation.API.Controllers;
 
 namespace Presentration.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
 [Authorize(Roles = "SuperAdmin, Admin")]
-public sealed class GenresController : ControllerBase
+public sealed class GenresController : BaseController
 {
-    private readonly IMediator _mediator;
-
-    private readonly IOutputCacheStore _cache;
-
-    public GenresController(IMediator mediator, IOutputCacheStore cache)
+    public GenresController(IMediator mediator, IOutputCacheStore cache) : base(mediator, cache)
     {
-        _mediator = mediator;
-        _cache = cache;
     }
 
     [HttpPost]

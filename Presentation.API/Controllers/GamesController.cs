@@ -15,22 +15,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Presentation.API.Controllers;
 
 namespace Presentration.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-public sealed class GamesController : ControllerBase
+public sealed class GamesController : BaseController
 {
-    private readonly IMediator _mediator;
-
-    private readonly IOutputCacheStore _cache;
-
-    public GamesController(IMediator mediator, IOutputCacheStore cache)
+    public GamesController(IMediator mediator, IOutputCacheStore cache) : base(mediator, cache)
     {
-        _mediator = mediator;
-        _cache = cache;
     }
 
     [Authorize(Roles = "Company")]

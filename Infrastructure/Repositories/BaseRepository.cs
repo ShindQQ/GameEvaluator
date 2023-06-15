@@ -33,7 +33,7 @@ public abstract class BaseRepository<TEntity, TEntityId>
         => Task.FromResult(Context.Set<TEntity>().AsQueryable());
 
     public virtual async Task<TEntity?> GetByIdAsync(TEntityId id, CancellationToken cancellationToken)
-        => await Context.Set<TEntity>().FindAsync(id, cancellationToken);
+        => await Context.Set<TEntity>().FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
 
     public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {

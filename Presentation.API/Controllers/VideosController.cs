@@ -16,7 +16,7 @@ public sealed class VideosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAsync()
+    public IActionResult GetAsync()
     {
         if (!_videoService.IsFileExists())
             return BadRequest();

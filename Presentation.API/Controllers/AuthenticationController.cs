@@ -7,6 +7,7 @@ namespace Presentration.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public sealed class AuthenticationController : ControllerBase
 {
     private readonly IAuthService _authService;

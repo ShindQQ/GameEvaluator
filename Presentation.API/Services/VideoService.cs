@@ -6,8 +6,8 @@ namespace Presentation.API.Services;
 
 public class VideoService : IVideoService
 {
-    private const string _inputFilePath = "../videos/video1.mp4";
-    private const string _outputFilePath = "../videos/out.mp4";
+    private readonly string _inputFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"videos/video1.mp4");
+    private readonly string _outputFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"videos/out.mp4");
     private static readonly DateTime _startedAt;
 
     static VideoService()
@@ -17,14 +17,13 @@ public class VideoService : IVideoService
 
     public FileStream StreamVideo()
     {
-
         var ffProbe = new FFProbe();
         var videoInfo = ffProbe.GetMediaInfo(_inputFilePath);
         var videoDuration = videoInfo.Duration.TotalSeconds;
 
         var videosPlayedAmount = (DateTime.Now - _startedAt).TotalSeconds / videoDuration;
-        var roundedAmount = Math.Floor((DateTime.Now - _startedAt).TotalSeconds / videoDuration);
-        var seekTime = (float)Math.Floor((float)((videosPlayedAmount - roundedAmount) * videoDuration));
+        var roundedAmount = Math.Floor(videosPlayedAmount);
+        var seekTime = (float)Math.Floor((videosPlayedAmount - roundedAmount) * videoDuration);
 
         var ffMpeg = new FFMpegConverter();
         ffMpeg.ConvertMedia(_inputFilePath, Format.mp4, _outputFilePath, Format.mp4, new ConvertSettings
@@ -40,11 +39,6 @@ public class VideoService : IVideoService
 
     public bool IsFileExists()
     {
-        if (!File.Exists(_inputFilePath))
-        {
-            return false;
-        }
-
-        return true;
+        return File.Exists(_inputFilePath);
     }
 }

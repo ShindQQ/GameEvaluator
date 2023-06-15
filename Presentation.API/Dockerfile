@@ -17,14 +17,8 @@ RUN dotnet build "Presentation.API.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "Presentation.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM node:18.7.0 AS node-builder
-WORKDIR /node
-COPY ./GameEvaluator.Web /node
-RUN npm install
-RUN npm run build
-
 FROM base AS final
 WORKDIR /app
+COPY ./Presentation.API/videos /app/videos
 COPY --from=publish /app/publish .
-COPY --from=node-builder /node/build ./wwwroot
 ENTRYPOINT ["dotnet", "Presentation.API.dll"]
